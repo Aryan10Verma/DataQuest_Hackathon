@@ -235,7 +235,7 @@ export default function Landing() {
   return (
     <div className="landing" ref={root}>
       <header className="l-top">
-        <Logo />
+        <Logo tagline />
         <nav aria-label="Main">
           <a href="#how" className="hide-sm" onClick={(e) => { e.preventDefault(); scrollToId('how'); }}>How it works</a>
           <Link to="/how-we-know" className="hide-sm">How we know</Link>

@@ -8,7 +8,7 @@ export function AuthLayout({ title, intro, children, footer }: { title: string; 
   return (
     <div className="grid min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
       <div className="flex flex-col px-4 py-6 sm:px-10 lg:px-16">
-        <Logo />
+        <Logo tagline />
         <main className="my-auto w-full max-w-[420px] py-12">
           <h1 className="display mb-3 text-2xl sm:text-3xl">{title}</h1>
           <p className="mb-8 text-muted">{intro}</p>

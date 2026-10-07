@@ -2,10 +2,14 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Menu from '@radix-ui/react-dropdown-menu';
 import { ChevronDown, Menu as MenuIcon, X } from 'lucide-react';
 import { useLayoutEffect, useRef, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import type { Role } from '@/api/client';
 import type { Lang } from '@/api/hooks';
 import { useSession } from '@/auth/session';
+import { Logo } from './Brand';
+import { Tour, startTour } from './Tour';
+
+export { Logo };
 
 interface Item {
   to: string;
@@ -64,23 +68,15 @@ const NAV: Record<Role, (Item | null)[]> = {
   ],
 };
 
+/** The tour finds each nav link by its last path segment, e.g. /app/exams → exams. */
+const tourId = (to: string) => to.split('/').pop();
+
 const ROLE_LABEL: Record<Role, string> = { student: 'Student', parent: 'Parent', educator: 'Counsellor', admin: 'Administrator' };
 const LANGS: { value: Lang; label: string }[] = [
   { value: 'en', label: 'English' },
   { value: 'ta', label: 'தமிழ்' },
   { value: 'hi', label: 'हिन्दी' },
 ];
-
-export function Logo() {
-  return (
-    <Link to="/" className="flex items-center gap-2.5" aria-label="PRISM home">
-      <svg viewBox="0 0 32 32" className="h-6 w-6" aria-hidden>
-        <circle cx="16" cy="16" r="11" fill="none" stroke="#C9B07E" strokeWidth="2" style={{ filter: 'drop-shadow(0 0 4px rgba(201, 176, 126, .7))' }} />
-      </svg>
-      <span className="display text-lg tracking-[0.18em]">PRISM</span>
-    </Link>
-  );
-}
 
 function Rail({ items }: { items: (Item | null)[] }) {
   const loc = useLocation();
@@ -107,6 +103,7 @@ function Rail({ items }: { items: (Item | null)[] }) {
           <li key={it.to}>
             <NavLink
               to={it.to}
+              data-tour={tourId(it.to)}
               className={({ isActive }) =>
                 `flex min-h-[40px] items-center text-sm transition-colors ${isActive ? 'text-ink' : 'text-muted hover:text-ink'}`
               }
@@ -134,6 +131,7 @@ function BottomNav({ items: all }: { items: (Item | null)[] }) {
           <li key={it.to} className="flex-1">
             <NavLink
               to={it.to}
+              data-tour={tourId(it.to)}
               className={({ isActive }) =>
                 `relative flex min-h-[56px] items-center justify-center px-1 text-center text-xs ${isActive ? 'text-ink' : 'text-muted'}`
               }
@@ -151,6 +149,7 @@ function BottomNav({ items: all }: { items: (Item | null)[] }) {
           <li className="flex-1">
             <Dialog.Root open={open} onOpenChange={setOpen}>
               <Dialog.Trigger
+                data-tour="more"
                 className={`flex min-h-[56px] w-full items-center justify-center gap-1 text-xs ${more.some((m) => loc.pathname.startsWith(m.to)) ? 'text-ink' : 'text-muted'}`}
               >
                 <MenuIcon size={15} aria-hidden /> More
@@ -192,6 +191,7 @@ function TopBar() {
         <label className="sr-only" htmlFor="lang">Language for summaries and reports</label>
         <select
           id="lang"
+          data-tour="language"
           value={lang}
           onChange={(e) => setLang(e.target.value as Lang)}
           className="min-h-[40px] rounded-full border border-line bg-void px-3 text-sm text-ink focus:border-accent focus:outline-none"
@@ -203,7 +203,7 @@ function TopBar() {
         </select>
         {user && (
           <Menu.Root>
-            <Menu.Trigger className="flex min-h-[40px] items-center gap-2 rounded-full border border-line px-3 text-sm hover:border-accent">
+            <Menu.Trigger data-tour="account" className="flex min-h-[40px] items-center gap-2 rounded-full border border-line px-3 text-sm hover:border-accent">
               <span className="grid h-6 w-6 place-items-center rounded-full bg-accent/15 text-xs text-accent" aria-hidden>
                 {user.full_name.charAt(0)}
               </span>
@@ -217,6 +217,12 @@ function TopBar() {
                   <p className="text-xs text-muted">{ROLE_LABEL[user.role]} · {user.email}</p>
                 </div>
                 <Menu.Separator className="my-1 h-px bg-line" />
+                <Menu.Item
+                  onSelect={startTour}
+                  className="flex min-h-[40px] cursor-pointer items-center rounded-lg px-3 outline-none data-[highlighted]:bg-accent/10"
+                >
+                  Take the tour
+                </Menu.Item>
                 <Menu.Item
                   onSelect={signOut}
                   className="flex min-h-[40px] cursor-pointer items-center rounded-lg px-3 outline-none data-[highlighted]:bg-accent/10"
@@ -248,6 +254,7 @@ export function Shell() {
         </main>
       </div>
       <BottomNav items={items} />
+      <Tour />
     </div>
   );
 }
