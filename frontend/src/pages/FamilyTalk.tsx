@@ -126,7 +126,7 @@ function Gauge({ value, band }: { value: number; band: string }) {
   };
   return (
     <figure className="grid gap-2">
-      <svg viewBox="0 -6 200 118" className="w-full overflow-visible" role="img" aria-label={`Family difference ${Math.round(value)} out of 100, ${band}`}>
+      <svg viewBox="-24 -10 248 122" className="w-full overflow-visible" role="img" aria-label={`Family difference ${Math.round(value)} out of 100, ${band}`}>
         <path d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="rgba(143,208,255,0.12)" strokeWidth="2" />
         <motion.path
           d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="#f4f9ff" strokeWidth="2.2" strokeLinecap="round"

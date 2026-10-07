@@ -39,6 +39,13 @@ Demo tools are for developers and judges only and are off by default. Set `DEMO_
 refuses to start with `DEMO_MODE` or `MOCK_MODE` on, and `seed.py --demo` refuses to run there.
 Fees are stored on each pathway row per quota (government / management), not on the institution.
 
+## The website
+
+`python ../start.py` from the repository root sets everything up and serves the whole product on
+http://localhost:8000. When `../frontend/dist` exists (after `npm run build`), this API serves it next to
+`/api`. Set `FRONTEND_DIST` to use another folder, or `none` for an API-only server. The rate limit applies
+to `/api` paths only.
+
 ## For teammates
 
 - **Frontend (Person 1)**: build against `contracts/fixtures/*.json` or the running mock server. Shapes are

@@ -102,7 +102,8 @@
   .l-bodies-inner { height: 58vh; margin-top: -12vh; }
   .l-ring { top: 30%; width: min(54vh, 86vw); }
   .l-word { top: 30%; font-size: 23vw; letter-spacing: 0.1em; padding-left: 0.1em; }
-  .l-hero { left: var(--gutter); right: var(--gutter); bottom: calc(var(--lbar) + 3vh); max-width: none; }
+  .l-hero { left: 0; right: 0; bottom: var(--lbar); max-width: none; padding: 3.5rem var(--gutter) 3vh;
+    background: linear-gradient(to top, var(--void) 62%, rgba(2, 5, 11, 0.75) 82%, transparent); }
   .l-hero h1 { font-size: 1.9rem; }
   .l-copy { left: var(--gutter); right: var(--gutter); width: auto; top: auto; bottom: calc(var(--lbar) + 2vh); translate: none;
     padding-top: 2rem; background: linear-gradient(to top, var(--void) 60%, transparent); }

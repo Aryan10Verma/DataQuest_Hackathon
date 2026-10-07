@@ -57,6 +57,8 @@ const roleFromEmail = (email: string): Role =>
     'educator',
   ) as Role | undefined) ?? 'student';
 
+const NAMES: Record<Role, string> = { student: 'Ananya R.', parent: 'R. Raman', educator: 'S. Lakshmi', admin: 'Admin' };
+
 export function fixtureResponse(method: string, url: string, body: unknown, role: Role): Response {
   const path = url.split('?')[0];
 
@@ -65,17 +67,12 @@ export function fixtureResponse(method: string, url: string, body: unknown, role
     const email = String((body as { email?: string })?.email ?? 'student@prism.example');
     const login = structuredClone(byName.get('auth_login')) as { data: { user: Record<string, unknown> } };
     const r = roleFromEmail(email);
-    Object.assign(login.data.user, {
-      role: r,
-      email,
-      full_name: r === 'parent' ? 'R. Raman' : r === 'educator' ? 'S. Lakshmi' : r === 'admin' ? 'Admin' : 'Ananya R.',
-      is_minor: r === 'student',
-    });
+    Object.assign(login.data.user, { role: r, email, full_name: NAMES[r], is_minor: r === 'student' });
     return respond(200, login);
   }
   if (path === '/api/v1/auth/me') {
     const me = structuredClone(byName.get('auth_me')) as { data: Record<string, unknown> };
-    me.data.role = role;
+    Object.assign(me.data, { role, full_name: NAMES[role], is_minor: role === 'student' });
     return respond(200, me);
   }
 
