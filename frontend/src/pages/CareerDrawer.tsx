@@ -28,7 +28,7 @@ export function CareerDrawer({ rec, run, onClose }: { rec: Recommendation | null
 function Detail({ rec, run }: { rec: Recommendation; run: AnalysisRun }) {
   const f = rec.financial;
   return (
-    <div className="grid gap-10 px-5 pb-16 pt-6 sm:px-10">
+    <div className="grid gap-14 px-5 pb-16 pt-8 sm:px-12">
       <header className="flex items-start justify-between gap-4">
         <div className="grid gap-2">
           <p className="text-sm text-muted">Rank {rec.rank} of {run.recommendations.length}, {sectorLabel(rec.career.sector)}</p>
@@ -120,7 +120,7 @@ function Block({ title, aside, children }: { title: string; aside?: ReactNode; c
   return (
     <section className="grid gap-4">
       <div className="flex items-center justify-between gap-3 border-b border-line pb-2">
-        <h3 className="text-lg font-semibold">{title}</h3>
+        <h3 className="display text-2xl">{title}</h3>
         {aside}
       </div>
       {children}

@@ -56,9 +56,9 @@ function ResultsView({ run, studentId, studentName }: { run: AnalysisRun; studen
   const selected = run.recommendations.find((r) => r.career.id === careerId) ?? null;
 
   return (
-    <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-10">
+    <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-16">
       {run.reproducibility.is_outdated && (
-        <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-panel border border-accent/40 px-4 py-3 text-sm">
+        <div role="status" className="flex flex-wrap items-center justify-between gap-3 note text-sm">
           <span>Newer data is available ({run.reproducibility.latest_dataset_version}). Run the analysis again to use it.</span>
           {studentId && (
             <button className="btn-text min-h-0" onClick={() => rerun.mutate(studentId)} disabled={rerun.isPending}>
@@ -92,29 +92,28 @@ function ResultsView({ run, studentId, studentName }: { run: AnalysisRun; studen
                 <TrustBadge trust={top.data_trust} />
               </div>
             </div>
-            <div className="flex flex-wrap gap-2 pt-1">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-2">
               <button className="btn-primary" onClick={() => open(top.career.id)}>Why this score</button>
               <Link to="/app/what-if" className="btn-quiet">Try a what-if</Link>
-              <Link to="/app/family" className="btn-quiet">Family conversation</Link>
-              <Link to="/app/plan" className="btn-quiet">Plan</Link>
-              <button
-                className="btn-quiet"
-                onClick={() => openReport(run.run_id).then(() => setReportError(null), setReportError)}
-              >
-                Download report
-              </button>
+              <span className="flex flex-wrap gap-x-6">
+                <Link to="/app/family" className="btn-text">Family conversation</Link>
+                <Link to="/app/plan" className="btn-text">Plan</Link>
+                <button className="btn-text" onClick={() => openReport(run.run_id).then(() => setReportError(null), setReportError)}>
+                  Download report
+                </button>
+              </span>
             </div>
             {reportError ? <ErrorState error={reportError} /> : null}
           </div>
         </section>
       )}
 
-      <div className="grid grid-cols-1 gap-10 xl:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="grid min-w-0 grid-cols-1 gap-10">
+      <div className="grid grid-cols-1 gap-14 xl:grid-cols-[minmax(0,1fr)_280px] xl:gap-20">
+        <div className="grid min-w-0 grid-cols-1 gap-14">
           <Summary runId={run.run_id} lang={lang} />
           <Ranked run={run} isParent={isParent} onOpen={open} />
         </div>
-        <aside className="grid content-start gap-4">
+        <aside className="grid content-start gap-10">
           <FamilyMini run={run} />
           <Robustness run={run} />
           <RunFacts run={run} studentId={studentId} rerun={() => studentId && rerun.mutate(studentId)} busy={rerun.isPending} />
@@ -144,9 +143,9 @@ function Summary({ runId, lang }: { runId: string; lang: 'en' | 'ta' | 'hi' }) {
   if (n.isError) return <ErrorState error={n.error} retry={() => n.refetch()} />;
   if (!n.data) return null;
   return (
-    <section aria-labelledby="summary" lang={n.data.language} className="grid gap-3 border-l border-accent/60 pl-5">
+    <section aria-labelledby="summary" lang={n.data.language} className="grid gap-4 border-l border-accent pl-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h2 id="summary" className="text-lg font-semibold">{n.data.headline}</h2>
+        <h2 id="summary" className="display text-2xl leading-snug">{n.data.headline}</h2>
         {n.data.source === 'model' && (
           <Tip label="A language model rephrased this from the facts below. It never changes scores or rankings.">
             <span className="rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">Rephrased by AI</span>
@@ -169,7 +168,7 @@ function Ranked({ run, isParent, onOpen }: { run: AnalysisRun; isParent: boolean
   return (
     <section aria-labelledby="ranked" className="grid min-w-0 grid-cols-1 gap-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="ranked" className="text-lg font-semibold">All matches</h2>
+        <h2 id="ranked" className="display text-2xl">All matches</h2>
         <PartLegend />
       </div>
       <Tabs.Root value={tab} onValueChange={(v) => setTab(v as Bucket)} className="min-w-0">
@@ -230,8 +229,8 @@ function FamilyMini({ run }: { run: AnalysisRun }) {
   const c = run.conflict;
   const full = c.visibility === 'full';
   return (
-    <section className="panel grid gap-3 p-5" aria-labelledby="fam-mini">
-      <h2 id="fam-mini" className="text-sm font-semibold">Family conversation</h2>
+    <section className="leaf grid gap-3" aria-labelledby="fam-mini">
+      <h2 id="fam-mini" className="display text-xl">Family conversation</h2>
       {full ? (
         <p className="flex items-baseline gap-2">
           <span className="figure text-3xl">{Math.round(c.index)}</span>
@@ -251,8 +250,8 @@ function Robustness({ run }: { run: AnalysisRun }) {
   if (!s) return null;
   const stability = (s as typeof s & { top1_stability?: number }).top1_stability;
   return (
-    <section className="panel grid gap-3 p-5" aria-labelledby="robust">
-      <h2 id="robust" className="text-sm font-semibold">How stable is this ranking?</h2>
+    <section className="leaf grid gap-3" aria-labelledby="robust">
+      <h2 id="robust" className="display text-xl">How stable is this ranking?</h2>
       {stability !== undefined && (
         <p className="text-sm text-muted">
           <span className="figure mr-1 text-3xl text-ink">{pct(stability)}</span>

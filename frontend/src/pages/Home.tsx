@@ -13,12 +13,14 @@ import { errorMessage } from '@/lib/errors';
 export default function Home() {
   const { user } = useSession();
   const ctx = useStudentContext();
-  const first = user?.full_name.split(' ')[0];
+  // Greet by the first name that isn't an initial ("R. Raman" → "Raman").
+  const parts = user?.full_name.split(' ') ?? [];
+  const first = parts.find((w) => !w.endsWith('.')) ?? parts[0];
   return (
     <div className="mx-auto grid max-w-[1000px] gap-14">
       <PageHeader title={`Hello, ${first}`} intro={user?.role === 'parent' ? 'Your family’s path, one step at a time.' : 'Your path, one step at a time.'} />
       {user?.consent_status === 'pending' && (
-        <p role="status" className="rounded-panel border border-accent/40 p-4 text-sm">
+        <p role="status" className="note text-sm">
           A parent or guardian needs to approve your account before your answers are used. Ask them to join your family and approve it on their home screen.
         </p>
       )}
@@ -40,9 +42,9 @@ function Steps({ ctx }: { ctx: ReturnType<typeof useStudentContext> }) {
     { title: 'Plan', body: 'Roadmap, deadlines and the family report.', done: false, to: ctx.latestRunId ? '/app/plan' : null, cta: 'Open plan' },
   ];
   return (
-    <ol className="grid gap-px overflow-hidden rounded-panel border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+    <ol className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
       {steps.map((s, i) => (
-        <li key={s.title} className="grid content-between gap-6 bg-void p-5">
+        <li key={s.title} className="leaf grid content-between gap-6">
           <div className="grid gap-2">
             <span className={`figure grid h-9 w-9 place-items-center rounded-full border text-base ${s.done ? 'border-accent text-accent' : 'border-line text-muted'}`}>
               {s.done ? <Check size={16} aria-label="Done" /> : i + 1}
@@ -97,13 +99,13 @@ function FamilySetup() {
     <Section title="Connect your family">
       <p className="max-w-measure text-muted">PRISM works best when a student and a parent are in the same family. One of you creates it and shares the invite code.</p>
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="panel grid content-start gap-3 p-5">
+        <div className="leaf grid content-start gap-3">
           <h3 className="font-semibold">Start a family</h3>
           <p className="text-sm text-muted">You will get a code to share.</p>
           <button className="btn-primary justify-self-start" onClick={() => create.mutate()} disabled={create.isPending}>{create.isPending ? 'Creating…' : 'Create family'}</button>
           {create.isError && <ErrorState error={create.error} />}
         </div>
-        <form className="panel grid content-start gap-3 p-5" onSubmit={onJoin}>
+        <form className="leaf grid content-start gap-3" onSubmit={onJoin}>
           <h3 className="font-semibold">Join with a code</h3>
           <label className="field">Invite code<input className="input" name="code" required autoComplete="off" /></label>
           <label className="field">

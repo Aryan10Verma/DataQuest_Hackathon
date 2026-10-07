@@ -267,10 +267,10 @@ export function ErrorState({ error, retry }: { error: unknown; retry?: () => voi
 
 export function PageHeader({ title, intro, actions }: { title: ReactNode; intro?: ReactNode; actions?: ReactNode }) {
   return (
-    <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
-      <div className="grid gap-2">
-        <h1 className="display text-2xl sm:text-3xl">{title}</h1>
-        {intro && <p className="max-w-measure text-muted">{intro}</p>}
+    <header className="mb-14 flex flex-wrap items-end justify-between gap-6">
+      <div className="grid gap-3">
+        <h1 className="display text-3xl font-light leading-none sm:text-4xl">{title}</h1>
+        {intro && <p className="max-w-[60ch] text-muted">{intro}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
     </header>
@@ -280,9 +280,9 @@ export function PageHeader({ title, intro, actions }: { title: ReactNode; intro?
 /** A labelled block inside a page. The heading names the content; no eyebrow labels. */
 export function Section({ title, aside, children, className = '' }: { title: ReactNode; aside?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={`grid gap-4 ${className}`}>
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-2">
-        <h2 className="text-lg font-semibold">{title}</h2>
+    <section className={`grid gap-5 ${className}`}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-3">
+        <h2 className="display text-2xl">{title}</h2>
         {aside}
       </div>
       {children}

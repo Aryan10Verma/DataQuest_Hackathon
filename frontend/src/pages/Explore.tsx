@@ -63,12 +63,12 @@ function Careers() {
       </div>
       {careers.isLoading ? <Skeleton className="h-80" /> : careers.isError ? <ErrorState error={careers.error} retry={() => careers.refetch()} /> : (
         careers.data!.items.length === 0 ? <EmptyState title="No careers match" body="Try a broader word, or choose All fields." /> : (
-          <ul className="grid gap-px overflow-hidden rounded-panel border border-line bg-line md:grid-cols-2">
+          <ul className="grid gap-x-10 md:grid-cols-2">
             {careers.data!.items.map((c) => (
-              <li key={c.id} className="bg-void">
-                <button className="grid h-full w-full content-start gap-2 p-5 text-left transition-colors hover:bg-white/[0.02]" onClick={() => setOpen(c.slug)}>
+              <li key={c.id} className="border-t border-line">
+                <button className="group grid h-full w-full content-start gap-2 py-6 text-left" onClick={() => setOpen(c.slug)}>
                   <span className="flex items-baseline justify-between gap-3">
-                    <span className="display text-lg">{c.name}</span>
+                    <span className="display text-xl transition-colors group-hover:text-accent">{c.name}</span>
                     <span className="shrink-0 text-xs text-muted">{c.steam_tags?.join(' ')}</span>
                   </span>
                   <span className="text-xs text-muted">{sectorLabel(c.sector)}</span>
@@ -208,7 +208,7 @@ function Local({ initialPincode }: { initialPincode?: string }) {
         local.data!.length === 0 ? <EmptyState title="Nothing listed for this pincode yet" body="Partner schools add local problems over time. Try a nearby pincode." /> : (
           <ul className="grid gap-4 md:grid-cols-2">
             {local.data!.map((o) => (
-              <li key={o.id} className="panel grid content-start gap-3 p-5">
+              <li key={o.id} className="leaf grid content-start gap-3">
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="display text-xl leading-snug">{o.title}</h3>
                   <ProvenanceBadge p={o.provenance} compact />
@@ -240,7 +240,7 @@ function Mentors({ initialPincode }: { initialPincode?: string }) {
         m.data!.items.length === 0 ? <EmptyState title="No mentors listed here yet" body={m.data!.notice} /> : (
           <ul className="grid gap-4 md:grid-cols-2">
             {m.data!.items.map((x) => (
-              <li key={x.id} className="panel grid gap-2 p-5 text-sm">
+              <li key={x.id} className="leaf grid gap-2 text-sm">
                 <h3 className="display text-xl">{x.display_name}</h3>
                 <p className="text-muted">{x.career.name}{x.organisation ? `, ${x.organisation}` : ''}. {x.district}</p>
                 <p>{x.bio}</p>

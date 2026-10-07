@@ -55,7 +55,7 @@ export default function FamilyTalk() {
 function Conversation({ c }: { c: ConflictReport }) {
   const full = c.visibility === 'full';
   return (
-    <div className="grid gap-12">
+    <div className="grid gap-20">
       {full ? (
         <div className="grid items-center gap-10 md:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
           <Gauge value={c.index} band={c.band} />
@@ -90,14 +90,14 @@ function Conversation({ c }: { c: ConflictReport }) {
       )}
 
       <Section title={`${c.top_drivers.length} things to talk about`}>
-        <ol className="grid gap-4 md:grid-cols-3">
+        <ol className="grid gap-10 md:grid-cols-3">
           {c.top_drivers.map((d, i) => (
-            <li key={d.dimension} className="panel grid content-start gap-3 p-5">
-              <p className="text-sm text-muted">
-                <span className="figure mr-2 text-lg text-accent">{i + 1}</span>
+            <li key={d.dimension} className="leaf grid content-start gap-3">
+              <p className="flex items-baseline gap-3 text-sm text-muted">
+                <span className="figure text-3xl text-accent">{i + 1}</span>
                 {dimLabel(d.dimension)}
               </p>
-              <p className="display text-lg leading-snug">“{d.conversation_prompt}”</p>
+              <p className="display text-xl italic leading-snug">“{d.conversation_prompt}”</p>
               <p className="text-sm text-muted">{d.explanation}</p>
             </li>
           ))}
@@ -105,7 +105,7 @@ function Conversation({ c }: { c: ConflictReport }) {
       </Section>
 
       <Section title="Careers you could both back" aside={<Legend />}>
-        <ul className="grid gap-4 md:grid-cols-3">
+        <ul className="grid gap-10 md:grid-cols-3">
           {c.bridge_careers.map((b) => (
             <Bridge key={b.career.id} b={b} />
           ))}
@@ -178,8 +178,8 @@ function Bridge({ b }: { b: BridgeCareer }) {
     </div>
   );
   return (
-    <li className="panel grid content-start gap-3 p-5">
-      <p className="display text-lg">{b.career.name}</p>
+    <li className="leaf grid content-start gap-3">
+      <p className="display text-2xl">{b.career.name}</p>
       {bar(b.student_fit, 'bg-accent', 'Fits the student')}
       {bar(b.parent_acceptance, 'bg-ink/70', "Parents' hopes")}
       <p className="text-sm text-muted">{b.why}</p>

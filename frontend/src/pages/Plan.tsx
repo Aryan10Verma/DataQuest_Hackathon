@@ -247,7 +247,7 @@ function Swot({ runId, careerId }: { runId: string; careerId?: string }) {
   const s = useSwot(runId, careerId);
   const cell = (title: string, items: SwotItem[]) => (
     <div className="grid content-start gap-2 bg-void p-4">
-      <h3 className="text-sm font-semibold">{title}</h3>
+      <h3 className="display text-xl">{title}</h3>
       <ul className="grid gap-2 text-sm">
         {items.length ? items.map((i) => (
           <li key={i.title}><span>{i.title}</span><span className="block text-xs text-muted">{i.detail}</span></li>

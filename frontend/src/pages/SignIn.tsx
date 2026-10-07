@@ -33,7 +33,7 @@ export default function SignIn() {
       footer={<>New to PRISM? <Link className="text-accent hover:underline" to="/register">Create an account</Link></>}
     >
       {import.meta.env.VITE_DATA_MODE === 'fixtures' && (
-        <p className="mb-6 rounded-panel border border-accent/40 p-4 text-sm">
+        <p className="mb-6 note text-sm">
           Offline demo with sample data. Sign in with any email and password. An email containing “parent”, “educator” or “admin” opens that view; anything else opens the student view.
         </p>
       )}

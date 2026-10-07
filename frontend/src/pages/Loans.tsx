@@ -79,7 +79,7 @@ export default function Loans() {
               <Section title="Government schemes">
                 <ul className="grid gap-4 md:grid-cols-2">
                   {d.schemes.map((s) => (
-                    <li key={s.key} className="panel grid content-start gap-2 p-5 text-sm">
+                    <li key={s.key} className="leaf grid content-start gap-2 text-sm">
                       <div className="flex items-start justify-between gap-3">
                         <h3 className="font-semibold">{s.name}</h3>
                         <ProvenanceBadge p={s.provenance} />

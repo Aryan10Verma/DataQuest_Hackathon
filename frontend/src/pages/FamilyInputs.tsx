@@ -35,7 +35,7 @@ export default function FamilyInputs() {
   return (
     <div className="mx-auto max-w-[1000px]">
       <PageHeader title="Family inputs" intro="Your budget and hopes for your child. The analysis uses them to cost every path and to find careers you can both back." />
-      <div className="mb-10 flex items-start gap-3 rounded-panel border border-accent/40 p-4 text-sm">
+      <div className="mb-10 flex items-start gap-3 note text-sm">
         <Lock size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden />
         <p>Only parents see these figures. Your child sees a budget level and yes or no answers, never rupee amounts, unless you choose to share them.</p>
       </div>
@@ -147,7 +147,7 @@ function FinanceForm({ familyId, initial }: { familyId: string; initial: FamilyF
           </Group>
         </div>
         <aside className="grid content-start gap-4 lg:sticky lg:top-[96px]">
-          <section className="panel grid gap-3 p-5" aria-labelledby="child-sees">
+          <section className="leaf grid gap-3" aria-labelledby="child-sees">
             <h2 id="child-sees" className="text-sm font-semibold">What your child sees</h2>
             <dl className="grid gap-2 text-sm">
               <Row k="Budget" v={preview.comfort} />

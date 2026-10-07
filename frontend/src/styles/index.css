@@ -66,20 +66,29 @@
 
 @layer components {
   /* A panel is defined by a hairline, never a shadow. */
+  /* A boxed surface, kept for the few things that float (dialogs, the sticky preview). */
   .panel {
-    @apply rounded-panel border border-line bg-deep/60;
+    @apply rounded-panel border border-line bg-deep/70;
+  }
+  /* An open block: one hairline on top, no box. Most grouped content uses this. */
+  .leaf {
+    border-top: 1px solid var(--line-strong);
+    padding-top: 1.25rem;
+  }
+  /* A note: a slim champagne rule on the left instead of an outlined box. */
+  .note {
+    @apply border-l border-accent py-1 pl-5;
   }
   .hairline { border-color: var(--line); }
 
   .btn {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-colors;
+    @apply inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full px-6 text-sm font-medium tracking-[0.01em] transition-colors duration-300;
   }
   .btn-primary {
-    @apply btn bg-ink text-void hover:bg-white;
-    box-shadow: 0 0 28px rgba(201, 176, 126, 0.22);
+    @apply btn bg-ink text-void hover:bg-accent;
   }
   .btn-quiet {
-    @apply btn border border-line text-ink hover:border-accent hover:bg-accent/10;
+    @apply btn border border-ink/25 text-ink hover:border-accent hover:text-accent;
   }
   .btn-text {
     @apply inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-accent underline-offset-4 hover:underline;

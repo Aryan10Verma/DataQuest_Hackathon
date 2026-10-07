@@ -28,7 +28,7 @@ export default function Questionnaire() {
         intro={`Five short sections, about ${total} minutes in all. There are no right or wrong answers, except in aptitude. Your answers are saved as you go, so you can stop and come back.`}
       />
       {allDone && (
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-panel border border-accent/40 p-5">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 note">
           <p className="max-w-measure">All five sections are done. Run the analysis to see careers ranked for you.</p>
           <button
             className="btn-primary"
