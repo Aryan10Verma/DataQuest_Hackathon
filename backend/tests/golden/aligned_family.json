@@ -1,0 +1,22 @@
+{
+  "top3": [
+    "ux-designer",
+    "data-scientist",
+    "agri-drone-engineer"
+  ],
+  "best_for_student": [
+    "UX / Product Designer",
+    "Agri-Drone & Precision Farming Engineer",
+    "Doctor (MBBS)"
+  ],
+  "classes": {
+    "ux-designer": "comfortable",
+    "data-scientist": "comfortable",
+    "agri-drone-engineer": "comfortable",
+    "doctor-mbbs": "comfortable",
+    "biomedical-engineer": "comfortable",
+    "computational-biologist": "comfortable",
+    "robotics-engineer": "comfortable"
+  },
+  "conflict_band": "aligned"
+}
