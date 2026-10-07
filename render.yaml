@@ -1,0 +1,15 @@
+# Render Blueprint: New > Blueprint in the Render dashboard, pick this repository, Apply.
+services:
+  - type: web
+    name: prism
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/system/health
+    autoDeploy: true
+    envVars:
+      # Random values made by Render on first deploy; never stored in git.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATA_ENCRYPTION_KEY
+        generateValue: true

@@ -15,6 +15,7 @@ dependencies = [
     "pyjwt>=2.8",
     "argon2-cffi>=23.1",
     "cryptography>=43",
+    "httpx>=0.27",  # live job feed and the optional language model
 ]
 
 [project.optional-dependencies]

@@ -24,7 +24,13 @@ _DEV_KEY = base64.urlsafe_b64encode(hashlib.sha256(b"prism-dev-only-field-key").
 @lru_cache
 def _fernet() -> Fernet:
     key = get_settings().data_encryption_key
-    return Fernet(key.encode() if key else _DEV_KEY)
+    if not key:
+        return Fernet(_DEV_KEY)
+    try:
+        return Fernet(key.encode())
+    except ValueError:
+        # Any long random secret works (e.g. one a hosting dashboard generated): derive a Fernet key from it.
+        return Fernet(base64.urlsafe_b64encode(hashlib.sha256(key.encode()).digest()))
 
 
 def encrypt(value: str) -> str:
