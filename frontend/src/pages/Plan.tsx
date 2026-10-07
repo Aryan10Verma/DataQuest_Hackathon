@@ -4,8 +4,8 @@ import { Award, Briefcase, CalendarPlus, FileText, GraduationCap, PenLine, Spark
 import { useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, apiBlob } from '@/api/client';
-import { useDeadlines, useOutcomes, useRoadmap, useSwot, type Lang } from '@/api/hooks';
-import type { AffordabilityClass, AnalysisRun, MilestoneType, OutcomeIn, OutcomeOut, ReminderChannel, ReminderPlan, Roadmap, SwotItem } from '@/api/types';
+import { useDeadlines, useRoadmap, useSwot, type Lang } from '@/api/hooks';
+import type { AffordabilityClass, AnalysisRun, MilestoneType, ReminderChannel, ReminderPlan, Roadmap, SwotItem } from '@/api/types';
 import { useSession } from '@/auth/session';
 import { DateStatusTag, ErrorState, FundingMeter, PageHeader, Section, Skeleton } from '@/components/ui';
 import { errorMessage } from '@/lib/errors';
@@ -52,7 +52,10 @@ function PlanView({ run, studentId }: { run: AnalysisRun; studentId: string }) {
       {roadmap.data && <Extras r={roadmap.data} />}
       <div className="grid gap-16 lg:grid-cols-2">
         <Report runId={run.run_id} />
-        <Outcome studentId={studentId} run={run} />
+        <Section title="What did you decide?">
+          <p className="text-sm text-muted">Later on, tell us what happened: the course you joined, and whether PRISM helped. It is counted only anonymously.</p>
+          <Link to="/app/outcomes" className="btn-quiet justify-self-start">Tell us what you chose</Link>
+        </Section>
       </div>
     </div>
   );
@@ -293,71 +296,6 @@ function Report({ runId }: { runId: string }) {
         </button>
       </div>
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
-    </Section>
-  );
-}
-
-const STATUS: { value: OutcomeIn['status']; label: string }[] = [
-  { value: 'enrolled', label: 'Enrolled in a course' },
-  { value: 'waiting', label: 'Waiting for results or admission' },
-  { value: 'working', label: 'Started working' },
-  { value: 'dropped', label: 'Stopped studying' },
-  { value: 'other', label: 'Something else' },
-];
-
-function Outcome({ studentId, run }: { studentId: string; run: AnalysisRun }) {
-  const qc = useQueryClient();
-  const list = useOutcomes(studentId);
-  const save = useMutation({
-    mutationFn: (body: OutcomeIn) => api<OutcomeOut>(`/api/v1/students/${studentId}/outcomes`, { method: 'POST', body }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['outcomes', studentId] }),
-  });
-  const submit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const f = new FormData(e.currentTarget);
-    const sat = Number(f.get('satisfaction'));
-    save.mutate({
-      status: f.get('status') as OutcomeIn['status'],
-      run_id: run.run_id,
-      chosen_career_id: (f.get('career') as string) || null,
-      chosen_pathway_text: (f.get('pathway') as string) || null,
-      satisfaction: sat || null,
-      notes: (f.get('notes') as string) || null,
-    });
-  };
-  const latest = list.data?.[0];
-  return (
-    <Section title="What did you decide?">
-      <p className="text-sm text-muted">Tell us later what happened. It helps PRISM learn which advice works, and it is counted only anonymously.</p>
-      {latest && (
-        <p className="text-sm">
-          Last update on {formatDate(latest.created_at)}: {STATUS.find((s) => s.value === latest.status)?.label.toLowerCase()}
-          {latest.followed_recommendation_rank ? `, following match number ${latest.followed_recommendation_rank}` : ''}.
-        </p>
-      )}
-      <form className="grid gap-4" onSubmit={submit}>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="field">Where things stand
-            <select className="input" name="status" defaultValue="waiting">{STATUS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}</select>
-          </label>
-          <label className="field">Career chosen
-            <select className="input" name="career" defaultValue="">
-              <option value="">Not decided</option>
-              {run.recommendations.map((r) => <option key={r.career.id} value={r.career.id}>{r.career.name}</option>)}
-            </select>
-          </label>
-        </div>
-        <label className="field">Course and college (optional)<input className="input" name="pathway" /></label>
-        <label className="field">How happy are you with the choice?
-          <select className="input" name="satisfaction" defaultValue="">
-            <option value="">Prefer not to say</option>
-            {[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{n} of 5</option>)}
-          </select>
-        </label>
-        {save.isError && <p role="alert" className="text-sm text-danger">{errorMessage(save.error)}</p>}
-        {save.isSuccess && <p role="status" className="text-sm text-accent">Update saved. Thank you.</p>}
-        <button className="btn-quiet justify-self-start" disabled={save.isPending}>{save.isPending ? 'Saving…' : 'Save update'}</button>
-      </form>
     </Section>
   );
 }

@@ -12,30 +12,50 @@ interface Item {
   label: string;
 }
 
-const NAV: Record<Role, Item[]> = {
+// A null entry draws a divider: the main path first, then the tools.
+const TOOLS: Item[] = [
+  { to: '/app/what-if', label: 'What if?' },
+  { to: '/app/compare', label: 'Compare' },
+  { to: '/app/scholarships', label: 'Scholarships' },
+  { to: '/app/loans', label: 'Loans' },
+  { to: '/app/exams', label: 'Exam calendar' },
+  { to: '/app/outcomes', label: 'What I chose' },
+];
+
+const NAV: Record<Role, (Item | null)[]> = {
   student: [
     { to: '/app/home', label: 'Home' },
     { to: '/app/questionnaire', label: 'Questionnaire' },
-    { to: '/app/profile', label: 'My profile' },
     { to: '/app/results', label: 'Results' },
-    { to: '/app/family', label: 'Family' },
     { to: '/app/plan', label: 'Plan' },
+    { to: '/app/family', label: 'Family' },
     { to: '/app/explore', label: 'Explore' },
+    { to: '/app/profile', label: 'My profile' },
+    null,
+    ...TOOLS,
+    null,
     { to: '/app/trust', label: 'How we know' },
   ],
   parent: [
     { to: '/app/home', label: 'Home' },
     { to: '/app/results', label: 'Results' },
-    { to: '/app/family', label: 'Family' },
-    { to: '/app/profile', label: "Child's profile" },
     { to: '/app/plan', label: 'Plan' },
+    { to: '/app/family', label: 'Family' },
     { to: '/app/explore', label: 'Explore' },
+    { to: '/app/profile', label: "Child's profile" },
+    null,
+    ...TOOLS,
+    null,
     { to: '/app/trust', label: 'How we know' },
   ],
   educator: [
     { to: '/app/counsellor', label: 'Students' },
     { to: '/app/explore', label: 'Explore' },
+    null,
+    { to: '/app/scholarships', label: 'Scholarships' },
     { to: '/app/loans', label: 'Loans' },
+    { to: '/app/exams', label: 'Exam calendar' },
+    null,
     { to: '/app/trust', label: 'How we know' },
   ],
   admin: [
@@ -62,7 +82,7 @@ export function Logo() {
   );
 }
 
-function Rail({ items }: { items: Item[] }) {
+function Rail({ items }: { items: (Item | null)[] }) {
   const loc = useLocation();
   const listRef = useRef<HTMLUListElement>(null);
   const [marker, setMarker] = useState<{ top: number; height: number } | null>(null);
@@ -71,7 +91,7 @@ function Rail({ items }: { items: Item[] }) {
     setMarker(active ? { top: active.offsetTop, height: active.offsetHeight } : null);
   }, [loc.pathname, items]);
   return (
-    <nav aria-label="Main" className="sticky top-[72px] hidden h-[calc(100vh-72px)] w-[var(--rail)] shrink-0 py-10 pl-6 lg:block">
+    <nav aria-label="Main" className="sticky top-[72px] hidden h-[calc(100vh-72px)] w-[var(--rail)] shrink-0 overflow-y-auto py-10 pl-6 lg:block">
       <ul ref={listRef} className="relative grid gap-1 border-l border-line pl-4">
         {marker && (
           <span
@@ -80,7 +100,10 @@ function Rail({ items }: { items: Item[] }) {
             style={{ top: marker.top + 8, height: marker.height - 16, transitionTimingFunction: 'var(--ease)' }}
           />
         )}
-        {items.map((it) => (
+        {items.map((it, i) =>
+          it === null ? (
+            <li key={`divider-${i}`} aria-hidden className="my-3 mr-6 h-px bg-line" />
+          ) : (
           <li key={it.to}>
             <NavLink
               to={it.to}
@@ -91,15 +114,17 @@ function Rail({ items }: { items: Item[] }) {
               {it.label}
             </NavLink>
           </li>
-        ))}
+          ),
+        )}
       </ul>
     </nav>
   );
 }
 
-function BottomNav({ items }: { items: Item[] }) {
+function BottomNav({ items: all }: { items: (Item | null)[] }) {
   const [open, setOpen] = useState(false);
   const loc = useLocation();
+  const items = all.filter((i): i is Item => i !== null);
   const main = items.slice(0, 4);
   const more = items.slice(4);
   return (

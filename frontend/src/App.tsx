@@ -22,6 +22,10 @@ const Loans = lazy(() => import('@/pages/Loans'));
 const Counsellor = lazy(() => import('@/pages/Counsellor'));
 const Explore = lazy(() => import('@/pages/Explore'));
 const Admin = lazy(() => import('@/pages/Admin'));
+const Compare = lazy(() => import('@/pages/Compare'));
+const Scholarships = lazy(() => import('@/pages/Scholarships'));
+const Exams = lazy(() => import('@/pages/Exams'));
+const Outcomes = lazy(() => import('@/pages/Outcomes'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 const PublicTrust = lazy(() => import('@/pages/Trust').then((m) => ({ default: m.PublicTrust })));
 
@@ -67,6 +71,10 @@ export default function App() {
             <Route path="profile" element={<RequireAuth roles={FAMILY}><Profile /></RequireAuth>} />
             <Route path="plan" element={<RequireAuth roles={FAMILY}><Plan /></RequireAuth>} />
             <Route path="loans" element={<Loans />} />
+            <Route path="compare" element={<RequireAuth roles={FAMILY}><Compare /></RequireAuth>} />
+            <Route path="scholarships" element={<Scholarships />} />
+            <Route path="exams" element={<Exams />} />
+            <Route path="outcomes" element={<RequireAuth roles={FAMILY}><Outcomes /></RequireAuth>} />
             <Route path="explore" element={<Explore />} />
             <Route path="trust" element={<Trust />} />
             <Route path="counsellor" element={<RequireAuth roles={['educator']}><Counsellor /></RequireAuth>} />

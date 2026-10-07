@@ -159,3 +159,9 @@ export const useAdminAnalytics = () =>
   useQuery({ queryKey: ['admin-analytics'], queryFn: () => api<T.AdminAnalytics>('/api/v1/admin/analytics') });
 export const useOutcomeSummary = () =>
   useQuery({ queryKey: ['outcome-summary'], queryFn: () => api<T.OutcomeSummary>('/api/v1/admin/outcomes/summary') });
+
+/* ---------- money help and dates ---------- */
+export const useScholarships = (q: { eligible_only?: boolean; career_id?: string } = {}) =>
+  useQuery({ queryKey: ['scholarships', q], queryFn: () => api<T.ScholarshipMatch[]>('/api/v1/scholarships', { query: q }) });
+export const useExams = (q: { upcoming_only?: boolean; career_id?: string } = {}) =>
+  useQuery({ queryKey: ['exams', q], queryFn: () => api<T.Exam[]>('/api/v1/exams', { query: q }) });
