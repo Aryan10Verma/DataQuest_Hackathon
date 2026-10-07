@@ -2,7 +2,11 @@
 import sys
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
+# Usage: cut_views.py SHEET OUT_DIR [SCALE]
+# SCALE is how much larger SHEET is than the original 988x394 image (4 for the Real-ESRGAN 4x upscale).
+# A scaled sheet is cut at full resolution; the original is enlarged 4x with Lanczos instead.
 src, out = sys.argv[1], sys.argv[2]
+k = int(sys.argv[3]) if len(sys.argv) > 3 else 1
 sheet = Image.open(src).convert("RGB")
 BG = (4, 12, 22)
 
@@ -16,8 +20,8 @@ PAINT = [
 mask = Image.new("L", sheet.size, 0)
 d = ImageDraw.Draw(mask)
 for b in PAINT:
-    d.rectangle(b, fill=255)
-mask = mask.filter(ImageFilter.GaussianBlur(2))
+    d.rectangle(tuple(v * k for v in b), fill=255)
+mask = mask.filter(ImageFilter.GaussianBlur(2 * k))
 sheet = Image.composite(Image.new("RGB", sheet.size, BG), sheet, mask)
 
 def unpremultiply(channel, alpha):
@@ -34,8 +38,10 @@ VIEWS = {  # name: (x, y, w, h)
     "top": (814, 116, 150, 150),
 }
 for name, (x, y, w, h) in VIEWS.items():
-    im = sheet.crop((x, y, x + w, y + h)).resize((w * 4, h * 4), Image.LANCZOS)
-    im = im.filter(ImageFilter.UnsharpMask(radius=3, percent=60, threshold=2))
+    im = sheet.crop((x * k, y * k, (x + w) * k, (y + h) * k))
+    if k == 1:
+        im = im.resize((w * 4, h * 4), Image.LANCZOS)
+        im = im.filter(ImageFilter.UnsharpMask(radius=3, percent=60, threshold=2))
     # Crush the navy panel background to pure black so the page shows through.
     im = im.point(lambda v: max(0, v - 26) * 255 // 229)
     # Turn brightness into transparency so the body can sit over page content.
