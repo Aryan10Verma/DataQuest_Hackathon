@@ -13,7 +13,7 @@ dependencies = [
     "alembic>=1.13",
     "psycopg[binary]>=3.1",
     "pyjwt>=2.8",
-    "argon2-cffi>=23.1",
+    "argon2-cffi>=25.1.0",
     "cryptography>=43",
     "httpx>=0.27",  # live job feed and the optional language model
 ]
