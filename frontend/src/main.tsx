@@ -2,11 +2,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import { ApiError } from '@/api/client';
 import { SessionProvider } from '@/auth/session';
 import App from './App';
 import './styles/index.css';
+
+// VITE_ROUTER=memory keeps navigation inside the page, for hosts that own the URL (an embedded demo).
+const Router = import.meta.env.VITE_ROUTER === 'memory' ? MemoryRouter : BrowserRouter;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,11 +26,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Tooltip.Provider>
-        <BrowserRouter>
+        <Router>
           <SessionProvider>
             <App />
           </SessionProvider>
-        </BrowserRouter>
+        </Router>
       </Tooltip.Provider>
     </QueryClientProvider>
   </StrictMode>,

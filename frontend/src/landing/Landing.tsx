@@ -262,7 +262,7 @@ export default function Landing() {
           <div className="l-bodies" aria-hidden>
             <div className="l-bodies-inner">
               {VIEWS.map((v) => (
-                <img key={v.body} className={`l-body is-${v.body}`} src={`/scan/${v.body}.webp`} alt="" />
+                <img key={v.body} className={`l-body is-${v.body}`} src={`${import.meta.env.BASE_URL}scan/${v.body}.webp`} alt="" />
               ))}
               <span className="l-scanline" />
             </div>

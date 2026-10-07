@@ -45,6 +45,7 @@ npm run dev              # needs the API running on :8000
 | `VITE_AUTH_MODE` | `live` (default) or `mock` | `mock` skips sign-in and sends `X-Mock-Role` (developers only) |
 | `VITE_DATA_MODE` | `api` (default) or `fixtures` | `fixtures` answers from `src/fixtures` with no server at all. It is the safety net for a failed network on stage. Sign in with any password; the role comes from the email (`…parent@…`, `…educator@…`, `…admin@…`). |
 | `VITE_DEV_TOOLS` | unset (default) or `true` | Adds the developer panel and presenter mode. Unset, none of that code is in the build. |
+| `VITE_ROUTER` | `browser` (default) or `memory` | `memory` keeps navigation inside the page, for hosts that control the address bar (an embedded demo) |
 
 Mock auth and fixture data are compiled in only when their variables are set, so a normal build contains no demo or mock code:
 
@@ -60,6 +61,7 @@ npm run build && grep -rli "persona\|X-Mock-Role\|presenter" dist/   # finds not
   2. Add the site's URL to the backend's `CORS_ORIGINS`.
   3. Rewrite all paths to `/index.html` so client-side routes work.
 - **Offline copy:** `VITE_DATA_MODE=fixtures npm run build` gives a build that needs no server.
+- **Embedded demo** (as published to claude.ai): `VITE_DATA_MODE=fixtures VITE_ROUTER=memory npx vite build --base ./` gives a build with relative paths and no URL routing.
 
 ## Layout
 

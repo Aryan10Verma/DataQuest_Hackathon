@@ -22,7 +22,7 @@ export function AuthLayout({ title, intro, children, footer }: { title: string; 
         <div className="absolute inset-0 grid place-items-center">
           <Ring size={520} stroke={1.6} className="opacity-90" />
         </div>
-        <img src="/scan/front.webp" alt="" className="absolute left-1/2 top-1/2 h-[78vh] -translate-x-1/2 -translate-y-1/2 opacity-80"
+        <img src={`${import.meta.env.BASE_URL}scan/front.webp`} alt="" className="absolute left-1/2 top-1/2 h-[78vh] -translate-x-1/2 -translate-y-1/2 opacity-80"
           style={{ maskImage: 'linear-gradient(to bottom, transparent, #000 6%, #000 88%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, #000 6%, #000 88%, transparent)' }} />
       </div>
     </div>

@@ -32,14 +32,19 @@ export default function SignIn() {
       intro="Pick up where you left off: your results, your family's plan and the next deadline."
       footer={<>New to PRISM? <Link className="text-scan hover:underline" to="/register">Create an account</Link></>}
     >
+      {import.meta.env.VITE_DATA_MODE === 'fixtures' && (
+        <p className="mb-6 rounded-panel border border-scan/40 p-4 text-sm">
+          Offline demo with sample data. Sign in with any email and password. An email containing “parent”, “educator” or “admin” opens that view; anything else opens the student view.
+        </p>
+      )}
       <form className="grid gap-5" onSubmit={submit} noValidate>
         <label className="field">
           Email
-          <input className="input" name="email" type="email" autoComplete="email" required autoFocus defaultValue={state?.email} key={state?.email} />
+          <input className="input" name="email" type="email" autoComplete="email" required autoFocus defaultValue={state?.email ?? (import.meta.env.VITE_DATA_MODE === 'fixtures' ? 'demo.parent@prism.example' : undefined)} key={state?.email} />
         </label>
         <label className="field">
           Password
-          <input className="input" name="password" type="password" autoComplete="current-password" required defaultValue={state?.password} key={state?.password} />
+          <input className="input" name="password" type="password" autoComplete="current-password" required defaultValue={state?.password ?? (import.meta.env.VITE_DATA_MODE === 'fixtures' ? 'demo' : undefined)} key={state?.password} />
         </label>
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         <button className="btn-primary mt-1 justify-self-start" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
