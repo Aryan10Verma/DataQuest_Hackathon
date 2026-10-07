@@ -1,5 +1,5 @@
 # prismav.xo.je -> the full PRISM on Render. InfinityFree can't run Python, so it only forwards visitors.
-# 1. Replace YOUR-APP.onrender.com (two places in this folder) with the address Render shows you.
+# 1. Replace prismav.onrender.com (two places in this folder) with the address Render shows you.
 # 2. Upload this file and index.html to htdocs/ in the InfinityFree File Manager.
 RewriteEngine On
-RewriteRule ^(.*)$ https://YOUR-APP.onrender.com/$1 [R=302,L]
+RewriteRule ^(.*)$ https://prismav.onrender.com/$1 [R=302,L]
