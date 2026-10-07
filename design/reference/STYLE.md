@@ -23,7 +23,7 @@ Reference images are in `style/`:
 
 ## Applied to this project
 
-The body scan site in `web/` already follows most of this: near-black, white type, a cyan glow ring as the one accent, the body as the lit subject, and the headline overlapping it. Next steps to get closer to these references:
-- Let the hero headline sit **behind** the body (as in NUORBIT and METAVERSE), not only beside it.
-- Cut the warm orange to the one place it means something (the active body system), so cyan stays the only accent.
-- Add a slim bottom stats bar in the NUORBIT style, for example *5 views · 6 systems · live vitals*.
+The body scan site in `web/` follows these rules:
+- Near-black background, white type, and a cyan glow ring as the one accent. Orange appears only on the active body systems.
+- The hero headline, *Full body scan*, is set huge behind the body (as in NUORBIT and METAVERSE). On scroll it spreads apart and dissolves.
+- A slim stats bar runs along the bottom (5 views, 6 body systems, live heart rate), with the body systems on the right.

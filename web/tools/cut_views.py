@@ -1,6 +1,6 @@
 """Cut the five body views out of the scan sheet, painting over the baked-in UI insets."""
 import sys
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw, ImageFilter
 
 src, out = sys.argv[1], sys.argv[2]
 sheet = Image.open(src).convert("RGB")
@@ -20,6 +20,12 @@ for b in PAINT:
 mask = mask.filter(ImageFilter.GaussianBlur(2))
 sheet = Image.composite(Image.new("RGB", sheet.size, BG), sheet, mask)
 
+def unpremultiply(channel, alpha):
+    """Scale a colour channel up by 1/alpha so semi-transparent pixels keep their brightness."""
+    c, a = channel.tobytes(), alpha.tobytes()
+    return Image.frombytes("L", channel.size, bytes(min(255, x * 255 // y) if y else 0 for x, y in zip(c, a)))
+
+
 VIEWS = {  # name: (x, y, w, h)
     "front": (36, 34, 160, 320),
     "back": (245, 34, 166, 320),
@@ -32,5 +38,9 @@ for name, (x, y, w, h) in VIEWS.items():
     im = im.filter(ImageFilter.UnsharpMask(radius=3, percent=60, threshold=2))
     # Crush the navy panel background to pure black so the page shows through.
     im = im.point(lambda v: max(0, v - 26) * 255 // 229)
-    im.save(f"{out}/{name}.webp", quality=92, method=6)
+    # Turn brightness into transparency so the body can sit over page content.
+    r, g, b = im.split()
+    alpha = ImageChops.lighter(ImageChops.lighter(r, g), b).point(lambda v: min(255, int(v * 2.2)))
+    rgba = Image.merge("RGBA", (*(unpremultiply(c, alpha) for c in (r, g, b)), alpha))
+    rgba.save(f"{out}/{name}.webp", quality=92, method=6)
     print(name, im.size)

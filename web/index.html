@@ -32,6 +32,12 @@
           <circle cx="100" cy="100" r="88" />
         </svg>
 
+        <h1 class="hero-title split">Full body scan</h1>
+        <div class="hero-sub">
+          <p>See your body from every side, across six systems, with live vitals beside every view.</p>
+          <a class="hero-cta" href="#views" data-goto="0">Start the scan</a>
+        </div>
+
         <div class="bodies">
           <div class="bodies-inner">
             <img class="body is-front" src="assets/front.webp" alt="Holographic full body scan, front view, showing heart, lungs and digestive organs" data-view="0">
@@ -43,10 +49,6 @@
           </div>
         </div>
 
-        <div class="hero-copy">
-          <h1 class="split">Your body,<br>seen from<br>every side</h1>
-        </div>
-        <p class="hero-note">A full body scan across six systems, with live vitals beside every view. Scroll to walk around it.</p>
 
         <article class="view-copy" data-view="0">
           <h2 class="split">Front view</h2>
@@ -92,25 +94,24 @@
           <button type="button" data-goto="4">Above</button>
         </nav>
 
-        <ul class="systems" aria-label="Body systems">
-          <li data-system="neural">Neural</li>
-          <li data-system="cardio">Cardio</li>
-          <li data-system="respiratory">Respiratory</li>
-          <li data-system="digestive">Digestive</li>
-          <li data-system="skeletal">Skeletal</li>
-          <li data-system="muscular">Muscular</li>
-        </ul>
-
-        <aside class="vitals" aria-label="Vitals">
-          <svg class="ecg" viewBox="0 0 160 40" aria-hidden="true">
-            <path d="M0 22 H40 L46 22 L50 12 L54 30 L58 4 L63 36 L67 22 H100 L104 18 L108 22 H160" />
-          </svg>
-          <dl>
-            <div><dt>Heart rate</dt><dd><span class="hr">72</span> bpm</dd></div>
-            <div><dt>SpO₂</dt><dd>98%</dd></div>
-            <div><dt>Temp</dt><dd>36.6 °C</dd></div>
-          </dl>
-        </aside>
+        <div class="statbar" aria-label="Scan summary">
+          <div class="stat"><strong>5</strong><span>Views</span></div>
+          <div class="stat"><strong>6</strong><span>Body systems</span></div>
+          <div class="stat stat-hr">
+            <svg class="ecg" viewBox="0 0 160 40" aria-hidden="true">
+              <path d="M0 22 H40 L46 22 L50 12 L54 30 L58 4 L63 36 L67 22 H100 L104 18 L108 22 H160" />
+            </svg>
+            <strong><span class="hr">72</span> bpm</strong><span>Heart rate, live</span>
+          </div>
+          <ul class="systems" aria-label="Body systems in view">
+            <li data-system="neural">Neural</li>
+            <li data-system="cardio">Cardio</li>
+            <li data-system="respiratory">Respiratory</li>
+            <li data-system="digestive">Digestive</li>
+            <li data-system="skeletal">Skeletal</li>
+            <li data-system="muscular">Muscular</li>
+          </ul>
+        </div>
       </div>
     </section>
 
