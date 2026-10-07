@@ -127,9 +127,9 @@ function Control({ label, value, min, max, step, format, onChange, color }: {
       <Slider.Root className="relative flex h-6 touch-none select-none items-center" value={[value]} min={min} max={max} step={step}
         onValueChange={([v]) => onChange(v)} aria-label={label}>
         <Slider.Track className="relative h-1 grow rounded-full bg-white/[0.08]">
-          <Slider.Range className="absolute h-full rounded-full" style={{ background: color ?? 'var(--scan)' }} />
+          <Slider.Range className="absolute h-full rounded-full" style={{ background: color ?? 'var(--accent)' }} />
         </Slider.Track>
-        <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-void bg-ink shadow-[0_0_0_1px_var(--line)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-scan" />
+        <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-void bg-ink shadow-[0_0_0_1px_var(--line)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" />
       </Slider.Root>
     </div>
   );
@@ -149,7 +149,7 @@ function Outcome({ run, result, error }: { run: AnalysisRun; result?: Comparison
     <section aria-live="polite" className="grid content-start gap-6">
       {error ? <ErrorState error={error} /> : null}
       {result ? (
-        <div className="grid gap-4 border-l border-scan/60 pl-5">
+        <div className="grid gap-4 border-l border-accent/60 pl-5">
           <p className="flex items-baseline gap-3">
             <span className="figure text-3xl">{result.rank_correlation.toFixed(2)}</span>
             <span className="text-sm text-muted">ranking similarity (1 means nothing moved)</span>
@@ -201,11 +201,11 @@ function Outcome({ run, result, error }: { run: AnalysisRun; result?: Comparison
 }
 
 function Move({ d }: { d: CareerDelta }) {
-  if (d.base_rank === null || d.new_rank === null) return <span className="text-xs text-scan">New in the list</span>;
+  if (d.base_rank === null || d.new_rank === null) return <span className="text-xs text-accent">New in the list</span>;
   const diff = d.base_rank - d.new_rank;
   if (diff === 0) return <span className="flex items-center gap-1 text-xs text-muted"><Minus size={12} aria-hidden />Same place</span>;
   return (
-    <span className={`flex items-center gap-1 text-xs ${diff > 0 ? 'text-scan' : 'text-muted'}`}>
+    <span className={`flex items-center gap-1 text-xs ${diff > 0 ? 'text-accent' : 'text-muted'}`}>
       {diff > 0 ? <ArrowUp size={12} aria-hidden /> : <ArrowDown size={12} aria-hidden />}
       {diff > 0 ? `Up ${diff}` : `Down ${-diff}`} from {d.base_rank}
     </span>

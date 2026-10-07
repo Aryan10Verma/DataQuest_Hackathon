@@ -66,7 +66,7 @@ function Timeline({ r }: { r: Roadmap }) {
           {r.phases.map((p) => (
             <li key={p.year_index} className="grid content-start gap-4">
               <div className="relative border-t border-line pt-4">
-                <span className="absolute -top-[5px] left-0 h-2.5 w-2.5 rounded-full bg-scan shadow-[0_0_10px_var(--glow)]" aria-hidden />
+                <span className="absolute -top-[5px] left-0 h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_10px_var(--glow)]" aria-hidden />
                 <p className="figure text-2xl">Year {p.year_index}</p>
                 <p className="pr-4 text-xs text-muted">{p.label.replace(/^Year \d+ - /, '')}</p>
                 <p className="text-xs text-muted/70">{formatDate(p.start, { month: 'short', year: 'numeric' })} to {formatDate(p.end, { month: 'short', year: 'numeric' })}</p>
@@ -76,7 +76,7 @@ function Timeline({ r }: { r: Roadmap }) {
                   const Icon = ICON[m.type] ?? Sparkles;
                   return (
                     <li key={i} className="grid grid-cols-[1.25rem_minmax(0,1fr)] gap-2 text-sm">
-                      <Icon size={15} className="mt-0.5 text-scan" aria-label={m.type} />
+                      <Icon size={15} className="mt-0.5 text-accent" aria-label={m.type} />
                       <span className="grid gap-0.5">
                         <span>{m.title}</span>
                         {m.detail && <span className="text-xs text-muted">{m.detail}</span>}
@@ -118,7 +118,7 @@ function Extras({ r }: { r: Roadmap }) {
             <li key={s.dimension_or_skill} className="grid gap-0.5">
               <span>{s.action}</span>
               <span className="text-xs text-muted">
-                {s.weeks} weeks{s.resource_url ? <>, <a className="text-scan hover:underline" href={s.resource_url} target="_blank" rel="noreferrer">{s.resource_name}</a></> : ''}
+                {s.weeks} weeks{s.resource_url ? <>, <a className="text-accent hover:underline" href={s.resource_url} target="_blank" rel="noreferrer">{s.resource_name}</a></> : ''}
               </span>
             </li>
           ))}
@@ -164,10 +164,10 @@ function Deadlines({ studentId }: { studentId: string }) {
           <ul>
             {d.data!.items.slice(0, 10).map((i) => (
               <li key={`${i.ref_id}-${i.kind}-${i.due}`} className="grid grid-cols-[3.75rem_minmax(0,1fr)] gap-4 border-b border-line py-3">
-                <span className={`figure text-2xl ${i.days_left <= 30 ? 'text-scan' : ''}`}>{i.days_left}<span className="block font-sans text-[11px] leading-none text-muted">days</span></span>
+                <span className={`figure text-2xl ${i.days_left <= 30 ? 'text-accent' : ''}`}>{i.days_left}<span className="block font-sans text-[11px] leading-none text-muted">days</span></span>
                 <span className="grid gap-1">
                   <span className="text-sm">
-                    {i.official_url ? <a href={i.official_url} target="_blank" rel="noreferrer" className="hover:text-scan">{i.title}</a> : i.title}
+                    {i.official_url ? <a href={i.official_url} target="_blank" rel="noreferrer" className="hover:text-accent">{i.title}</a> : i.title}
                   </span>
                   <span className="flex flex-wrap items-center gap-2 text-xs text-muted">
                     {formatDate(i.due)} <DateStatusTag status={i.date_status} />
@@ -355,7 +355,7 @@ function Outcome({ studentId, run }: { studentId: string; run: AnalysisRun }) {
           </select>
         </label>
         {save.isError && <p role="alert" className="text-sm text-danger">{errorMessage(save.error)}</p>}
-        {save.isSuccess && <p role="status" className="text-sm text-scan">Update saved. Thank you.</p>}
+        {save.isSuccess && <p role="status" className="text-sm text-accent">Update saved. Thank you.</p>}
         <button className="btn-quiet justify-self-start" disabled={save.isPending}>{save.isPending ? 'Saving…' : 'Save update'}</button>
       </form>
     </Section>

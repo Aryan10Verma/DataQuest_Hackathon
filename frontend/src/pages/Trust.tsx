@@ -83,7 +83,7 @@ function DataStatusBlock() {
                   <td className="py-3 pr-4">{FRESHNESS[x.freshness] ?? x.freshness}</td>
                   <td className="py-3 pr-4">
                     <span className="flex items-center gap-2">
-                      <span className="h-1 w-14 rounded-full bg-white/[0.08]"><span className="block h-full rounded-full bg-scan" style={{ width: pct(x.checked_share) }} /></span>
+                      <span className="h-1 w-14 rounded-full bg-white/[0.08]"><span className="block h-full rounded-full bg-accent" style={{ width: pct(x.checked_share) }} /></span>
                       {pct(x.checked_share)}
                     </span>
                   </td>
@@ -100,7 +100,7 @@ function DataStatusBlock() {
           {d.feeds.map((f) => (
             <li key={f.key} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-3 text-sm">
               <span>{f.name}</span>
-              <span className={f.enabled ? 'text-scan' : 'text-muted'}>{f.enabled ? 'On' : 'Off'}. {f.detail}</span>
+              <span className={f.enabled ? 'text-accent' : 'text-muted'}>{f.enabled ? 'On' : 'Off'}. {f.detail}</span>
             </li>
           ))}
         </ul>
@@ -195,12 +195,12 @@ function FairnessBlock() {
     <Section title="Fairness checks" aside={<span className="text-xs text-muted">Run on {formatDate(d.generated_at)}</span>}>
       <p className="display text-xl">
         Protected attributes used:{' '}
-        <span className="text-scan">{d.protected_attributes_used.length ? d.protected_attributes_used.join(', ') : 'none'}</span>
+        <span className="text-accent">{d.protected_attributes_used.length ? d.protected_attributes_used.join(', ') : 'none'}</span>
       </p>
       <ul>
         {d.probes.map((p) => (
           <li key={p.name} className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-3 border-b border-line py-3 text-sm">
-            {p.passed ? <Check size={16} className="mt-0.5 text-scan" aria-label="Passed" /> : <X size={16} className="mt-0.5 text-danger" aria-label="Failed" />}
+            {p.passed ? <Check size={16} className="mt-0.5 text-accent" aria-label="Passed" /> : <X size={16} className="mt-0.5 text-danger" aria-label="Failed" />}
             <span>
               {p.description}
               <span className="block text-xs text-muted">{p.detail}</span>

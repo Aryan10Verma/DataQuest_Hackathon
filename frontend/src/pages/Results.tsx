@@ -58,7 +58,7 @@ function ResultsView({ run, studentId, studentName }: { run: AnalysisRun; studen
   return (
     <div className="mx-auto grid max-w-[1240px] grid-cols-1 gap-10">
       {run.reproducibility.is_outdated && (
-        <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-panel border border-scan/40 px-4 py-3 text-sm">
+        <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-panel border border-accent/40 px-4 py-3 text-sm">
           <span>Newer data is available ({run.reproducibility.latest_dataset_version}). Run the analysis again to use it.</span>
           {studentId && (
             <button className="btn-text min-h-0" onClick={() => rerun.mutate(studentId)} disabled={rerun.isPending}>
@@ -144,7 +144,7 @@ function Summary({ runId, lang }: { runId: string; lang: 'en' | 'ta' | 'hi' }) {
   if (n.isError) return <ErrorState error={n.error} retry={() => n.refetch()} />;
   if (!n.data) return null;
   return (
-    <section aria-labelledby="summary" lang={n.data.language} className="grid gap-3 border-l border-scan/60 pl-5">
+    <section aria-labelledby="summary" lang={n.data.language} className="grid gap-3 border-l border-accent/60 pl-5">
       <div className="flex flex-wrap items-center gap-3">
         <h2 id="summary" className="text-lg font-semibold">{n.data.headline}</h2>
         {n.data.source === 'model' && (
@@ -178,7 +178,7 @@ function Ranked({ run, isParent, onOpen }: { run: AnalysisRun; isParent: boolean
             <Tabs.Trigger key={b.key} value={b.key}
               className="relative min-h-[44px] shrink-0 px-3 text-sm text-muted transition-colors data-[state=active]:text-ink hover:text-ink">
               {b.label(isParent)}
-              {tab === b.key && <motion.span layoutId="tab-marker" className="absolute inset-x-3 -bottom-px h-px bg-scan shadow-[0_0_8px_var(--glow)]" />}
+              {tab === b.key && <motion.span layoutId="tab-marker" className="absolute inset-x-3 -bottom-px h-px bg-accent shadow-[0_0_8px_var(--glow)]" />}
             </Tabs.Trigger>
           ))}
         </Tabs.List>

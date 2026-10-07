@@ -4,31 +4,33 @@
 
 :root {
   color-scheme: dark;
-  /* Channels let Tailwind apply opacity (bg-scan/10); the hex forms are for plain CSS. */
-  --void-rgb: 2 5 11;
-  --deep-rgb: 8 16 29;
-  --ink-rgb: 232 240 255;
-  --muted-rgb: 133 146 171;
-  --scan-rgb: 143 208 255;
-  --danger-rgb: 255 138 138;
-  --void: #02050b;
-  --deep: #08101d;
-  --line: rgba(143, 208, 255, 0.14);
-  --line-strong: rgba(143, 208, 255, 0.3);
-  --ink: #e8f0ff;
-  --muted: #8592ab;
-  --scan: #8fd0ff;
-  --glow: rgba(110, 180, 255, 0.55);
-  --danger: #ff8a8a;
+  /* Champagne noir (design/PLAN.md). Channels let Tailwind apply opacity (bg-accent/10). */
+  --void-rgb: 18 17 16;      /* Graphite: the page */
+  --deep-rgb: 26 25 23;      /* Umber: raised surfaces */
+  --ink-rgb: 237 230 216;    /* Ivory: text */
+  --muted-rgb: 154 147 134;  /* Stone: secondary text */
+  --accent-rgb: 201 176 126; /* Champagne: the one accent */
+  --danger-rgb: 227 139 122;
+  --void: #121110;
+  --deep: #1a1917;
+  --ink: #ede6d8;
+  --muted: #9a9386;
+  --accent: #c9b07e;
+  --danger: #e38b7a;
+  --line: rgba(237, 230, 216, 0.12);
+  --line-strong: rgba(237, 230, 216, 0.26);
+  --glow: rgba(201, 176, 126, 0.45);
 
-  /* Score parts: the only colours besides cyan, and only inside charts. */
-  --part-fit: #9488f2;
-  --part-market: #5e9cf2;
-  --part-affordability: #3fc1ae;
-  --part-roi: #86c35f;
-  --part-family: #e8b54a;
-  --part-disruption: #ef6f68;
+  /* Score parts: the only other colours, and only inside charts. Muted to sit in the palette. */
+  --part-fit: #8e86c8;
+  --part-market: #6f93c4;
+  --part-affordability: #5fa99b;
+  --part-roi: #8fae6e;
+  --part-family: #d39a5b;
+  --part-disruption: #c46a6a;
 
+  --serif: 'Cormorant Garamond', 'Cormorant', Garamond, 'Noto Serif Tamil', 'Noto Serif Devanagari', Georgia, serif;
+  --sans: 'Hanken Grotesk', 'Noto Sans Tamil', 'Noto Sans Devanagari', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --rail: 168px;
   --bar: 72px;
@@ -44,7 +46,7 @@
     min-height: 100vh;
     background: var(--void);
     color: var(--ink);
-    font-family: Manrope, 'Noto Sans Tamil', 'Noto Sans Devanagari', system-ui, sans-serif;
+    font-family: var(--sans);
     font-size: 16px;
     line-height: 1.6;
     font-variant-numeric: tabular-nums;
@@ -55,11 +57,11 @@
   p { margin: 0; }
   button { font: inherit; color: inherit; }
   :focus-visible {
-    outline: 2px solid var(--scan);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
     border-radius: 4px;
   }
-  ::selection { background: rgba(143, 208, 255, 0.3); }
+  ::selection { background: rgba(201, 176, 126, 0.32); color: var(--ink); }
 }
 
 @layer components {
@@ -74,13 +76,13 @@
   }
   .btn-primary {
     @apply btn bg-ink text-void hover:bg-white;
-    box-shadow: 0 0 28px rgba(143, 208, 255, 0.22);
+    box-shadow: 0 0 28px rgba(201, 176, 126, 0.22);
   }
   .btn-quiet {
-    @apply btn border border-line text-ink hover:border-scan hover:bg-scan/10;
+    @apply btn border border-line text-ink hover:border-accent hover:bg-accent/10;
   }
   .btn-text {
-    @apply inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-scan underline-offset-4 hover:underline;
+    @apply inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-accent underline-offset-4 hover:underline;
   }
   .btn:disabled { @apply cursor-not-allowed opacity-50; }
 
@@ -88,13 +90,14 @@
     @apply grid gap-1.5 text-sm text-muted;
   }
   .input {
-    @apply min-h-[44px] w-full rounded-lg border border-line bg-void/70 px-3.5 text-base text-ink transition-colors placeholder:text-muted/60 focus:border-scan focus:outline-none;
+    @apply min-h-[44px] w-full rounded-lg border border-line bg-void/70 px-3.5 text-base text-ink transition-colors placeholder:text-muted/60 focus:border-accent focus:outline-none;
   }
   .input[aria-invalid='true'] { border-color: var(--danger); }
 
   .label { @apply text-xs text-muted; }
-  .display { font-family: 'Bodoni Moda', Didot, 'Bodoni 72', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
-  .figure { @apply display; font-variant-numeric: lining-nums tabular-nums; }
+  /* Cormorant is light and fine: 400 for headings, 500 where it must hold up at small sizes. */
+  .display { font-family: var(--serif); font-weight: 400; letter-spacing: -0.005em; }
+  .figure { @apply display; font-weight: 500; font-variant-numeric: lining-nums tabular-nums; }
 
   .hatch {
     background-image: repeating-linear-gradient(135deg, var(--part-disruption) 0 3px, transparent 3px 6px);

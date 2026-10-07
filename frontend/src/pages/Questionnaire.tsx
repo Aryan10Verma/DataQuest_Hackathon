@@ -28,7 +28,7 @@ export default function Questionnaire() {
         intro={`Five short sections, about ${total} minutes in all. There are no right or wrong answers, except in aptitude. Your answers are saved as you go, so you can stop and come back.`}
       />
       {allDone && (
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-panel border border-scan/40 p-5">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-panel border border-accent/40 p-5">
           <p className="max-w-measure">All five sections are done. Run the analysis to see careers ranked for you.</p>
           <button
             className="btn-primary"
@@ -48,7 +48,7 @@ export default function Questionnaire() {
           const status = finished ? 'Done' : answered ? `${answered} of ${ins.question_count} answered` : 'Not started';
           return (
             <li key={ins.code} className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 gap-y-3 border-b border-line py-6 sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-center">
-              <span className={`figure grid h-9 w-9 place-items-center rounded-full border text-base ${finished ? 'border-scan text-scan' : 'border-line text-muted'}`}>
+              <span className={`figure grid h-9 w-9 place-items-center rounded-full border text-base ${finished ? 'border-accent text-accent' : 'border-line text-muted'}`}>
                 {finished ? <Check size={16} aria-label="Done" /> : i + 1}
               </span>
               <div className="grid gap-1">

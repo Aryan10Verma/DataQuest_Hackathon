@@ -55,7 +55,7 @@ export function Logo() {
   return (
     <Link to="/" className="flex items-center gap-2.5" aria-label="PRISM home">
       <svg viewBox="0 0 32 32" className="h-6 w-6" aria-hidden>
-        <circle cx="16" cy="16" r="11" fill="none" stroke="#8FD0FF" strokeWidth="2" style={{ filter: 'drop-shadow(0 0 4px rgba(110,180,255,.7))' }} />
+        <circle cx="16" cy="16" r="11" fill="none" stroke="#C9B07E" strokeWidth="2" style={{ filter: 'drop-shadow(0 0 4px rgba(201, 176, 126, .7))' }} />
       </svg>
       <span className="display text-lg tracking-[0.18em]">PRISM</span>
     </Link>
@@ -76,7 +76,7 @@ function Rail({ items }: { items: Item[] }) {
         {marker && (
           <span
             aria-hidden
-            className="absolute -left-px w-px bg-scan shadow-[0_0_8px_var(--glow)] transition-[top,height] duration-500"
+            className="absolute -left-px w-px bg-accent shadow-[0_0_8px_var(--glow)] transition-[top,height] duration-500"
             style={{ top: marker.top + 8, height: marker.height - 16, transitionTimingFunction: 'var(--ease)' }}
           />
         )}
@@ -115,7 +115,7 @@ function BottomNav({ items }: { items: Item[] }) {
             >
               {({ isActive }) => (
                 <>
-                  {isActive && <span aria-hidden className="absolute top-0 h-px w-8 bg-scan shadow-[0_0_8px_var(--glow)]" />}
+                  {isActive && <span aria-hidden className="absolute top-0 h-px w-8 bg-accent shadow-[0_0_8px_var(--glow)]" />}
                   {it.label}
                 </>
               )}
@@ -169,7 +169,7 @@ function TopBar() {
           id="lang"
           value={lang}
           onChange={(e) => setLang(e.target.value as Lang)}
-          className="min-h-[40px] rounded-full border border-line bg-void px-3 text-sm text-ink focus:border-scan focus:outline-none"
+          className="min-h-[40px] rounded-full border border-line bg-void px-3 text-sm text-ink focus:border-accent focus:outline-none"
           title="Language for summaries and reports"
         >
           {LANGS.map((l) => (
@@ -178,8 +178,8 @@ function TopBar() {
         </select>
         {user && (
           <Menu.Root>
-            <Menu.Trigger className="flex min-h-[40px] items-center gap-2 rounded-full border border-line px-3 text-sm hover:border-scan">
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-scan/15 text-xs text-scan" aria-hidden>
+            <Menu.Trigger className="flex min-h-[40px] items-center gap-2 rounded-full border border-line px-3 text-sm hover:border-accent">
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-accent/15 text-xs text-accent" aria-hidden>
                 {user.full_name.charAt(0)}
               </span>
               <span className="hidden max-w-[140px] truncate sm:inline">{user.full_name}</span>
@@ -194,7 +194,7 @@ function TopBar() {
                 <Menu.Separator className="my-1 h-px bg-line" />
                 <Menu.Item
                   onSelect={signOut}
-                  className="flex min-h-[40px] cursor-pointer items-center rounded-lg px-3 outline-none data-[highlighted]:bg-scan/10"
+                  className="flex min-h-[40px] cursor-pointer items-center rounded-lg px-3 outline-none data-[highlighted]:bg-accent/10"
                 >
                   Sign out
                 </Menu.Item>

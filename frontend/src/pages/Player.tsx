@@ -119,7 +119,7 @@ function Run({ userId, code, title, limitSec, questions }: { userId: string; cod
   return (
     <div className="flex min-h-screen flex-col">
       <div className="h-px bg-white/[0.06]" role="progressbar" aria-label="Progress" aria-valuenow={Math.round(progress * 100)} aria-valuemin={0} aria-valuemax={100}>
-        <motion.div className="h-full bg-scan shadow-[0_0_10px_var(--glow)]" animate={{ width: `${progress * 100}%` }} transition={{ duration: 0.4 }} />
+        <motion.div className="h-full bg-accent shadow-[0_0_10px_var(--glow)]" animate={{ width: `${progress * 100}%` }} transition={{ duration: 0.4 }} />
       </div>
       <header className="flex items-center gap-4 px-4 py-4 sm:px-8">
         <span className="text-sm text-muted">{title}</span>
@@ -195,8 +195,8 @@ function Options({ q, value, onChoose }: { q: Q; value?: string; onChoose: (v: s
         const on = value === o.key;
         return (
           <button key={o.key} role="radio" aria-checked={on} onClick={() => onChoose(o.key)}
-            className={`flex min-h-[56px] items-center gap-3 rounded-panel border px-4 text-left transition-colors ${on ? 'border-scan bg-scan/10' : 'border-line hover:border-scan/60'} ${likert ? 'sm:min-h-[96px] sm:flex-col sm:justify-center sm:text-center' : ''}`}>
-            <span className={`figure grid h-7 w-7 shrink-0 place-items-center rounded-full border text-sm ${on ? 'border-scan text-scan' : 'border-line text-muted'}`} aria-hidden>
+            className={`flex min-h-[56px] items-center gap-3 rounded-panel border px-4 text-left transition-colors ${on ? 'border-accent bg-accent/10' : 'border-line hover:border-accent/60'} ${likert ? 'sm:min-h-[96px] sm:flex-col sm:justify-center sm:text-center' : ''}`}>
+            <span className={`figure grid h-7 w-7 shrink-0 place-items-center rounded-full border text-sm ${on ? 'border-accent text-accent' : 'border-line text-muted'}`} aria-hidden>
               {o.key.toUpperCase()}
             </span>
             <span className="text-sm">{o.label}</span>

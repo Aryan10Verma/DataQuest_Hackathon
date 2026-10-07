@@ -127,7 +127,7 @@ export function TrustBadge({ trust }: { trust: DataTrust }) {
   return (
     <Tip label={trust.note}>
       <span className="inline-flex items-center gap-1.5 text-xs text-muted">
-        <span className={`h-1.5 w-1.5 rounded-full ${checked ? 'bg-scan' : 'border border-muted'}`} />
+        <span className={`h-1.5 w-1.5 rounded-full ${checked ? 'bg-accent' : 'border border-muted'}`} />
         {checked} of {trust.inputs.length} inputs checked
       </span>
     </Tip>
@@ -149,7 +149,7 @@ export function ProvenanceBadge({ p, compact = false }: { p: Pick<Provenance, 'i
         </span>
       }
     >
-      <span className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] ${checked ? 'border-scan/50 text-scan' : 'border-line text-muted'}`}>
+      <span className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] ${checked ? 'border-accent/50 text-accent' : 'border-line text-muted'}`}>
         {checked ? '●' : '○'} {!compact && label}
       </span>
     </Tip>
@@ -160,7 +160,7 @@ const DATE_STATUS: Record<DateStatus, string> = { announced: 'Announced', tentat
 export function DateStatusTag({ status }: { status: DateStatus | null | undefined }) {
   if (!status) return null;
   return (
-    <span className={`rounded-full border px-2 py-0.5 text-[11px] ${status === 'announced' ? 'border-scan/50 text-scan' : 'border-line text-muted'}`}>
+    <span className={`rounded-full border px-2 py-0.5 text-[11px] ${status === 'announced' ? 'border-accent/50 text-accent' : 'border-line text-muted'}`}>
       {DATE_STATUS[status]}
     </span>
   );
@@ -186,14 +186,14 @@ export function Ring({ size = 160, progress = 1, stroke = 2.2, draw = true, chil
   return (
     <div className={`relative grid shrink-0 place-items-center ${className}`} style={{ width: size, height: size }}>
       <svg viewBox="0 0 200 200" className="absolute inset-0 overflow-visible" aria-hidden>
-        <circle cx="100" cy="100" r={r} fill="none" stroke="rgba(143,208,255,0.12)" strokeWidth={stroke} />
+        <circle cx="100" cy="100" r={r} fill="none" stroke="rgba(201, 176, 126, 0.12)" strokeWidth={stroke} />
         <motion.circle
-          cx="100" cy="100" r={r} fill="none" stroke="#f4f9ff" strokeWidth={stroke} strokeLinecap="round"
+          cx="100" cy="100" r={r} fill="none" stroke="#F3ECDD" strokeWidth={stroke} strokeLinecap="round"
           transform="rotate(-90 100 100)" strokeDasharray={c}
           initial={draw && !reduce ? { strokeDashoffset: c } : { strokeDashoffset: c * (1 - progress) }}
           animate={{ strokeDashoffset: c * (1 - progress) }}
           transition={{ duration: 1.6, ease: [0.65, 0, 0.35, 1] }}
-          style={{ filter: 'drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px var(--glow)) drop-shadow(0 0 32px rgba(110,180,255,0.3))' }}
+          style={{ filter: 'drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px var(--glow)) drop-shadow(0 0 32px rgba(201, 176, 126, 0.3))' }}
         />
       </svg>
       <div className="relative text-center">{children}</div>

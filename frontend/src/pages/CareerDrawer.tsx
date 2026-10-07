@@ -38,7 +38,7 @@ function Detail({ rec, run }: { rec: Recommendation; run: AnalysisRun }) {
             {Math.round(rec.ci_low * 100)} and {Math.round(rec.ci_high * 100)}
           </p>
         </div>
-        <Dialog.Close className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line text-muted hover:border-scan hover:text-ink" aria-label="Close">
+        <Dialog.Close className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line text-muted hover:border-accent hover:text-ink" aria-label="Close">
           <X size={18} />
         </Dialog.Close>
       </header>
@@ -221,7 +221,7 @@ function Gaps({ rec }: { rec: Recommendation }) {
   return (
     <div className="grid gap-3">
       <div className="flex gap-4 text-xs text-muted">
-        <span className="flex items-center gap-1.5"><span className="h-1.5 w-4 rounded-full bg-scan" />You</span>
+        <span className="flex items-center gap-1.5"><span className="h-1.5 w-4 rounded-full bg-accent" />You</span>
         <span className="flex items-center gap-1.5"><span className="h-3 w-px bg-ink" />What the career asks for</span>
       </div>
       {gaps.map((g) => (
@@ -231,7 +231,7 @@ function Gaps({ rec }: { rec: Recommendation }) {
             <span className="text-muted">{pct(g.student)} of {pct(g.required)}</span>
           </div>
           <div className="relative h-1.5 rounded-full bg-white/[0.06]">
-            <span className="absolute inset-y-0 left-0 rounded-full bg-scan" style={{ width: pct(g.student) }} />
+            <span className="absolute inset-y-0 left-0 rounded-full bg-accent" style={{ width: pct(g.student) }} />
             <span className="absolute -top-1 h-3.5 w-px bg-ink" style={{ left: pct(g.required) }} aria-hidden />
           </div>
         </div>

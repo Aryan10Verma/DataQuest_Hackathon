@@ -35,12 +35,12 @@ export default function FamilyInputs() {
   return (
     <div className="mx-auto max-w-[1000px]">
       <PageHeader title="Family inputs" intro="Your budget and hopes for your child. The analysis uses them to cost every path and to find careers you can both back." />
-      <div className="mb-10 flex items-start gap-3 rounded-panel border border-scan/40 p-4 text-sm">
-        <Lock size={16} className="mt-0.5 shrink-0 text-scan" aria-hidden />
+      <div className="mb-10 flex items-start gap-3 rounded-panel border border-accent/40 p-4 text-sm">
+        <Lock size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden />
         <p>Only parents see these figures. Your child sees a budget level and yes or no answers, never rupee amounts, unless you choose to share them.</p>
       </div>
       {!ctx.familyId ? (
-        <p className="text-muted">Create or join a family on the <Link className="text-scan" to="/app/home">home screen</Link> first.</p>
+        <p className="text-muted">Create or join a family on the <Link className="text-accent" to="/app/home">home screen</Link> first.</p>
       ) : finance.isLoading || prefs.isLoading ? (
         <PageSkeleton />
       ) : finance.isError && !notFound(finance.error) ? (
@@ -120,7 +120,7 @@ function FinanceForm({ familyId, initial }: { familyId: string; initial: FamilyF
               <legend className="mb-1.5 text-sm text-muted">What matters more in a career?</legend>
               <div className="grid grid-cols-3 gap-2">
                 {(['stability', 'balanced', 'prestige'] as PrestigeStability[]).map((v) => (
-                  <label key={v} className={`flex min-h-[44px] cursor-pointer items-center justify-center rounded-lg border text-sm ${f.prestige_vs_stability === v ? 'border-scan bg-scan/10' : 'border-line hover:border-scan/60'}`}>
+                  <label key={v} className={`flex min-h-[44px] cursor-pointer items-center justify-center rounded-lg border text-sm ${f.prestige_vs_stability === v ? 'border-accent bg-accent/10' : 'border-line hover:border-accent/60'}`}>
                     <input type="radio" className="sr-only" checked={f.prestige_vs_stability === v} onChange={() => set('prestige_vs_stability', v)} />
                     {v === 'stability' ? 'Stability' : v === 'balanced' ? 'Both' : 'Ambition'}
                   </label>
@@ -136,7 +136,7 @@ function FinanceForm({ familyId, initial }: { familyId: string; initial: FamilyF
                     return (
                       <button type="button" key={r.code} aria-pressed={on}
                         onClick={() => set('preferred_regions', on ? f.preferred_regions!.filter((c) => c !== r.code) : [...(f.preferred_regions ?? []), r.code])}
-                        className={`min-h-[36px] rounded-full border px-3 text-xs ${on ? 'border-scan bg-scan/10 text-ink' : 'border-line text-muted hover:text-ink'}`}>
+                        className={`min-h-[36px] rounded-full border px-3 text-xs ${on ? 'border-accent bg-accent/10 text-ink' : 'border-line text-muted hover:text-ink'}`}>
                         {r.name}
                       </button>
                     );
@@ -158,7 +158,7 @@ function FinanceForm({ familyId, initial }: { familyId: string; initial: FamilyF
             <p className="text-xs text-muted">No amounts. Savings of {formatINR(f.allocatable_savings)} stay private.</p>
           </section>
           <button className="btn-primary" disabled={save.isPending}>{save.isPending ? 'Saving…' : 'Save budget'}</button>
-          {save.isSuccess && <p role="status" className="text-sm text-scan">Budget saved. Run the analysis again to use it.</p>}
+          {save.isSuccess && <p role="status" className="text-sm text-accent">Budget saved. Run the analysis again to use it.</p>}
           {save.isError && !Object.keys(errs).length && <p role="alert" className="text-sm text-danger">{errorMessage(save.error)}</p>}
         </aside>
       </div>
@@ -208,8 +208,8 @@ function Scale({ label, value, onChange }: { label: string; value: number; onCha
     <div className="grid gap-2 text-sm">
       <div className="flex justify-between gap-3"><span className="text-muted">{label}</span><span>{WORDS[Math.min(4, Math.round(value * 4))]}</span></div>
       <Slider.Root className="relative flex h-6 touch-none select-none items-center" value={[value]} min={0} max={1} step={0.05} onValueChange={([v]) => onChange(v)} aria-label={label}>
-        <Slider.Track className="relative h-1 grow rounded-full bg-white/[0.08]"><Slider.Range className="absolute h-full rounded-full bg-scan" /></Slider.Track>
-        <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-void bg-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-scan" />
+        <Slider.Track className="relative h-1 grow rounded-full bg-white/[0.08]"><Slider.Range className="absolute h-full rounded-full bg-accent" /></Slider.Track>
+        <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-void bg-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" />
       </Slider.Root>
     </div>
   );
@@ -265,7 +265,7 @@ function PreferencesForm({ familyId, initial }: { familyId: string; initial: Ran
         )}
         <button className="btn-primary" disabled={save.isPending || list.some((p) => !p.career_id && !p.domain)}>{save.isPending ? 'Saving…' : 'Save hopes'}</button>
       </div>
-      {save.isSuccess && <p role="status" className="text-sm text-scan">Hopes saved. Run the analysis again to use them.</p>}
+      {save.isSuccess && <p role="status" className="text-sm text-accent">Hopes saved. Run the analysis again to use them.</p>}
       {save.isError && <p role="alert" className="text-sm text-danger">{errorMessage(save.error)}</p>}
     </form>
   );

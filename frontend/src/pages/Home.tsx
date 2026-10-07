@@ -18,7 +18,7 @@ export default function Home() {
     <div className="mx-auto grid max-w-[1000px] gap-14">
       <PageHeader title={`Hello, ${first}`} intro={user?.role === 'parent' ? 'Your family’s path, one step at a time.' : 'Your path, one step at a time.'} />
       {user?.consent_status === 'pending' && (
-        <p role="status" className="rounded-panel border border-scan/40 p-4 text-sm">
+        <p role="status" className="rounded-panel border border-accent/40 p-4 text-sm">
           A parent or guardian needs to approve your account before your answers are used. Ask them to join your family and approve it on their home screen.
         </p>
       )}
@@ -44,7 +44,7 @@ function Steps({ ctx }: { ctx: ReturnType<typeof useStudentContext> }) {
       {steps.map((s, i) => (
         <li key={s.title} className="grid content-between gap-6 bg-void p-5">
           <div className="grid gap-2">
-            <span className={`figure grid h-9 w-9 place-items-center rounded-full border text-base ${s.done ? 'border-scan text-scan' : 'border-line text-muted'}`}>
+            <span className={`figure grid h-9 w-9 place-items-center rounded-full border text-base ${s.done ? 'border-accent text-accent' : 'border-line text-muted'}`}>
               {s.done ? <Check size={16} aria-label="Done" /> : i + 1}
             </span>
             <h2 className="display text-xl">{s.title}</h2>
@@ -171,7 +171,7 @@ function Family({ family }: { family: FamilyOut }) {
         <button className="btn-quiet" onClick={() => makeInvite.mutate()} disabled={makeInvite.isPending}>Invite a family member</button>
         {invite && (
           <p className="text-sm">
-            Code <span className="figure ml-1 text-xl tracking-[0.12em] text-scan">{invite.invite_code}</span>
+            Code <span className="figure ml-1 text-xl tracking-[0.12em] text-accent">{invite.invite_code}</span>
             <span className="ml-2 text-muted">works until {formatDate(invite.expires_at)}</span>
           </p>
         )}
@@ -185,7 +185,7 @@ function Family({ family }: { family: FamilyOut }) {
             return (
               <label key={type} className="flex min-h-[44px] cursor-pointer items-center justify-between gap-4 border-b border-line text-sm">
                 <span>{CONSENT_TEXT[type].replace('{child}', child)}</span>
-                <input type="checkbox" className="h-5 w-5 accent-[#8fd0ff]" checked={on} disabled={consent.isPending || !subject}
+                <input type="checkbox" className="h-5 w-5 accent-[#C9B07E]" checked={on} disabled={consent.isPending || !subject}
                   onChange={(e) => subject && consent.mutate({ consent_type: type, subject_user_id: subject, granted: e.target.checked })} />
               </label>
             );

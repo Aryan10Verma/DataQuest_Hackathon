@@ -9,7 +9,7 @@ export default {
         line: 'var(--line)',
         ink: 'rgb(var(--ink-rgb) / <alpha-value>)',
         muted: 'rgb(var(--muted-rgb) / <alpha-value>)',
-        scan: 'rgb(var(--scan-rgb) / <alpha-value>)',
+        accent: 'rgb(var(--accent-rgb) / <alpha-value>)',
         danger: 'rgb(var(--danger-rgb) / <alpha-value>)',
         part: {
           fit: 'var(--part-fit)',
@@ -21,8 +21,8 @@ export default {
         },
       },
       fontFamily: {
-        display: ['"Bodoni Moda"', 'Didot', '"Bodoni 72"', 'Georgia', '"Noto Serif Tamil"', '"Noto Serif Devanagari"', 'serif'],
-        sans: ['Manrope', '"Noto Sans Tamil"', '"Noto Sans Devanagari"', 'system-ui', 'sans-serif'],
+        display: ['var(--serif)'],
+        sans: ['var(--sans)'],
       },
       fontSize: {
         // Type scale, ratio 1.333 from 16px.

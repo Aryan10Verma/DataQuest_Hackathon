@@ -83,7 +83,7 @@ function Bars({ title, rows, label = (k) => k }: { title: string; rows: CountRow
           {rows.slice(0, 8).map((r) => (
             <li key={r.key} className="grid grid-cols-[minmax(0,11rem)_minmax(0,1fr)_2.5rem] items-center gap-3 text-sm">
               <span className="truncate">{label(r.key)}</span>
-              <span className="h-1.5 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-scan" style={{ width: pct(r.count / max) }} /></span>
+              <span className="h-1.5 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-accent" style={{ width: pct(r.count / max) }} /></span>
               <span className="text-right tabular-nums text-muted">{r.count}</span>
             </li>
           ))}

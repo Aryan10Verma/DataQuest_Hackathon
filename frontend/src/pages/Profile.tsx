@@ -101,7 +101,7 @@ function Bar({ label, t }: { label: string; t: TraitScore }) {
         </span>
       </div>
       <div className="h-1.5 rounded-full bg-white/[0.06]">
-        <motion.div className={`h-full rounded-full ${t.imputed ? 'bg-muted/50' : 'bg-scan'}`} initial={{ width: 0 }} animate={{ width: pct(t.normalized) }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
+        <motion.div className={`h-full rounded-full ${t.imputed ? 'bg-muted/50' : 'bg-accent'}`} initial={{ width: 0 }} animate={{ width: pct(t.normalized) }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
       </div>
     </li>
   );
@@ -112,7 +112,7 @@ function Dots({ r }: { r: number }) {
   return (
     <Tip label={`Answer consistency ${pct(r)}`}>
       <span className="flex gap-1" aria-label={`Consistency ${pct(r)}`}>
-        {[0, 1, 2].map((i) => <span key={i} className={`h-1.5 w-1.5 rounded-full ${i < n ? 'bg-scan' : 'border border-muted/60'}`} />)}
+        {[0, 1, 2].map((i) => <span key={i} className={`h-1.5 w-1.5 rounded-full ${i < n ? 'bg-accent' : 'border border-muted/60'}`} />)}
       </span>
     </Tip>
   );
@@ -131,19 +131,19 @@ function Hexagon({ by }: { by: Record<string, TraitScore> }) {
       <svg viewBox="-12 -8 224 216" className="w-full max-w-[340px]" role="img"
         aria-label={RIASEC.map((r) => `${r.label} ${Math.round((by[r.key]?.normalized ?? 0) * 100)}`).join(', ')}>
         {[0.25, 0.5, 0.75, 1].map((k) => (
-          <polygon key={k} points={RIASEC.map((_, i) => pt(i, k).join(',')).join(' ')} fill="none" stroke="rgba(143,208,255,0.12)" strokeWidth="0.8" />
+          <polygon key={k} points={RIASEC.map((_, i) => pt(i, k).join(',')).join(' ')} fill="none" stroke="rgba(201, 176, 126, 0.12)" strokeWidth="0.8" />
         ))}
         {RIASEC.map((_, i) => {
           const [x, y] = pt(i, 1);
-          return <line key={i} x1="100" y1="100" x2={x} y2={y} stroke="rgba(143,208,255,0.1)" strokeWidth="0.8" />;
+          return <line key={i} x1="100" y1="100" x2={x} y2={y} stroke="rgba(201, 176, 126, 0.1)" strokeWidth="0.8" />;
         })}
-        <motion.polygon points={shape} fill="rgba(143,208,255,0.14)" stroke="#8fd0ff" strokeWidth="1.6" strokeLinejoin="round"
+        <motion.polygon points={shape} fill="rgba(201, 176, 126, 0.14)" stroke="#C9B07E" strokeWidth="1.6" strokeLinejoin="round"
           initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          style={{ transformOrigin: '100px 100px', filter: 'drop-shadow(0 0 8px rgba(110,180,255,0.5))' }} />
+          style={{ transformOrigin: '100px 100px', filter: 'drop-shadow(0 0 8px rgba(201, 176, 126, 0.5))' }} />
         {RIASEC.map((r, i) => {
           const [x, y] = pt(i, 1.17);
           return (
-            <text key={r.key} x={x} y={y + 3} textAnchor="middle" fontSize="9" fill="#8592ab">
+            <text key={r.key} x={x} y={y + 3} textAnchor="middle" fontSize="9" fill="#9A9386">
               {r.label}
             </text>
           );

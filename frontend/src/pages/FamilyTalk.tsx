@@ -76,7 +76,7 @@ function Conversation({ c }: { c: ConflictReport }) {
                 </div>
                 <div className="grid gap-2">
                   <div className="h-1.5 rounded-full bg-white/[0.06]">
-                    <motion.div className="h-full rounded-full bg-scan" initial={{ width: 0 }} animate={{ width: pct(d.gap) }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
+                    <motion.div className="h-full rounded-full bg-accent" initial={{ width: 0 }} animate={{ width: pct(d.gap) }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
                   </div>
                   <div className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
                     <p><span className="text-muted">Student: </span>{d.student_position}</p>
@@ -94,7 +94,7 @@ function Conversation({ c }: { c: ConflictReport }) {
           {c.top_drivers.map((d, i) => (
             <li key={d.dimension} className="panel grid content-start gap-3 p-5">
               <p className="text-sm text-muted">
-                <span className="figure mr-2 text-lg text-scan">{i + 1}</span>
+                <span className="figure mr-2 text-lg text-accent">{i + 1}</span>
                 {dimLabel(d.dimension)}
               </p>
               <p className="display text-lg leading-snug">“{d.conversation_prompt}”</p>
@@ -127,25 +127,25 @@ function Gauge({ value, band }: { value: number; band: string }) {
   return (
     <figure className="grid gap-2">
       <svg viewBox="-24 -10 248 122" className="w-full overflow-visible" role="img" aria-label={`Family difference ${Math.round(value)} out of 100, ${band}`}>
-        <path d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="rgba(143,208,255,0.12)" strokeWidth="2" />
+        <path d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="rgba(201, 176, 126, 0.12)" strokeWidth="2" />
         <motion.path
-          d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="#f4f9ff" strokeWidth="2.2" strokeLinecap="round"
+          d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="#F3ECDD" strokeWidth="2.2" strokeLinecap="round"
           strokeDasharray={len}
           initial={{ strokeDashoffset: reduce ? len * (1 - value / 100) : len }}
           animate={{ strokeDashoffset: len * (1 - value / 100) }}
           transition={{ duration: 1.4, ease: [0.65, 0, 0.35, 1] }}
-          style={{ filter: 'drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px rgba(110,180,255,0.55))' }}
+          style={{ filter: 'drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px rgba(201, 176, 126, 0.55))' }}
         />
         {BANDS.slice(0, 3).map((b) => {
           const [x1, y1] = point(b.upTo);
           const [x2, y2] = [100 + (x1 - 100) * 1.1, 100 + (y1 - 100) * 1.1];
-          return <line key={b.upTo} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(143,208,255,0.4)" strokeWidth="1" />;
+          return <line key={b.upTo} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(201, 176, 126, 0.4)" strokeWidth="1" />;
         })}
         {BANDS.map((b, i) => {
           const mid = ((i ? BANDS[i - 1].upTo : 0) + b.upTo) / 2;
           const [x, y] = point(mid);
           return (
-            <text key={b.label} x={100 + (x - 100) * 1.2} y={100 + (y - 100) * 1.2} textAnchor="middle" fontSize="6.5" fill="#8592ab">
+            <text key={b.label} x={100 + (x - 100) * 1.2} y={100 + (y - 100) * 1.2} textAnchor="middle" fontSize="6.5" fill="#9A9386">
               {b.label}
             </text>
           );
@@ -162,7 +162,7 @@ function Gauge({ value, band }: { value: number; band: string }) {
 function Legend() {
   return (
     <span className="flex gap-4 text-xs text-muted">
-      <span className="flex items-center gap-1.5"><span className="h-1.5 w-4 rounded-full bg-scan" />Fits the student</span>
+      <span className="flex items-center gap-1.5"><span className="h-1.5 w-4 rounded-full bg-accent" />Fits the student</span>
       <span className="flex items-center gap-1.5"><span className="h-1.5 w-4 rounded-full bg-ink/70" />Parents' hopes</span>
     </span>
   );
@@ -180,7 +180,7 @@ function Bridge({ b }: { b: BridgeCareer }) {
   return (
     <li className="panel grid content-start gap-3 p-5">
       <p className="display text-lg">{b.career.name}</p>
-      {bar(b.student_fit, 'bg-scan', 'Fits the student')}
+      {bar(b.student_fit, 'bg-accent', 'Fits the student')}
       {bar(b.parent_acceptance, 'bg-ink/70', "Parents' hopes")}
       <p className="text-sm text-muted">{b.why}</p>
     </li>

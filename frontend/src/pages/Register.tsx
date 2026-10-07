@@ -55,7 +55,7 @@ export default function Register() {
     <AuthLayout
       title="Create your account"
       intro="Students take the questionnaire. Parents add the family budget privately. Teachers follow their students."
-      footer={<>Already have an account? <Link className="text-scan hover:underline" to="/signin">Sign in</Link></>}
+      footer={<>Already have an account? <Link className="text-accent hover:underline" to="/signin">Sign in</Link></>}
     >
       <form className="grid gap-5" onSubmit={submit} noValidate>
         <fieldset className="grid gap-2">
@@ -63,7 +63,7 @@ export default function Register() {
           <div className="grid grid-cols-3 gap-2">
             {ROLES.map((r) => (
               <label key={r.value}
-                className={`grid min-h-[64px] cursor-pointer content-center rounded-lg border px-3 py-2 transition-colors ${role === r.value ? 'border-scan bg-scan/10' : 'border-line hover:border-scan/60'}`}>
+                className={`grid min-h-[64px] cursor-pointer content-center rounded-lg border px-3 py-2 transition-colors ${role === r.value ? 'border-accent bg-accent/10' : 'border-line hover:border-accent/60'}`}>
                 <input type="radio" name="role" value={r.value} className="sr-only" checked={role === r.value} onChange={() => setRole(r.value)} />
                 <span className="text-sm font-semibold">{r.label}</span>
                 <span className="text-xs text-muted">{r.help}</span>

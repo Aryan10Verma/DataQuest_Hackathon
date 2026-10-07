@@ -52,7 +52,7 @@ function Dashboard() {
                 <tr key={r.student_id} className={`border-b border-line align-top ${r.latest_run_id ? 'cursor-pointer hover:bg-white/[0.02]' : ''}`}
                   onClick={() => r.latest_run_id && navigate(`/app/counsellor/${r.latest_run_id}`)}>
                   <td className="py-3.5 pr-4">
-                    {r.latest_run_id ? <Link to={`/app/counsellor/${r.latest_run_id}`} className="font-semibold hover:text-scan" onClick={(e) => e.stopPropagation()}>{r.display_name}</Link> : <span className="font-semibold">{r.display_name}</span>}
+                    {r.latest_run_id ? <Link to={`/app/counsellor/${r.latest_run_id}`} className="font-semibold hover:text-accent" onClick={(e) => e.stopPropagation()}>{r.display_name}</Link> : <span className="font-semibold">{r.display_name}</span>}
                   </td>
                   <td className="py-3.5 pr-4 tabular-nums">{r.grade ?? '–'}</td>
                   <td className="py-3.5 pr-4">{r.top_career ?? <span className="text-muted">No run yet</span>}</td>

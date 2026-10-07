@@ -30,7 +30,7 @@ export default function Explore() {
           {TABS.map((t) => (
             <Tabs.Trigger key={t.key} value={t.key} className="relative min-h-[44px] shrink-0 px-3 text-sm text-muted data-[state=active]:text-ink hover:text-ink">
               {t.label}
-              {tab === t.key && <motion.span layoutId="explore-tab" className="absolute inset-x-3 -bottom-px h-px bg-scan shadow-[0_0_8px_var(--glow)]" />}
+              {tab === t.key && <motion.span layoutId="explore-tab" className="absolute inset-x-3 -bottom-px h-px bg-accent shadow-[0_0_8px_var(--glow)]" />}
             </Tabs.Trigger>
           ))}
         </Tabs.List>
@@ -110,7 +110,7 @@ function CareerModal({ slug, onClose }: { slug: string | null; onClose: () => vo
                   {[...c.data.skills].sort((a, b) => b.importance - a.importance).slice(0, 8).map((s) => (
                     <li key={s.skill} className="grid grid-cols-[minmax(0,1fr)_7rem] items-center gap-3">
                       <span>{s.skill}</span>
-                      <span className="h-1.5 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-scan" style={{ width: pct(s.importance) }} /></span>
+                      <span className="h-1.5 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-accent" style={{ width: pct(s.importance) }} /></span>
                     </li>
                   ))}
                 </ul>
@@ -151,7 +151,7 @@ function Market({ initialRegion }: { initialRegion?: string }) {
               {sectors.map(([k, v]) => (
                 <li key={k} className="grid grid-cols-[minmax(0,14rem)_minmax(0,1fr)_2.5rem] items-center gap-3 text-sm">
                   <span>{sectorLabel(k)}</span>
-                  <span className="h-1.5 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-scan" style={{ width: pct(v) }} /></span>
+                  <span className="h-1.5 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-accent" style={{ width: pct(v) }} /></span>
                   <span className="text-right tabular-nums text-muted">{Math.round(v * 100)}</span>
                 </li>
               ))}
@@ -215,9 +215,9 @@ function Local({ initialPincode }: { initialPincode?: string }) {
                 </div>
                 <p className="text-xs text-muted">{o.district}, {o.steam_tags.join(' ')}</p>
                 <p className="text-sm text-muted">{o.problem_statement}</p>
-                <p className="flex gap-2 rounded-lg border border-scan/30 p-3 text-sm">
-                  <Lightbulb size={16} className="mt-0.5 shrink-0 text-scan" aria-hidden />
-                  <span><span className="text-scan">Starter project: </span>{o.starter_project}</span>
+                <p className="flex gap-2 rounded-lg border border-accent/30 p-3 text-sm">
+                  <Lightbulb size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+                  <span><span className="text-accent">Starter project: </span>{o.starter_project}</span>
                 </p>
                 <p className="text-xs text-muted">Careers it leads to: {o.linked_careers.map((c) => c.name).join(', ')}</p>
               </li>

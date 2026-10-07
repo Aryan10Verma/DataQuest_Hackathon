@@ -18,7 +18,7 @@ export function AuthLayout({ title, intro, children, footer }: { title: string; 
         <Link to="/" className="text-xs text-muted hover:text-ink">Back to the PRISM home page</Link>
       </div>
       <div className="relative hidden overflow-hidden border-l border-line lg:block" aria-hidden
-        style={{ background: 'radial-gradient(55% 50% at 50% 45%, rgba(40,90,170,0.25), transparent 70%), var(--void)' }}>
+        style={{ background: 'radial-gradient(55% 50% at 50% 45%, rgba(201, 176, 126, 0.1), transparent 70%), var(--void)' }}>
         <div className="absolute inset-0 grid place-items-center">
           <Ring size={520} stroke={1.6} className="opacity-90" />
         </div>

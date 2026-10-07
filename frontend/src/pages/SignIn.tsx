@@ -30,10 +30,10 @@ export default function SignIn() {
     <AuthLayout
       title="Sign in"
       intro="Pick up where you left off: your results, your family's plan and the next deadline."
-      footer={<>New to PRISM? <Link className="text-scan hover:underline" to="/register">Create an account</Link></>}
+      footer={<>New to PRISM? <Link className="text-accent hover:underline" to="/register">Create an account</Link></>}
     >
       {import.meta.env.VITE_DATA_MODE === 'fixtures' && (
-        <p className="mb-6 rounded-panel border border-scan/40 p-4 text-sm">
+        <p className="mb-6 rounded-panel border border-accent/40 p-4 text-sm">
           Offline demo with sample data. Sign in with any email and password. An email containing “parent”, “educator” or “admin” opens that view; anything else opens the student view.
         </p>
       )}

@@ -70,15 +70,15 @@ function Panel({ onClose }: { onClose: () => void }) {
                 <p className="font-semibold">{p.student_name}, {p.location}</p>
                 <p className="text-xs text-muted">{p.scenario}</p>
                 <div className="mt-1.5 flex gap-3 text-xs">
-                  <button className="text-scan hover:underline" onClick={() => fill(p.student_email, p.demo_password)}>Student</button>
-                  <button className="text-scan hover:underline" onClick={() => fill(p.parent_email, p.demo_password)}>Parent</button>
+                  <button className="text-accent hover:underline" onClick={() => fill(p.student_email, p.demo_password)}>Student</button>
+                  <button className="text-accent hover:underline" onClick={() => fill(p.parent_email, p.demo_password)}>Parent</button>
                 </div>
               </li>
             ))}
           </ul>
           <div className="flex gap-3 text-xs">
-            <button className="text-scan hover:underline" onClick={() => fill('counsellor@prism.example', 'Prism@Demo2026')}>Counsellor</button>
-            <button className="text-scan hover:underline" onClick={() => fill('admin@prism.example', 'Prism@Demo2026')}>Admin</button>
+            <button className="text-accent hover:underline" onClick={() => fill('counsellor@prism.example', 'Prism@Demo2026')}>Counsellor</button>
+            <button className="text-accent hover:underline" onClick={() => fill('admin@prism.example', 'Prism@Demo2026')}>Admin</button>
           </div>
         </div>
       )}
@@ -152,9 +152,9 @@ function PresenterRail({ step, setStep }: { step: number | null; setStep: (s: nu
   const elapsed = Math.floor((now - started) / 1000);
   if (walk.isError) return null;
   return (
-    <aside className="fixed left-1/2 top-[80px] z-[60] w-[min(720px,calc(100vw-24px))] -translate-x-1/2 rounded-panel border border-scan/40 bg-deep/95 p-4 text-sm shadow-[0_20px_60px_rgba(0,0,0,0.6)] backdrop-blur" aria-label="Presenter notes">
+    <aside className="fixed left-1/2 top-[80px] z-[60] w-[min(720px,calc(100vw-24px))] -translate-x-1/2 rounded-panel border border-accent/40 bg-deep/95 p-4 text-sm shadow-[0_20px_60px_rgba(0,0,0,0.6)] backdrop-blur" aria-label="Presenter notes">
       <div className="flex items-center gap-3">
-        <span className="figure text-lg text-scan">{(step ?? 0) + 1}/{steps.length || '…'}</span>
+        <span className="figure text-lg text-accent">{(step ?? 0) + 1}/{steps.length || '…'}</span>
         <p className="flex-1 font-semibold">{s?.title ?? 'Loading the walkthrough…'}</p>
         <span className="tabular-nums text-xs text-muted">{Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, '0')} of {Math.round((walk.data?.total_seconds ?? 0) / 60)} min</span>
         <button className="grid h-9 w-9 place-items-center rounded-full text-muted hover:text-ink" onClick={() => go((step ?? 0) - 1)} disabled={!step} aria-label="Previous step"><ChevronLeft size={16} /></button>

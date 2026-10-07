@@ -13,6 +13,10 @@
     "fixtures": "node scripts/copy-fixtures.mjs"
   },
   "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/hanken-grotesk": "^5.3.0",
+    "@fontsource/noto-sans-devanagari": "^5.3.0",
+    "@fontsource/noto-sans-tamil": "^5.3.0",
     "@radix-ui/react-dialog": "1.1.2",
     "@radix-ui/react-dropdown-menu": "2.1.2",
     "@radix-ui/react-slider": "1.2.1",

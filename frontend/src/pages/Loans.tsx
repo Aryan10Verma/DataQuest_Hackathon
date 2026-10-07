@@ -58,7 +58,7 @@ export default function Loans() {
                 <Big value={formatINR(d.interest_while_studying)} label="interest added while studying" />
                 <Big value={`${(d.assumed_rate * 100).toFixed(1)}%`} label="yearly rate assumed" />
               </div>
-              <ul className="grid max-w-measure gap-2 border-l border-scan/60 pl-5 text-sm">
+              <ul className="grid max-w-measure gap-2 border-l border-accent/60 pl-5 text-sm">
                 {d.plain_language.map((l) => <li key={l}>{l}</li>)}
               </ul>
 
@@ -67,7 +67,7 @@ export default function Loans() {
                   {d.options.map((o) => (
                     <li key={o.tenor_years} className="grid grid-cols-[4.5rem_minmax(0,1fr)_6.5rem] items-center gap-3 text-sm">
                       <span className="text-muted">{o.tenor_years} years</span>
-                      <span className="h-2 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-scan" style={{ width: pct(o.monthly_emi / maxEmi) }} /></span>
+                      <span className="h-2 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-accent" style={{ width: pct(o.monthly_emi / maxEmi) }} /></span>
                       <span className="text-right tabular-nums">{formatINR(o.monthly_emi)}</span>
                       <span />
                       <span className="col-span-2 -mt-2 text-xs text-muted">{formatINR(o.total_interest)} interest, {formatINR(o.total_repaid)} in total</span>
@@ -84,7 +84,7 @@ export default function Loans() {
                         <h3 className="font-semibold">{s.name}</h3>
                         <ProvenanceBadge p={s.provenance} />
                       </div>
-                      <p className={s.applies ? 'text-scan' : 'text-muted'}>
+                      <p className={s.applies ? 'text-accent' : 'text-muted'}>
                         {s.applies === true ? 'Likely applies' : s.applies === false ? "Doesn't apply" : 'Not enough information to tell'}. {s.why}
                       </p>
                       <p className="text-muted">{s.benefit}</p>
@@ -119,8 +119,8 @@ function Range({ label, value, min, max, step, onChange, show }: { label: string
     <div className="grid gap-2 text-sm">
       <div className="flex justify-between gap-3"><span className="text-muted">{label}</span><span className="tabular-nums">{show(value)}</span></div>
       <Slider.Root className="relative flex h-6 touch-none select-none items-center" value={[value]} min={min} max={max} step={step} onValueChange={([v]) => onChange(v)} aria-label={label}>
-        <Slider.Track className="relative h-1 grow rounded-full bg-white/[0.08]"><Slider.Range className="absolute h-full rounded-full bg-scan" /></Slider.Track>
-        <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-void bg-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-scan" />
+        <Slider.Track className="relative h-1 grow rounded-full bg-white/[0.08]"><Slider.Range className="absolute h-full rounded-full bg-accent" /></Slider.Track>
+        <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-void bg-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" />
       </Slider.Root>
     </div>
   );
