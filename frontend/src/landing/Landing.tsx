@@ -33,33 +33,29 @@ const VIEWS = [
   {
     body: 'front', rail: 'Interests', view: 'Front view', title: 'Interests',
     facts: [
-      ['What you enjoy', 'Fixing a fan, planning a science fair model, keeping shop accounts. Activities, not job titles.'],
-      ['Six kinds of work', 'Building, investigating, creating, helping, leading and organising.'],
-      ['About 4 minutes', 'Your top three become your Holland code, such as IAR.'],
+      ['What you enjoy', 'Activities, not job titles.'],
+      ['About 4 minutes', 'Your top three become your Holland code.'],
     ],
   },
   {
     body: 'back', rail: 'Aptitude', view: 'Back view', title: 'Aptitude',
     facts: [
-      ['What comes easily', 'Numbers, words, logic and shapes, from easy to hard.'],
-      ["Guessing won't help", 'Scores are corrected for lucky guesses, so there is nothing to game.'],
-      ['About 15 minutes', 'Take it in a second sitting if you prefer.'],
+      ['What comes easily', 'Numbers, words, logic and shapes.'],
+      ['About 15 minutes', 'Corrected for lucky guesses.'],
     ],
   },
   {
     body: 'left', rail: 'Thinking', view: 'Left side', title: 'Thinking style',
     facts: [
-      ['How you solve problems', 'Analytical, creative or practical, and in what mix.'],
-      ['Honest by design', "Some statements are worded in reverse, so agreeing with everything won't skew it."],
+      ['How you solve problems', 'Analytical, creative or practical.'],
       ['About 2 minutes', 'Twelve short statements.'],
     ],
   },
   {
-    body: 'right', rail: 'Values', view: 'Right side', title: 'Values, grit and risk',
+    body: 'right', rail: 'Values', view: 'Right side', title: 'Values',
     facts: [
-      ['What matters to you', 'Security, independence, making a difference, or pay.'],
-      ['Grit', 'How you keep going when something is hard.'],
-      ['Appetite for risk', 'How comfortable you are with an uncertain path.'],
+      ['What matters to you', 'Security, freedom, impact or pay.'],
+      ['Grit and risk', 'How you persevere, and what you would risk.'],
     ],
   },
   { body: 'top', rail: 'Full picture', view: 'From above', title: 'The full picture', facts: [] },
@@ -82,7 +78,7 @@ export default function Landing() {
     let lenis: Lenis | null = null;
     const tick = (t: number) => lenis?.raf(t * 1000);
     if (!RM) {
-      lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9 });
+      lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1.2, touchMultiplier: 1.6 });
       lenisRef.current = lenis;
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add(tick);
@@ -163,7 +159,7 @@ export default function Landing() {
             tl.fromTo(rest, { opacity: 0, y: RM ? 0 : 10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, at + 0.2);
           });
           tl.addLabel(`v${i}`, t + 0.95);
-          t += 1.8;
+          t += 1.5;
         });
 
         tl.to(copies[copies.length - 1], { autoAlpha: 0, y: RM ? 0 : -40, duration: 0.5, ease: 'power2.in' }, t);
@@ -183,9 +179,10 @@ export default function Landing() {
           animation: tl,
           trigger: '.l-stage',
           start: 'top top',
-          end: () => `+=${window.innerHeight * t * 0.9}`,
+          // About half a screen of scrolling per unit of timeline: the whole scan takes ~5 screens.
+          end: () => `+=${window.innerHeight * t * 0.45}`,
           pin: true,
-          scrub: RM ? true : 1,
+          scrub: RM ? true : 0.6,
           anticipatePin: 1,
           invalidateOnRefresh: true,
         });
@@ -296,7 +293,6 @@ export default function Landing() {
                     <li key={p.key}>
                       <span className={`swatch ${p.key === 'disruption' ? 'hatch' : ''}`} style={p.key === 'disruption' ? undefined : { background: p.color }} />
                       <Split text={p.label} as="span" className="strong-split" />
-                      <span className="help">{p.help}</span>
                     </li>
                   ))}
                 </ul>

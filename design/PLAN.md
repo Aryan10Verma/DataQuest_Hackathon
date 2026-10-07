@@ -8,41 +8,40 @@ PRISM reads a student from several angles and shows the family what it found. Th
 
 Decisions confirmed with the client: dark only, one cyan accent, six score colours used only inside charts, and every screen in the spec (P0 to P2).
 
-## Colour
+## Colour (Champagne noir, chosen in the restyle)
 
 | Token | Hex | Use |
 |---|---|---|
-| Void | `#02050B` | Page background |
-| Deep | `#08101D` | Raised panels: drawer, dialogs, the stats bar |
-| Line | `rgba(143,208,255,0.14)` | Hairlines and dividers. Panels are defined by a hairline, not a shadow. |
-| Ink | `#E8F0FF` | Text |
-| Muted | `#8592AB` | Secondary text (meets AA on Void) |
-| Scan | `#8FD0FF` | The only accent: focus rings, the active nav item, links, the ring, primary buttons |
+| Graphite | `#121110` | Page background |
+| Umber | `#1A1917` | Raised panels: drawer, dialogs, bars |
+| Line | `rgba(237,230,216,0.12)` | Hairlines and dividers. Panels are defined by a hairline, not a shadow. |
+| Ivory | `#EDE6D8` | Text |
+| Stone | `#9A9386` | Secondary text |
+| Champagne | `#C9B07E` | The only accent: focus, the active nav item, links, the ring, progress |
 
-**Score parts (charts only).** These are the spec's hues, lifted for a dark background. They are the only other colours in the product.
+**Score parts (charts only)** are muted to sit inside the palette:
 
 | Part | Hex |
 |---|---|
-| Fit | `#9488F2` |
-| Market | `#5E9CF2` |
-| Affordability | `#3FC1AE` |
-| Return on investment | `#86C35F` |
-| Family alignment | `#E8B54A` |
-| Disruption | `#EF6F68`, hatched because it subtracts |
+| Fit | `#8E86C8` |
+| Market | `#6F93C4` |
+| Affordability | `#5FA99B` |
+| Return on investment | `#8FAE6E` |
+| Family agreement | `#D39A5B` |
+| Disruption | `#C46A6A`, hatched |
 
-**Funding class has no colour,** so colour keeps a single meaning. It is a four-step meter with a text label:
-- Comfortable: ▮▮▮▮
-- Stretch: ▮▮▮▯
-- Loan-dependent: ▮▮▯▯
-- Out of reach: ▮▯▯▯
+**Funding class has no colour.** It is a four-step meter (▮▮▮▮ to ▮▯▯▯) with a text label.
+
+**Imagery and atmosphere:**
+- The body views are graded to warm silver (`frontend/scripts/grade_views.py`).
+- The landing page has a soft champagne glow, a gallery-style vignette, and a static film grain over the whole site.
 
 ## Type
 
-- **Display: Bodoni Moda.** Headlines, the big figures (a career's score, the conflict index), and the giant *PRISM* behind the body. The figures are set large in the serif, as in a museum label.
-- **Text and interface: Manrope.** Body copy, controls, and tables, with tabular numbers. There is no monospace face; numbers stay in the text family.
-- **Tamil and Hindi:** narratives and reports fall back to Noto Sans Tamil and Noto Sans Devanagari, because Bodoni has no Indic glyphs.
-- **Scale (ratio 1.333):** 12 / 14 / 16 / 21 / 28 / 38 / 50 / 67 px, plus the giant word at 7–10 vw. Body text is 16 px with 1.6 line-height and lines under 72 characters.
-- **Case:** sentence case everywhere. Capitals only for the wide-tracked giant word.
+- **Display: Cormorant Garamond**, at 300 for the giant word and 400 for headings. Figures are set at 500 so they hold up at small sizes.
+- **Text and interface: Geist**, with tabular numbers.
+- Both are bundled with the site. Tamil and Hindi fall back to Noto Sans Tamil and Noto Sans Devanagari, which download only when that text appears.
+- **Scale (ratio 1.333):** 12 / 14 / 16 / 21 / 28 / 38 / 50 / 67 px, plus the giant word. Sentence case everywhere.
 
 ## Layout
 
