@@ -6,7 +6,7 @@ PRISM reads a student from several angles and shows the family what it found. Th
 - **Landing page:** a cinematic scan. The holographic body turns through five views as you scroll, and each view is one part of the questionnaire.
 - **App screens:** the quiet room you enter after the scan. Each screen has one luminous object (a score ring, a gauge, a timeline), and everything around it stays dark and still.
 
-Decisions confirmed with the client: dark only, one cyan accent, six score colours used only inside charts, and every screen in the spec (P0 to P2).
+Decisions confirmed with the client: dark only, one champagne accent (originally cyan; changed in the Champagne noir restyle), six score colours used only inside charts, and every screen in the spec (P0 to P2).
 
 ## Colour (Champagne noir, chosen in the restyle)
 
@@ -46,7 +46,7 @@ Decisions confirmed with the client: dark only, one cyan accent, six score colou
 ## Layout
 
 **Shell.**
-- **Navigation:** a slim text rail on the left, the same rail as on the landing page, with a cyan marker that slides to the current screen. It holds Home, Questionnaire, Profile, Results, Family, Plan, Explore and How we know.
+- **Navigation:** a slim text rail on the left, the same rail as on the landing page, with a champagne marker that slides to the current screen. It holds Home, Questionnaire, Profile, Results, Family, Plan, Explore and How we know.
 - **Top bar:** only the logo, the language menu (English, Tamil, Hindi) and the account menu.
 - **Phones:** the rail becomes a bottom bar with five items, and a More sheet holds the rest.
 - **Alignment:** content is left-aligned on an 8 px grid. Panels have a 14 px radius. Pills and the ring are fully round.
@@ -92,9 +92,9 @@ Then      Know yourself  /  Plan with your family  /  See your future
   - "Similar paths".
 - **Family conversation:** the ring cut in half to make the 0–100 gauge, then three conversation cards and the bridge careers. The student sees only the gentle summary.
 - **What-if:** controls on the left and the ranking on the right. When the result comes back, each row moves to its new rank.
-- **How we know:** an editorial page. The data statement in large Bodoni, then hairline tables for datasets, formulas and fairness checks.
-- **Questionnaire:** full screen with one question at a time, in large serif. The five answer steps are 56 px targets. Progress is a thin cyan line along the top.
-- **Profile:** the Holland code as a giant word, a RIASEC hexagon in cyan, and aptitude bars.
+- **How we know:** an editorial page. The data statement in large Cormorant, then hairline tables for datasets, formulas and fairness checks.
+- **Questionnaire:** full screen with one question at a time, in large serif. The five answer steps are 56 px targets. Progress is a thin champagne line along the top.
+- **Profile:** the Holland code as a giant word, a RIASEC hexagon in champagne, and aptitude bars.
 - **Plan:** a horizontal five-year timeline with typed milestones, a deadline countdown list, and a 2×2 SWOT.
 - **Counsellor and admin:** dense, quiet tables. Status chips use the meter glyph or text, not colour.
 
