@@ -1,0 +1,36 @@
+"""Cut the five body views out of the scan sheet, painting over the baked-in UI insets."""
+import sys
+from PIL import Image, ImageDraw, ImageFilter
+
+src, out = sys.argv[1], sys.argv[2]
+sheet = Image.open(src).convert("RGB")
+BG = (4, 12, 22)
+
+# Insets to paint out, in sheet pixels (x0, y0, x1, y1).
+PAINT = [
+    (27, 45, 68, 118), (152, 30, 215, 84), (158, 30, 215, 88), (171, 88, 215, 106), (27, 238, 76, 314),      # front
+    (237, 45, 272, 118), (237, 45, 277, 90), (370, 30, 425, 86), (372, 86, 392, 112), (392, 86, 425, 118), (237, 240, 286, 318),  # back
+    (485, 45, 498, 118), (561, 30, 569, 110), (561, 112, 569, 206), (485, 240, 495, 315),  # left
+    (675, 45, 682, 120), (744, 30, 749, 210), (675, 240, 686, 318),                      # right
+]
+mask = Image.new("L", sheet.size, 0)
+d = ImageDraw.Draw(mask)
+for b in PAINT:
+    d.rectangle(b, fill=255)
+mask = mask.filter(ImageFilter.GaussianBlur(2))
+sheet = Image.composite(Image.new("RGB", sheet.size, BG), sheet, mask)
+
+VIEWS = {  # name: (x, y, w, h)
+    "front": (36, 34, 160, 320),
+    "back": (245, 34, 166, 320),
+    "left": (485, 34, 84, 320),
+    "right": (675, 34, 74, 320),
+    "top": (814, 116, 150, 150),
+}
+for name, (x, y, w, h) in VIEWS.items():
+    im = sheet.crop((x, y, x + w, y + h)).resize((w * 4, h * 4), Image.LANCZOS)
+    im = im.filter(ImageFilter.UnsharpMask(radius=3, percent=60, threshold=2))
+    # Crush the navy panel background to pure black so the page shows through.
+    im = im.point(lambda v: max(0, v - 26) * 255 // 229)
+    im.save(f"{out}/{name}.webp", quality=92, method=6)
+    print(name, im.size)
