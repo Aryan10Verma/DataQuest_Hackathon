@@ -19,7 +19,8 @@ export default function SignIn() {
     setError(null);
     try {
       const user = await signIn(String(f.get('email')).trim(), String(f.get('password')));
-      navigate(from && from.startsWith('/app') ? from : homeFor(user.role), { replace: true });
+      // Only ever return to a page inside the app: no other sites, no // or backslash tricks.
+      navigate(from && /^\/app(\/[\w\-/]*)?$/.test(from) ? from : homeFor(user.role), { replace: true });
     } catch (err) {
       setError(errorMessage(err));
       setBusy(false);

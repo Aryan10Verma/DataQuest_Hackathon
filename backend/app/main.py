@@ -17,7 +17,13 @@ from app.core.config import APP_VERSION, get_settings
 from app.core.envelope import fail
 from app.core.errors import AppError, ErrorCode
 from app.core.log_config import configure_logging
-from app.core.middleware import RateLimitMiddleware, RequestContextMiddleware
+from app.core.middleware import (
+    BodySizeLimitMiddleware,
+    HTTPSRedirectMiddleware,
+    RateLimitMiddleware,
+    RequestContextMiddleware,
+    SecurityHeadersMiddleware,
+)
 
 log = logging.getLogger("prism")
 
@@ -34,7 +40,10 @@ _HTTP_CODES = {
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging(settings.log_level)
+    # Interactive API docs are for development; production doesn't advertise its own surface.
+    docs = {} if not settings.is_production else {"docs_url": None, "redoc_url": None, "openapi_url": None}
     app = FastAPI(
+        **docs,
         title="PRISM Engine API",
         version=APP_VERSION,
         description=(
@@ -72,15 +81,24 @@ def create_app() -> FastAPI:
     app.add_middleware(
         GZipMiddleware, minimum_size=1024
     )  # a full run shrinks ~5x (39 KB -> 7 KB) on slow mobile data
-    app.add_middleware(RateLimitMiddleware, per_minute=settings.rate_limit_per_minute)
+    app.add_middleware(
+        RateLimitMiddleware,
+        per_minute=settings.rate_limit_per_minute,
+        auth_per_minute=settings.auth_rate_limit_per_minute,
+    )
+    app.add_middleware(BodySizeLimitMiddleware, max_bytes=settings.max_body_bytes)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST", "PUT", "DELETE"],
+        allow_headers=["Authorization", "Content-Type", "Accept", "X-Request-ID", "X-Session-Mode"]
+        + (["X-Mock-Role"] if settings.mock_mode else []),
         expose_headers=["X-Request-ID"],
     )
+    app.add_middleware(SecurityHeadersMiddleware, hsts=settings.https_only)
+    if settings.https_only:
+        app.add_middleware(HTTPSRedirectMiddleware)
     app.add_middleware(RequestContextMiddleware)
 
     app.include_router(api_router)

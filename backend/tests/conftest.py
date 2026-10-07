@@ -4,6 +4,7 @@ os.environ["MOCK_MODE"] = "true"
 os.environ["DEMO_MODE"] = "true"  # developer tools on for tests and fixtures
 os.environ["DEMO_TODAY"] = "2026-10-07"
 os.environ["RATE_LIMIT_PER_MINUTE"] = "0"
+os.environ["AUTH_RATE_LIMIT_PER_MINUTE"] = "0"  # test_security.py checks the limit on its own app
 
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402

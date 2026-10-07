@@ -1,0 +1,2 @@
+# Reviewed: an empty ADZUNA_APP_KEY= placeholder in the example settings file, not a secret.
+b5aa77eeef014bfc8bfeba9203e899b762e0e4d9:backend/.env.example:generic-api-key:20

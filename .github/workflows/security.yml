@@ -1,0 +1,59 @@
+# Security checks on every push and pull request, and weekly so new advisories surface on their own.
+name: security
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 3 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  secrets:
+    name: No secrets in git history
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.21.2/gitleaks_8.21.2_linux_x64.tar.gz | tar xz gitleaks
+          ./gitleaks git --redact --no-banner .
+
+  python:
+    name: Backend dependencies and tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -e ".[dev]"
+      - name: pip-audit (known vulnerabilities)
+        run: pip-audit --skip-editable
+      - run: pytest -q -p no:warnings
+
+  node:
+    name: Website dependencies
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      # Fails on high or critical advisories in code that ships to browsers. Build tools are
+      # reported but don't block: they never run in a visitor's browser.
+      - name: npm audit (shipped code)
+        run: npm audit --omit=dev --audit-level=high
+      - name: npm audit (build tools, report only)
+        run: npm audit || true

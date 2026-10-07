@@ -38,6 +38,7 @@ export default function Register() {
         role,
         date_of_birth: role === 'student' ? String(f.get('date_of_birth')) : null,
         preferred_language: lang,
+        website: String(f.get('website') ?? '') || null,
       });
       navigate(user.role === 'student' ? '/app/questionnaire' : homeFor(user.role), { replace: true });
     } catch (err) {
@@ -58,6 +59,10 @@ export default function Register() {
       footer={<>Already have an account? <Link className="text-accent hover:underline" to="/signin">Sign in</Link></>}
     >
       <form className="grid gap-5" onSubmit={submit} noValidate>
+        {/* Bot trap: hidden from people and screen readers; automated sign-ups fill it and are refused. */}
+        <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+          <label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
+        </div>
         <fieldset className="grid gap-2">
           <legend className="mb-2 text-sm text-muted">I am a</legend>
           <div className="grid grid-cols-3 gap-2">

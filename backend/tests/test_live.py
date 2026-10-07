@@ -263,9 +263,10 @@ def test_demo_endpoints_use_seeded_families(live):
 
 def test_compat_aliases_live(live):
     r = live.post("/api/login", json={"email": df.student_email("aligned_family"), "password": PW}).json()
-    pred = live.post("/api/predict", json={"user_id": r["user_id"]}).json()
+    h = {"Authorization": f"Bearer {r['access_token']}"}
+    pred = live.post("/api/predict", json={"user_id": r["user_id"]}, headers=h).json()
     assert 0 <= pred["score"] <= 100 and pred["result"]
-    assert live.get(f"/api/results/{pred['id']}").json()["top_careers"]
+    assert live.get(f"/api/results/{pred['id']}", headers=h).json()["top_careers"]
 
 
 def test_reminders_end_to_end(live):

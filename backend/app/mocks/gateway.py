@@ -134,6 +134,8 @@ class MockGateway(MockEngagementMixin):
         )
 
     def register(self, req: RegisterRequest) -> AuthResult:
+        if req.website:
+            raise AppError(ErrorCode.VALIDATION_ERROR, "Registration could not be completed")
         if req.role is Role.ADMIN:
             raise AppError(ErrorCode.FORBIDDEN, "Admins cannot self-register")
         user = self._user(req.role).model_copy(update={"email": req.email, "full_name": req.full_name})
@@ -147,6 +149,9 @@ class MockGateway(MockEngagementMixin):
         if not req.refresh_token:
             raise AppError(ErrorCode.UNAUTHORIZED, "Invalid refresh token")
         return _tokens()
+
+    def logout(self, refresh_token: str | None) -> None:
+        return None
 
     def me(self, p: Principal) -> UserOut:
         return self._user(p.role)
@@ -615,14 +620,14 @@ class MockGateway(MockEngagementMixin):
     def compat_create_user(self, req: CompatUserCreate) -> CompatUser:
         return CompatUser(id=w.STUDENT_USER_ID, name=req.name, email=req.email, role=req.role)
 
-    def compat_get_user(self, user_id: str) -> CompatUser:
+    def compat_get_user(self, p: Principal, user_id: str) -> CompatUser:
         if user_id == w.PARENT_USER_ID:
             return CompatUser(id=user_id, name=w.PARENT["full_name"], email=w.PARENT["email"], role="parent")
         if user_id != w.STUDENT_USER_ID:
             raise AppError(ErrorCode.NOT_FOUND, "User not found", {"user_id": user_id})
         return CompatUser(id=user_id, name=w.STUDENT["full_name"], email=w.STUDENT["email"], role="student")
 
-    def compat_predict(self, req: CompatPredictRequest) -> CompatPredictResponse:
+    def compat_predict(self, p: Principal, req: CompatPredictRequest) -> CompatPredictResponse:
         pred = predict_domain_fit(req.vector or persona.VECTOR)
         run = b.analysis_run()
         top = run.recommendations[0]
@@ -634,10 +639,10 @@ class MockGateway(MockEngagementMixin):
             domain_scores=pred["scores"],
         )
 
-    def compat_result(self, result_id: str) -> CompatResult:
+    def compat_result(self, p: Principal, result_id: str) -> CompatResult:
         if result_id != w.RUN_ID:
             raise AppError(ErrorCode.NOT_FOUND, "Result not found", {"id": result_id})
-        base = self.compat_predict(CompatPredictRequest())
+        base = self.compat_predict(p, CompatPredictRequest())
         run = b.analysis_run()
         return CompatResult(
             **base.model_dump(),

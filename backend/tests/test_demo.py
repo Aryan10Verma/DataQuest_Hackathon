@@ -79,7 +79,8 @@ def test_production_refuses_developer_tools():
         Settings(app_env="production", demo_mode=True, mock_mode=False)
     with pytest.raises(ValidationError):
         Settings(app_env="production", demo_mode=False, mock_mode=True)
-    assert Settings(app_env="production", demo_mode=False, mock_mode=False).demo_mode is False
+    secrets = {"jwt_secret": "x" * 48, "data_encryption_key": "k" * 44}
+    assert Settings(app_env="production", demo_mode=False, mock_mode=False, **secrets).demo_mode is False
 
 
 def test_frozen_date_only_applies_in_demo_mode(monkeypatch):

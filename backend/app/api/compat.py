@@ -1,9 +1,10 @@
 """Alias routes matching the team's agreed examples. Bare JSON (no envelope) on success;
-errors still use the standard envelope so clients have one error shape."""
+errors still use the standard envelope so clients have one error shape. Everything except sign-in and
+sign-up needs a bearer token, with the same record checks as /api/v1."""
 
 from fastapi import APIRouter
 
-from app.api.deps import Gateway
+from app.api.deps import CurrentUser, Gateway
 from app.schemas.compat import (
     CompatLoginRequest,
     CompatLoginResponse,
@@ -28,15 +29,15 @@ def create_user(body: CompatUserCreate, gw=Gateway):
 
 
 @router.get("/users/{user_id}", response_model=CompatUser)
-def get_user(user_id: str, gw=Gateway):
-    return gw.compat_get_user(user_id)
+def get_user(user_id: str, p=CurrentUser, gw=Gateway):
+    return gw.compat_get_user(p, user_id)
 
 
 @router.post("/predict", response_model=CompatPredictResponse)
-def predict(body: CompatPredictRequest, gw=Gateway):
-    return gw.compat_predict(body)
+def predict(body: CompatPredictRequest, p=CurrentUser, gw=Gateway):
+    return gw.compat_predict(p, body)
 
 
 @router.get("/results/{result_id}", response_model=CompatResult)
-def result(result_id: str, gw=Gateway):
-    return gw.compat_result(result_id)
+def result(result_id: str, p=CurrentUser, gw=Gateway):
+    return gw.compat_result(p, result_id)

@@ -9,7 +9,7 @@ class _Compat(BaseModel):
 
 class CompatLoginRequest(_Compat):
     email: EmailStr
-    password: str
+    password: str = Field(min_length=1, max_length=128)
 
 
 class CompatLoginResponse(_Compat):
@@ -21,10 +21,10 @@ class CompatLoginResponse(_Compat):
 
 
 class CompatUserCreate(_Compat):
-    name: str
+    name: str = Field(min_length=1, max_length=120)
     email: EmailStr
-    password: str = Field(min_length=8)
-    role: str = "student"
+    password: str = Field(min_length=8, max_length=128)
+    role: str = Field(default="student", max_length=10)
 
 
 class CompatUser(_Compat):
@@ -35,9 +35,11 @@ class CompatUser(_Compat):
 
 
 class CompatPredictRequest(_Compat):
-    user_id: str | None = None
-    student_id: str | None = None
-    vector: dict[str, float] | None = Field(default=None, description="Optional canonical student vector")
+    user_id: str | None = Field(default=None, max_length=36)
+    student_id: str | None = Field(default=None, max_length=36)
+    vector: dict[str, float] | None = Field(
+        default=None, max_length=64, description="Optional canonical student vector"
+    )
 
 
 class CompatPredictResponse(_Compat):

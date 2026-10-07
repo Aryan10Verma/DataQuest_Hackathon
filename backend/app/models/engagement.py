@@ -5,6 +5,7 @@ from datetime import date, datetime
 from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Index, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
+from app.core.crypto import EncryptedString
 from app.db.base import Base, IdMixin, JSONType, TimestampMixin
 
 
@@ -50,13 +51,13 @@ class Outcome(IdMixin, TimestampMixin, Base):
     chosen_career_id: Mapped[str | None] = mapped_column(
         ForeignKey("careers.id", ondelete="SET NULL"), default=None
     )
-    chosen_pathway_text: Mapped[str | None] = mapped_column(String(200), default=None)
+    chosen_pathway_text: Mapped[str | None] = mapped_column(EncryptedString(500), default=None)
     status: Mapped[str] = mapped_column(String(10))
     admitted: Mapped[bool | None] = mapped_column(default=None)
     scholarship_received: Mapped[bool | None] = mapped_column(default=None)
     satisfaction: Mapped[int | None] = mapped_column(Integer, default=None)
     followed_recommendation_rank: Mapped[int | None] = mapped_column(Integer, default=None)
-    notes: Mapped[str | None] = mapped_column(String(500), default=None)
+    notes: Mapped[str | None] = mapped_column(EncryptedString(1000), default=None)
 
 
 class Mentor(IdMixin, TimestampMixin, Base):

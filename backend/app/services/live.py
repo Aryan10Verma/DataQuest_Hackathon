@@ -112,6 +112,7 @@ from app.services.principal import Principal
 K_ANONYMITY = 5
 LOCKOUT_AFTER = 5
 LOCKOUT_MINUTES = 15
+_DUMMY_HASH = hash_password("not-a-real-password-used-for-timing-only")
 INCOME_BAND_MIDPOINT = {
     "below_3l": 200_000,
     "3l_6l": 450_000,
@@ -291,6 +292,9 @@ class LiveGateway(EngagementMixin):
 
     # ------------------------------------------------------------ auth
     def register(self, req: RegisterRequest) -> AuthResult:
+        if req.website:
+            # Only bots fill the hidden field. Same message as any other bad form, so they learn nothing.
+            raise AppError(ErrorCode.VALIDATION_ERROR, "Registration could not be completed")
         if req.role is Role.ADMIN:
             raise AppError(ErrorCode.FORBIDDEN, "Admins cannot self-register")
         if req.role is Role.STUDENT and req.date_of_birth is None:
@@ -319,7 +323,9 @@ class LiveGateway(EngagementMixin):
         )
         if u and u.locked_until and _aware(u.locked_until) > _utcnow():
             raise AppError(ErrorCode.RATE_LIMITED, "Too many failed attempts; try again in a few minutes")
-        if u is None or not verify_password(req.password, u.password_hash):
+        # Unknown emails still pay for a hash check, so response time doesn't reveal who has an account.
+        valid = verify_password(req.password, u.password_hash if u else _DUMMY_HASH)
+        if u is None or not valid:
             if u:
                 u.failed_logins += 1
                 if u.failed_logins >= LOCKOUT_AFTER:
@@ -332,6 +338,8 @@ class LiveGateway(EngagementMixin):
         return AuthResult(user=self._user_out(u), tokens=self._tokens(u))
 
     def refresh(self, req: RefreshRequest) -> TokenPair:
+        if not req.refresh_token:
+            raise AppError(ErrorCode.UNAUTHORIZED, "Sign in again")
         row = self.db.scalar(
             select(im.RefreshToken).where(im.RefreshToken.token_hash == sha256(req.refresh_token))
         )
@@ -349,6 +357,21 @@ class LiveGateway(EngagementMixin):
             raise AppError(ErrorCode.UNAUTHORIZED, "Refresh token reuse detected; please sign in again")
         row.revoked_at = _utcnow()
         return self._tokens(self._user(row.user_id), family=row.token_family)
+
+    def logout(self, refresh_token: str | None) -> None:
+        if not refresh_token:
+            return
+        row = self.db.scalar(
+            select(im.RefreshToken).where(im.RefreshToken.token_hash == sha256(refresh_token))
+        )
+        if row is not None:
+            self.db.execute(
+                update(im.RefreshToken)
+                .where(im.RefreshToken.token_family == row.token_family, im.RefreshToken.revoked_at.is_(None))
+                .values(revoked_at=_utcnow())
+                .execution_options(synchronize_session=False)
+            )
+            self._audit(row.user_id, "user.logout", "user", row.user_id)
 
     def me(self, p: Principal) -> UserOut:
         return self._user_out(self._user(p.user_id))
@@ -1459,16 +1482,16 @@ class LiveGateway(EngagementMixin):
         )
         return CompatUser(id=r.user.id, name=r.user.full_name, email=r.user.email, role=r.user.role.value)
 
-    def compat_get_user(self, user_id: str) -> CompatUser:
+    def compat_get_user(self, p: Principal, user_id: str) -> CompatUser:
+        family = {m.user_id for m in self._family_members(p.family_id)} if p.family_id else set()
+        if user_id != p.user_id and user_id not in family and user_id not in self._students_of(p):
+            raise AppError(ErrorCode.FORBIDDEN, "You can only see your own account or your family's")
         u = self._user(user_id)
         return CompatUser(id=u.id, name=u.full_name, email=u.email, role=u.role)
 
-    def compat_predict(self, req: CompatPredictRequest) -> CompatPredictResponse:
-        uid = req.student_id or req.user_id
-        if not uid:
-            raise AppError(ErrorCode.VALIDATION_ERROR, "user_id or student_id is required in live mode")
-        p = self.principal(uid)
-        run = self.create_run(p, AnalysisRunRequest(student_id=uid))
+    def compat_predict(self, p: Principal, req: CompatPredictRequest) -> CompatPredictResponse:
+        # The caller's own rights decide whose results can be computed (create_run checks the student).
+        run = self.create_run(p, AnalysisRunRequest(student_id=req.student_id or req.user_id))
         from app.ml.predictor import predict_domain_fit
 
         top = run.recommendations[0]
@@ -1480,11 +1503,8 @@ class LiveGateway(EngagementMixin):
             domain_scores=predict_domain_fit(run.student_vector)["scores"],
         )
 
-    def compat_result(self, result_id: str) -> CompatResult:
-        row = self.db.get(om.AnalysisRunRow, result_id)
-        if row is None:
-            raise AppError(ErrorCode.NOT_FOUND, "Result not found", {"id": result_id})
-        run = AnalysisRun.model_validate(row.output)
+    def compat_result(self, p: Principal, result_id: str) -> CompatResult:
+        _, run = self._load_run(p, result_id)
         from app.ml.predictor import predict_domain_fit
 
         top = run.recommendations[0]

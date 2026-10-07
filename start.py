@@ -14,7 +14,9 @@ Options:
 from __future__ import annotations
 
 import argparse
+import base64
 import os
+import secrets
 import shutil
 import subprocess
 import sys
@@ -36,6 +38,8 @@ ENV_OVERRIDES = {
     "DEMO_MODE": "true",
     "DEMO_TODAY": "2026-10-07",
     "RATE_LIMIT_PER_MINUTE": "600",
+    # The presenter switches between demo accounts quickly; real installs keep the default of 10.
+    "AUTH_RATE_LIMIT_PER_MINUTE": "30",
     "CORS_ORIGINS": "http://localhost:5173,http://127.0.0.1:5173,http://localhost:8000,http://127.0.0.1:8000",
 }
 
@@ -53,7 +57,7 @@ def ensure_backend() -> None:
         step("Creating the Python environment (backend/.venv)")
         venv.EnvBuilder(with_pip=True).create(VENV)
     try:
-        subprocess.run([str(PY), "-c", "import fastapi, sqlalchemy, argon2"], check=True, capture_output=True)
+        subprocess.run([str(PY), "-c", "import fastapi, sqlalchemy, argon2, cryptography"], check=True, capture_output=True)
     except subprocess.CalledProcessError:
         step("Installing backend dependencies")
         run([PY, "-m", "pip", "install", "-q", "-e", ".[dev]"], BACKEND)
@@ -68,6 +72,28 @@ def ensure_backend() -> None:
             out.append(f"{key}={ENV_OVERRIDES.pop(key)}" if key in ENV_OVERRIDES else line)
         out += [f"{k}={v}" for k, v in ENV_OVERRIDES.items()]
         env_file.write_text("\n".join(out) + "\n", encoding="utf-8")
+    ensure_secrets(env_file)
+
+
+PLACEHOLDER_JWT = {"", "change-me-in-production-at-least-32-chars", "dev-only-secret-change-me-0123456789abcdef"}
+
+
+def ensure_secrets(env_file: Path) -> None:
+    """Give this install its own random secrets. The encryption key is only ever added, never replaced,
+    because data already encrypted with it would become unreadable."""
+    lines = env_file.read_text(encoding="utf-8").splitlines()
+    values = {ln.split("=", 1)[0]: ln.split("=", 1)[1] for ln in lines if "=" in ln and not ln.startswith("#")}
+    fresh = {}
+    if values.get("JWT_SECRET", "") in PLACEHOLDER_JWT:
+        fresh["JWT_SECRET"] = secrets.token_urlsafe(48)
+    if not values.get("DATA_ENCRYPTION_KEY"):
+        fresh["DATA_ENCRYPTION_KEY"] = base64.urlsafe_b64encode(secrets.token_bytes(32)).decode()
+    if not fresh:
+        return
+    step("Generating private keys in backend/.env")
+    out = [f"{ln.split('=', 1)[0]}={fresh.pop(ln.split('=', 1)[0])}" if ln.split("=", 1)[0] in fresh else ln for ln in lines]
+    out += [f"{k}={v}" for k, v in fresh.items()]
+    env_file.write_text("\n".join(out) + "\n", encoding="utf-8")
 
 
 def ensure_data(reset: bool) -> None:

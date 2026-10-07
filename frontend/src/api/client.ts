@@ -34,35 +34,58 @@ interface Envelope<T> {
   meta: Meta;
 }
 
-/* ---------- token store: memory first, sessionStorage so a refresh survives a reload ---------- */
-const TOKEN_KEY = 'prism.tokens';
-interface Tokens {
-  access_token: string;
-  refresh_token: string;
-}
-let tokens: Tokens | null = readStored();
+/* ---------- sign-in state ----------
+ * The short-lived access token lives only in memory. The refresh token is an HttpOnly cookie the
+ * server sets (page scripts can't read it), so a reload or a new tab signs back in through
+ * /auth/refresh. A plain flag in localStorage only says "try that"; it holds nothing secret. */
+const SESSION_FLAG = 'prism.session';
+let accessToken: string | null = null;
 let mockRole: Role = 'student';
 let lastMeta: Meta | null = null;
 
-function readStored(): Tokens | null {
+try {
+  sessionStorage.removeItem('prism.tokens'); // tokens stored by earlier versions
+} catch {
+  /* storage blocked */
+}
+
+function flag(on: boolean) {
   try {
-    const raw = sessionStorage.getItem(TOKEN_KEY);
-    return raw ? (JSON.parse(raw) as Tokens) : null;
+    if (on) localStorage.setItem(SESSION_FLAG, '1');
+    else localStorage.removeItem(SESSION_FLAG);
   } catch {
-    return null;
+    /* storage blocked: the session lasts until the tab reloads */
   }
 }
 
-export function setTokens(next: Tokens | null) {
-  tokens = next;
+/** Store the access token after sign-in, or forget it (null) after sign-out. */
+export function setAccessToken(token: string | null) {
+  accessToken = token;
+  flag(token !== null);
+}
+
+/** Whether a cookie session may exist, so resuming is worth a request. */
+export function mayHaveSession() {
+  if (accessToken) return true;
   try {
-    if (next) sessionStorage.setItem(TOKEN_KEY, JSON.stringify(next));
-    else sessionStorage.removeItem(TOKEN_KEY);
+    return localStorage.getItem(SESSION_FLAG) === '1';
   } catch {
-    /* storage blocked: memory only */
+    return false;
   }
 }
-export const hasTokens = () => tokens !== null;
+
+/** Revoke the refresh cookie on the server. */
+export async function signOutOnServer() {
+  accessToken = null;
+  flag(false);
+  if (import.meta.env.VITE_DATA_MODE === 'fixtures' || config.authMode === 'mock') return;
+  try {
+    await fetch(`${config.apiUrl}/api/v1/auth/logout`, { method: 'POST', credentials, headers: { Accept: 'application/json' } });
+  } catch {
+    /* offline: the cookie expires on its own */
+  }
+}
+
 export const setMockRole = (role: Role) => {
   mockRole = role;
 };
@@ -88,34 +111,40 @@ export function buildPath(path: string, query?: Query) {
   return qs ? `${path}?${qs}` : path;
 }
 
+// Same-origin by default; a separate API origin (VITE_API_URL) needs the cookie sent cross-site.
+const credentials: RequestCredentials = config.apiUrl ? 'include' : 'same-origin';
+
 function headers(anonymous: boolean, json: boolean): HeadersInit {
-  const h: Record<string, string> = { Accept: 'application/json' };
+  // X-Session-Mode: cookie asks the server to keep the refresh token out of response bodies.
+  const h: Record<string, string> = { Accept: 'application/json', 'X-Session-Mode': 'cookie' };
   if (json) h['Content-Type'] = 'application/json';
   if (!anonymous) {
     // The literal env comparison lets the build drop mock auth entirely unless VITE_AUTH_MODE=mock.
     if (import.meta.env.VITE_AUTH_MODE === 'mock') h['X-Mock-Role'] = mockRole;
-    else if (tokens) h.Authorization = `Bearer ${tokens.access_token}`;
+    else if (accessToken) h.Authorization = `Bearer ${accessToken}`;
   }
   return h;
 }
 
 let refreshing: Promise<boolean> | null = null;
-async function refreshOnce(): Promise<boolean> {
-  if (!tokens) return false;
+/** Swap the refresh cookie for a new access token; one request at a time however many calls hit 401. */
+export async function refreshOnce(): Promise<boolean> {
+  if (!mayHaveSession()) return false;
   refreshing ??= (async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/v1/auth/refresh`, {
         method: 'POST',
-        headers: headers(true, true),
-        body: JSON.stringify({ refresh_token: tokens!.refresh_token }),
+        credentials,
+        headers: headers(true, false),
       });
-      const env = (await res.json()) as Envelope<Tokens>;
+      const env = (await res.json()) as Envelope<{ access_token: string }>;
       if (!env.success) throw new Error();
-      setTokens({ access_token: env.data.access_token, refresh_token: env.data.refresh_token });
+      setAccessToken(env.data.access_token);
       return true;
     } catch {
-      setTokens(null);
-      window.dispatchEvent(new Event('prism:signed-out'));
+      const had = accessToken !== null;
+      setAccessToken(null);
+      if (had) window.dispatchEvent(new Event('prism:signed-out'));
       return false;
     } finally {
       refreshing = null;
@@ -150,6 +179,7 @@ export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T
   const send = () =>
     fetch(`${config.apiUrl}${url}`, {
       method,
+      credentials,
       headers: headers(!!opts.anonymous, opts.body !== undefined),
       body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
     });
@@ -171,7 +201,7 @@ export async function apiBlob(path: string, query?: Query): Promise<Blob> {
   if (config.dataMode === 'fixtures') {
     throw new ApiError('OFFLINE', 'Reports and calendar files need the PRISM server. They are not available offline.');
   }
-  const send = () => fetch(`${config.apiUrl}${url}`, { headers: headers(false, false) });
+  const send = () => fetch(`${config.apiUrl}${url}`, { credentials, headers: headers(false, false) });
   let res = await send();
   if (res.status === 401 && config.authMode === 'live' && (await refreshOnce())) res = await send();
   if (!res.ok) await unwrap(res); // throws the API's own error message

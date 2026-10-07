@@ -13,6 +13,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
+from app.core.crypto import EncryptedString
 from app.db.base import Base, IdMixin, JSONType, SoftDeleteMixin, TimestampMixin
 
 
@@ -28,7 +29,9 @@ class User(IdMixin, TimestampMixin, SoftDeleteMixin, Base):
     role: Mapped[str] = mapped_column(String(10))
     date_of_birth: Mapped[date | None] = mapped_column(Date, default=None)
     preferred_language: Mapped[str] = mapped_column(String(8), default="en")
-    phone: Mapped[str | None] = mapped_column(String(20), default=None)  # for reminders, opt-in only
+    phone: Mapped[str | None] = mapped_column(
+        EncryptedString(200), default=None
+    )  # reminders, opt-in; encrypted
     failed_logins: Mapped[int] = mapped_column(Integer, default=0)
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=None)
 

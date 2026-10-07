@@ -14,6 +14,11 @@ class RegisterRequest(Contract):
         default=None, description="Required for students (minor consent check)"
     )
     preferred_language: str = Field(default="en", max_length=8)
+    website: str | None = Field(
+        default=None,
+        max_length=200,
+        description="Leave empty: a field hidden from people that only bots fill in",
+    )
 
 
 class LoginRequest(Contract):
@@ -22,12 +27,16 @@ class LoginRequest(Contract):
 
 
 class RefreshRequest(Contract):
-    refresh_token: str
+    refresh_token: str | None = Field(
+        default=None, max_length=200, description="Omit when the browser holds it in the prism_refresh cookie"
+    )
 
 
 class TokenPair(Contract):
     access_token: str
-    refresh_token: str
+    refresh_token: str | None = Field(
+        description="Empty when the client asked for cookie sessions (X-Session-Mode: cookie)"
+    )
     token_type: str = "bearer"
     expires_in: int = Field(description="Access-token lifetime in seconds")
 

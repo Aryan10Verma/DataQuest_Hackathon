@@ -91,6 +91,25 @@ python scripts/send_reminders.py                       # send reminders due toda
 python scripts/local_problems.py data/partners/local_problems_template.csv
 ```
 
+## Security
+
+| Area | What is in place |
+|---|---|
+| Secrets | API keys, the token-signing secret and the encryption key live only in `backend/.env` (git-ignored, never sent to the website). `start.py` generates random values on first run. `APP_ENV=production` refuses to start with a placeholder secret, without `DATA_ENCRYPTION_KEY`, or with demo/mock mode on. |
+| Sign-in | Passwords hashed with argon2id. Accounts lock for 15 minutes after 5 wrong passwords. Sign-in, sign-up and refresh are limited to `AUTH_RATE_LIMIT_PER_MINUTE` per IP (default 10), the rest of the API to `RATE_LIMIT_PER_MINUTE`. Unknown emails and wrong passwords get the same answer in the same time. |
+| Sessions | Access tokens last 30 minutes and live only in page memory. The refresh token is an `HttpOnly; Secure; SameSite=Strict` cookie scoped to `/api/v1/auth`, rotated on every use; reuse of an old one revokes the whole sign-in. `POST /api/v1/auth/logout` revokes it. API clients that can't hold cookies still get both tokens in the body. |
+| Access to records | Every route needs a bearer token except sign-in, sign-up, public reference data (career catalogue, questionnaire items, loan calculator, methodology, data status) and the `/demo` routes, which exist only with `DEMO_MODE=true`. Each record is checked against the caller: students see their own, parents their family, counsellors their assigned students, admins only k-anonymised totals. Roles are enforced on the server, never by the website. |
+| Input | Every request body is a strict schema (unknown fields rejected, lengths and ranges bounded). Bodies over `MAX_BODY_BYTES` are refused. All database access goes through SQLAlchemy with bound parameters; no SQL is built from strings. |
+| Output | Responses are filtered through response models (no password hashes, no internal fields). The HTML report escapes every value; React escapes everything it renders. Unexpected errors return a generic message. API docs are off in production. |
+| Encryption at rest | Phone numbers and free-text outcome notes are encrypted with Fernet (`DATA_ENCRYPTION_KEY`). Money figures stay plain because the database checks them; protect the database volume itself with disk encryption in production. |
+| Headers | Content-Security-Policy (scripts only from this server), `X-Frame-Options: DENY`, `nosniff`, a strict referrer policy, a locked-down permissions policy and `Cache-Control: no-store` on the API. HSTS when HTTPS is on. |
+| HTTPS | `FORCE_HTTPS` (on by default in production) redirects http to https. Behind a proxy that ends TLS, run uvicorn with `--proxy-headers`. |
+| Bots | Per-IP limits on sign-up and sign-in, plus a hidden form field that only bots fill in. For public launch, add a CAPTCHA such as Cloudflare Turnstile (needs a site key). |
+| Uploads | The API accepts no file uploads. Static files are served only from the built website folder. |
+| Dependencies | `.github/workflows/security.yml` runs gitleaks over the full git history, `pip-audit`, the backend tests and `npm audit` on every push and weekly; Dependabot opens update pull requests. |
+
+On SQLite there is no row-level security in the database; the record checks above are done by the API on every request and covered by `tests/test_live.py` and `tests/test_security.py`.
+
 ## Tests & lint
 
 ```bash

@@ -55,6 +55,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout
+         * @description Revoke this sign-in everywhere it was refreshed, and clear the cookie.
+         */
+        post: operations["logout_api_v1_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/me": {
         parameters: {
             query?: never;
@@ -2330,6 +2350,17 @@ export interface components {
             error?: components["schemas"]["ErrorBody"] | null;
             meta: components["schemas"]["Meta"];
         };
+        /** Envelope[dict] */
+        Envelope_dict_: {
+            /** Success */
+            success: boolean;
+            /** Data */
+            data?: {
+                [key: string]: unknown;
+            } | null;
+            error?: components["schemas"]["ErrorBody"] | null;
+            meta: components["schemas"]["Meta"];
+        };
         /** Envelope[dict[str, int]] */
         Envelope_dict_str__int__: {
             /** Success */
@@ -3726,8 +3757,11 @@ export interface components {
         };
         /** RefreshRequest */
         RefreshRequest: {
-            /** Refresh Token */
-            refresh_token: string;
+            /**
+             * Refresh Token
+             * @description Omit when the browser holds it in the prism_refresh cookie
+             */
+            refresh_token?: string | null;
         };
         /** RefreshResult */
         RefreshResult: {
@@ -3804,6 +3838,11 @@ export interface components {
              * @default en
              */
             preferred_language: string;
+            /**
+             * Website
+             * @description Leave empty: a field hidden from people that only bots fill in
+             */
+            website?: string | null;
         };
         /**
          * ReminderChannel
@@ -4389,8 +4428,11 @@ export interface components {
         TokenPair: {
             /** Access Token */
             access_token: string;
-            /** Refresh Token */
-            refresh_token: string;
+            /**
+             * Refresh Token
+             * @description Empty when the client asked for cookie sessions (X-Session-Mode: cookie)
+             */
+            refresh_token: string | null;
             /**
              * Token Type
              * @default bearer
@@ -4595,7 +4637,10 @@ export interface operations {
     register_api_v1_auth_register_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description 'cookie': keep the refresh token out of the body */
+                "X-Session-Mode"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -4628,7 +4673,10 @@ export interface operations {
     login_api_v1_auth_login_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description 'cookie': keep the refresh token out of the body */
+                "X-Session-Mode"?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -4661,13 +4709,18 @@ export interface operations {
     refresh_api_v1_auth_refresh_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description 'cookie': keep the refresh token out of the body */
+                "X-Session-Mode"?: string | null;
+            };
             path?: never;
-            cookie?: never;
+            cookie?: {
+                prism_refresh?: string | null;
+            };
         };
-        requestBody: {
+        requestBody?: {
             content: {
-                "application/json": components["schemas"]["RefreshRequest"];
+                "application/json": components["schemas"]["RefreshRequest"] | null;
             };
         };
         responses: {
@@ -4678,6 +4731,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_TokenPair_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    logout_api_v1_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: {
+                prism_refresh?: string | null;
+            };
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RefreshRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_dict_"];
                 };
             };
             /** @description Validation Error */
@@ -6670,7 +6758,12 @@ export interface operations {
     get_user_api_users__user_id__get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Bearer <access_token> */
+                authorization?: string | null;
+                /** @description MOCK_MODE only: impersonate a role to test role-specific views */
+                "x-mock-role"?: components["schemas"]["Role"] | null;
+            };
             path: {
                 user_id: string;
             };
@@ -6701,7 +6794,12 @@ export interface operations {
     predict_api_predict_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Bearer <access_token> */
+                authorization?: string | null;
+                /** @description MOCK_MODE only: impersonate a role to test role-specific views */
+                "x-mock-role"?: components["schemas"]["Role"] | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -6734,7 +6832,12 @@ export interface operations {
     result_api_results__result_id__get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                /** @description Bearer <access_token> */
+                authorization?: string | null;
+                /** @description MOCK_MODE only: impersonate a role to test role-specific views */
+                "x-mock-role"?: components["schemas"]["Role"] | null;
+            };
             path: {
                 result_id: string;
             };

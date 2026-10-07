@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { api, config, getMockRole, hasTokens, setMockRole, setTokens, type Role } from '@/api/client';
+import { api, config, getMockRole, mayHaveSession, refreshOnce, setAccessToken, setMockRole, signOutOnServer, type Role } from '@/api/client';
 import { useFamily, useRuns, type Lang } from '@/api/hooks';
 import type { AuthResult, RegisterRequest, UserOut } from '@/api/types';
 
@@ -64,15 +64,18 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const role = readRole();
     if (role) setMockRole(role);
-    const resume = roleDriven ? role !== null : hasTokens();
+    const resume = roleDriven ? role !== null : mayHaveSession();
     if (!resume) {
       setStatus('signed-out');
       return;
     }
-    loadMe().catch(() => {
-      setTokens(null);
-      setStatus('signed-out');
-    });
+    // Live sign-in: trade the HttpOnly refresh cookie for an access token, then load the user.
+    (roleDriven ? Promise.resolve(true) : refreshOnce())
+      .then((ok) => (ok ? loadMe() : Promise.reject(new Error('no session'))))
+      .catch(() => {
+        setAccessToken(null);
+        setStatus('signed-out');
+      });
   }, [loadMe]);
 
   useEffect(() => {
@@ -92,7 +95,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         setMockRole(res.user.role);
         storeRole(res.user.role);
       }
-      setTokens({ access_token: res.tokens.access_token, refresh_token: res.tokens.refresh_token });
+      setAccessToken(res.tokens.access_token);
       if (roleDriven) {
         setUser(res.user);
         setStatus('signed-in');
@@ -112,7 +115,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       register: async (body) =>
         accept(await api<AuthResult>('/api/v1/auth/register', { method: 'POST', body, anonymous: true })),
       signOut: () => {
-        setTokens(null);
+        void signOutOnServer();
         storeRole(null);
         setUser(null);
         setStatus('signed-out');

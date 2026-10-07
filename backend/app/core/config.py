@@ -12,6 +12,13 @@ ENGINE_VERSION = "prism-engine/1.0.0"
 API_VERSION = "v1"
 
 
+# Secrets shipped in examples and defaults; never acceptable outside development.
+_PLACEHOLDER_SECRETS = {
+    "dev-only-secret-change-me-0123456789abcdef",
+    "change-me-in-production-at-least-32-chars",
+}
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
@@ -26,6 +33,20 @@ class Settings(BaseSettings):
         default_factory=lambda: ["http://localhost:3000", "http://localhost:5173"]
     )
     rate_limit_per_minute: int = 120
+    # Sign-in, sign-up and token refresh get their own, much tighter per-IP budget.
+    auth_rate_limit_per_minute: int = 10
+    # Requests with a larger body are refused before they are read.
+    max_body_bytes: int = Field(default=1_000_000, ge=1_000)
+    # Redirect http to https and send HSTS. Unset = on when APP_ENV=production. Behind a proxy that ends
+    # TLS, run uvicorn with --proxy-headers so the original scheme is seen.
+    force_https: bool | None = None
+    # The refresh token travels in an HttpOnly cookie. Browsers accept Secure cookies on localhost;
+    # set false only to test over plain http on another host.
+    cookie_secure: bool = True
+    # Fernet key that encrypts phone numbers and free-text notes at rest
+    # (python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())").
+    # Unset in development = a fixed development key; required in production.
+    data_encryption_key: str | None = None
     ml_model_path: str | None = None
     ml_alpha: float = Field(default=0.5, ge=0.0, le=1.0)
     # Optional live job-postings feed (free key from developer.adzuna.com). Absent = feed disabled.
@@ -53,10 +74,24 @@ class Settings(BaseSettings):
     demo_mode: bool = False
     demo_today: date | None = None
 
+    @property
+    def is_production(self) -> bool:
+        return self.app_env.lower() in ("prod", "production")
+
+    @property
+    def https_only(self) -> bool:
+        return self.is_production if self.force_https is None else self.force_https
+
     @model_validator(mode="after")
-    def _no_dev_tools_in_production(self) -> "Settings":
-        if self.app_env.lower() in ("prod", "production") and (self.demo_mode or self.mock_mode):
+    def _safe_production(self) -> "Settings":
+        if not self.is_production:
+            return self
+        if self.demo_mode or self.mock_mode:
             raise ValueError("APP_ENV=production requires DEMO_MODE=false and MOCK_MODE=false")
+        if len(self.jwt_secret) < 32 or self.jwt_secret in _PLACEHOLDER_SECRETS:
+            raise ValueError("APP_ENV=production requires a random JWT_SECRET of at least 32 characters")
+        if not self.data_encryption_key:
+            raise ValueError("APP_ENV=production requires DATA_ENCRYPTION_KEY")
         return self
 
     @field_validator("cors_origins", mode="before")
@@ -66,7 +101,15 @@ class Settings(BaseSettings):
             return [o.strip() for o in v.split(",") if o.strip()]
         return v
 
-    @field_validator("ml_model_path", "adzuna_app_id", "adzuna_app_key", "grok_api_key", mode="before")
+    @field_validator(
+        "ml_model_path",
+        "adzuna_app_id",
+        "adzuna_app_key",
+        "grok_api_key",
+        "data_encryption_key",
+        "force_https",
+        mode="before",
+    )
     @classmethod
     def _empty_to_none(cls, v: object) -> object:
         return v or None
