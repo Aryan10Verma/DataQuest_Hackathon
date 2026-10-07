@@ -33,7 +33,7 @@ Decisions confirmed with the client: dark only, one champagne accent (originally
 **Funding class has no colour.** It is a four-step meter (▮▮▮▮ to ▮▯▯▯) with a text label.
 
 **Imagery and atmosphere:**
-- The body views are graded to warm silver (`frontend/scripts/grade_views.py`).
+- The body views keep their original holographic blue. The brain (rose) and the heart (garnet) are picked out in colour with a soft glow, because they stand for what PRISM reads: mind and heart (`frontend/scripts/grade_views.py`).
 - The landing page has a soft champagne glow, a gallery-style vignette, and a static film grain over the whole site.
 
 ## Type
