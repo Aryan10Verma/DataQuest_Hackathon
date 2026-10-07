@@ -45,6 +45,9 @@ class Settings(BaseSettings):
     twilio_from_sms: str | None = None
     twilio_from_whatsapp: str | None = None
     log_level: str = "INFO"
+    # Built website (frontend/dist) to serve next to the API, so one server runs the whole product.
+    # Empty = use ../frontend/dist when it exists; "none" = API only.
+    frontend_dist: str | None = None
     # Developer / judging tools only, off by default: /api/v1/demo/* endpoints and an optional frozen "today"
     # (DEMO_TODAY, used only while DEMO_MODE is on) so deadlines never slip into the past during a demo.
     demo_mode: bool = False

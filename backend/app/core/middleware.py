@@ -55,7 +55,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self._lock = threading.Lock()
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
-        if self.per_minute <= 0 or request.url.path.endswith("/health"):
+        path = request.url.path
+        # Only the API is limited; the website's static files (served alongside it) are not.
+        if self.per_minute <= 0 or not path.startswith("/api") or path.endswith("/health"):
             return await call_next(request)
         client = request.client.host if request.client else "unknown"
         now = time.monotonic()

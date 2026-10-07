@@ -23,7 +23,9 @@ Reference images are in `style/`:
 
 ## Applied to this project
 
-The body scan site in `web/` follows these rules:
-- Near-black background, white type, and a cyan glow ring as the one accent. Orange appears only on the active body systems.
-- The hero headline, *Full body scan*, is set huge behind the body (as in NUORBIT and METAVERSE). On scroll it spreads apart and dissolves.
-- A slim stats bar runs along the bottom (5 views, 6 body systems, live heart rate), with the body systems on the right.
+The PRISM landing page (`frontend/src/landing/`) and the app follow these rules:
+- Near-black background, white type, and a cyan glow ring as the one accent. The six score-part colours appear only inside charts.
+- The word *PRISM* is set huge behind the body (as in NUORBIT and METAVERSE). On scroll it spreads apart and dissolves.
+- A slim stats bar runs along the bottom of the landing page (74 questions, 25 minutes, 6 score parts) and of the Results screen (the six overall scores).
+
+The full design system is in `design/PLAN.md`.

@@ -1,12 +1,14 @@
 """PRISM Engine API entrypoint: `uvicorn app.main:app --reload`."""
 
 import logging
+from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.compat import router as compat_router
@@ -83,7 +85,39 @@ def create_app() -> FastAPI:
 
     app.include_router(api_router)
     app.include_router(compat_router)
+    _mount_frontend(app, settings.frontend_dist)
     return app
+
+
+_RESERVED = ("api/", "docs", "redoc", "openapi.json")
+
+
+def _mount_frontend(app: FastAPI, configured: str | None) -> None:
+    """Serve the built single-page website from the same origin as the API.
+
+    Files that exist are served as-is; any other non-API path returns index.html so the
+    client-side router can handle it. API routes are registered first and always win.
+    """
+    if configured and configured.lower() == "none":
+        return
+    dist = Path(configured) if configured else Path(__file__).resolve().parents[2] / "frontend" / "dist"
+    index = dist / "index.html"
+    if not index.is_file():
+        return
+    root = dist.resolve()
+    if (dist / "assets").is_dir():
+        app.mount("/assets", StaticFiles(directory=dist / "assets"), name="assets")
+
+    @app.get("/{path:path}", include_in_schema=False)
+    async def _spa(path: str) -> FileResponse:
+        if path.startswith(_RESERVED):
+            raise StarletteHTTPException(status_code=404, detail="Not found")
+        candidate = (dist / path).resolve()
+        if path and candidate.is_file() and candidate.is_relative_to(root):
+            return FileResponse(candidate)
+        return FileResponse(index, headers={"Cache-Control": "no-cache"})
+
+    log.info("serving website from %s", dist)
 
 
 app = create_app()

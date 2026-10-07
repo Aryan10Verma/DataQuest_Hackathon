@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  /* Channels let Tailwind apply opacity (bg-scan/10); the hex forms are for plain CSS. */
+  --void-rgb: 2 5 11;
+  --deep-rgb: 8 16 29;
+  --ink-rgb: 232 240 255;
+  --muted-rgb: 133 146 171;
+  --scan-rgb: 143 208 255;
+  --danger-rgb: 255 138 138;
+  --void: #02050b;
+  --deep: #08101d;
+  --line: rgba(143, 208, 255, 0.14);
+  --line-strong: rgba(143, 208, 255, 0.3);
+  --ink: #e8f0ff;
+  --muted: #8592ab;
+  --scan: #8fd0ff;
+  --glow: rgba(110, 180, 255, 0.55);
+  --danger: #ff8a8a;
+
+  /* Score parts: the only colours besides cyan, and only inside charts. */
+  --part-fit: #9488f2;
+  --part-market: #5e9cf2;
+  --part-affordability: #3fc1ae;
+  --part-roi: #86c35f;
+  --part-family: #e8b54a;
+  --part-disruption: #ef6f68;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --rail: 168px;
+  --bar: 72px;
+}
+
+@layer base {
+  html {
+    background: var(--void);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--void);
+    color: var(--ink);
+    font-family: Manrope, 'Noto Sans Tamil', 'Noto Sans Devanagari', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4 { margin: 0; font-weight: 400; }
+  p { margin: 0; }
+  button { font: inherit; color: inherit; }
+  :focus-visible {
+    outline: 2px solid var(--scan);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  ::selection { background: rgba(143, 208, 255, 0.3); }
+}
+
+@layer components {
+  /* A panel is defined by a hairline, never a shadow. */
+  .panel {
+    @apply rounded-panel border border-line bg-deep/60;
+  }
+  .hairline { border-color: var(--line); }
+
+  .btn {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 text-sm font-semibold transition-colors;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-void hover:bg-white;
+    box-shadow: 0 0 28px rgba(143, 208, 255, 0.22);
+  }
+  .btn-quiet {
+    @apply btn border border-line text-ink hover:border-scan hover:bg-scan/10;
+  }
+  .btn-text {
+    @apply inline-flex min-h-[44px] items-center gap-2 text-sm font-medium text-scan underline-offset-4 hover:underline;
+  }
+  .btn:disabled { @apply cursor-not-allowed opacity-50; }
+
+  .field {
+    @apply grid gap-1.5 text-sm text-muted;
+  }
+  .input {
+    @apply min-h-[44px] w-full rounded-lg border border-line bg-void/70 px-3.5 text-base text-ink transition-colors placeholder:text-muted/60 focus:border-scan focus:outline-none;
+  }
+  .input[aria-invalid='true'] { border-color: var(--danger); }
+
+  .label { @apply text-xs text-muted; }
+  .display { font-family: 'Bodoni Moda', Didot, 'Bodoni 72', Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+  .figure { @apply display; font-variant-numeric: lining-nums tabular-nums; }
+
+  .hatch {
+    background-image: repeating-linear-gradient(135deg, var(--part-disruption) 0 3px, transparent 3px 6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(40px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
