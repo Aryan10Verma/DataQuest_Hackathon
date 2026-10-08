@@ -269,7 +269,7 @@ export function PageHeader({ title, intro, actions }: { title: ReactNode; intro?
   return (
     <header className="mb-14 flex flex-wrap items-end justify-between gap-6">
       <div className="grid gap-3">
-        <h1 className="display text-3xl font-light leading-none sm:text-4xl">{title}</h1>
+        <h1 className="display text-2xl leading-[1.05] sm:text-3xl">{title}</h1>
         {intro && <p className="max-w-[60ch] text-muted">{intro}</p>}
       </div>
       {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
@@ -282,7 +282,7 @@ export function Section({ title, aside, children, className = '' }: { title: Rea
   return (
     <section className={`grid gap-5 ${className}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line pb-3">
-        <h2 className="display text-2xl">{title}</h2>
+        <h2 className="display text-xl">{title}</h2>
         {aside}
       </div>
       {children}

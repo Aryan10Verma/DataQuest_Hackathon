@@ -123,7 +123,7 @@ function Card({ m }: { m: ScholarshipMatch }) {
     <li className="leaf grid content-start gap-4">
       <div className="flex items-start justify-between gap-4">
         <div className="grid gap-1">
-          <h3 className="display text-2xl leading-tight">{s.name}</h3>
+          <h3 className="display text-xl leading-tight">{s.name}</h3>
           <p className="text-sm text-muted">{s.provider}, {PROVIDER[s.provider_type]?.toLowerCase() ?? humanize(s.provider_type).toLowerCase()}</p>
         </div>
         <ProvenanceBadge p={s.provenance} />

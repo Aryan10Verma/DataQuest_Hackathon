@@ -32,7 +32,7 @@ function Detail({ rec, run }: { rec: Recommendation; run: AnalysisRun }) {
       <header className="flex items-start justify-between gap-4">
         <div className="grid gap-2">
           <p className="text-sm text-muted">Rank {rec.rank} of {run.recommendations.length}, {sectorLabel(rec.career.sector)}</p>
-          <Dialog.Title className="display text-2xl sm:text-3xl">{rec.career.name}</Dialog.Title>
+          <Dialog.Title className="display text-xl sm:text-2xl">{rec.career.name}</Dialog.Title>
           <p className="flex items-baseline gap-2 text-sm text-muted">
             <span className="figure text-2xl text-ink">{Math.round(rec.final_score * 100)}</span> overall, likely between{' '}
             {Math.round(rec.ci_low * 100)} and {Math.round(rec.ci_high * 100)}
@@ -120,7 +120,7 @@ function Block({ title, aside, children }: { title: string; aside?: ReactNode; c
   return (
     <section className="grid gap-4">
       <div className="flex items-center justify-between gap-3 border-b border-line pb-2">
-        <h3 className="display text-2xl">{title}</h3>
+        <h3 className="display text-xl">{title}</h3>
         {aside}
       </div>
       {children}

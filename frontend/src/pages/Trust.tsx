@@ -50,7 +50,7 @@ function DataStatusBlock() {
   const d = s.data!;
   return (
     <div className="grid gap-10">
-      <p className="display max-w-[46ch] text-xl leading-snug sm:text-2xl">{d.statement}</p>
+      <p className="lead max-w-[46ch] text-xl leading-snug sm:text-2xl">{d.statement}</p>
       <div className="flex flex-wrap gap-x-10 gap-y-4 border-y border-line py-5">
         <Fact value={pct(d.overall_checked_share, d.overall_checked_share < 0.1 ? 1 : 0)} label="of figures checked against a source" />
         <Fact value={d.dataset_version} label="dataset in use" small />

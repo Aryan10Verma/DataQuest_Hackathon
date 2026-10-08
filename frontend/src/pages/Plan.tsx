@@ -208,7 +208,7 @@ function RemindDialog({ studentId }: { studentId: string }) {
         <Dialog.Overlay className="fixed inset-0 z-40 bg-void/70 backdrop-blur-sm" />
         <Dialog.Content aria-describedby={undefined} className="fixed left-1/2 top-1/2 z-50 grid w-[min(440px,calc(100vw-32px))] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-panel border border-line bg-deep p-6">
           <div className="flex items-start justify-between gap-4">
-            <Dialog.Title className="display text-2xl">Deadline reminders</Dialog.Title>
+            <Dialog.Title className="display text-xl">Deadline reminders</Dialog.Title>
             <Dialog.Close className="grid h-10 w-10 place-items-center rounded-full text-muted hover:text-ink" aria-label="Close"><X size={18} /></Dialog.Close>
           </div>
           {create.isSuccess ? (

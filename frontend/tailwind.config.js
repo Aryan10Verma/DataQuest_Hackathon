@@ -24,8 +24,9 @@ export default {
         },
       },
       fontFamily: {
-        display: ['var(--serif)'],
+        display: ['var(--display)'],
         sans: ['var(--sans)'],
+        lead: ['var(--lead)'],
       },
       fontSize: {
         // Type scale, ratio 1.333 from 16px.

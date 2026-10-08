@@ -59,10 +59,10 @@ function Conversation({ c }: { c: ConflictReport }) {
       {full ? (
         <div className="grid items-center gap-10 md:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
           <Gauge value={c.index} band={c.band} />
-          <p className="display max-w-[30ch] text-xl leading-snug">{c.summary}</p>
+          <p className="lead max-w-[32ch] text-xl leading-snug">{c.summary}</p>
         </div>
       ) : (
-        <p className="display max-w-[36ch] text-2xl leading-snug">{c.summary}</p>
+        <p className="lead max-w-[36ch] text-2xl leading-snug">{c.summary}</p>
       )}
 
       {full && c.dimensions && c.dimensions.length > 0 && (
@@ -97,7 +97,7 @@ function Conversation({ c }: { c: ConflictReport }) {
                 <span className="figure text-3xl text-accent">{i + 1}</span>
                 {dimLabel(d.dimension)}
               </p>
-              <p className="display text-xl italic leading-snug">“{d.conversation_prompt}”</p>
+              <p className="lead text-xl leading-snug">“{d.conversation_prompt}”</p>
               <p className="text-sm text-muted">{d.explanation}</p>
             </li>
           ))}
@@ -179,7 +179,7 @@ function Bridge({ b }: { b: BridgeCareer }) {
   );
   return (
     <li className="leaf grid content-start gap-3">
-      <p className="display text-2xl">{b.career.name}</p>
+      <p className="display text-xl">{b.career.name}</p>
       {bar(b.student_fit, 'bg-accent', 'Fits the student')}
       {bar(b.parent_acceptance, 'bg-ink/70', "Parents' hopes")}
       <p className="text-sm text-muted">{b.why}</p>

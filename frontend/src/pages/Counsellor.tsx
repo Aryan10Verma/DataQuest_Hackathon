@@ -99,7 +99,7 @@ function StudentRun({ runId }: { runId: string }) {
           <Ring size={150} progress={top.final_score}><span className="figure text-3xl">{Math.round(top.final_score * 100)}</span></Ring>
           <div className="grid gap-1">
             <p className="text-sm text-muted">Best match, run on {formatDate(r.created_at)}</p>
-            <h1 className="display text-3xl">{top.career.name}</h1>
+            <h1 className="display text-2xl">{top.career.name}</h1>
             <p className="max-w-measure text-sm text-muted">{r.conflict.summary}</p>
           </div>
         </div>

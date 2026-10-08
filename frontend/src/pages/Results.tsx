@@ -79,7 +79,7 @@ function ResultsView({ run, studentId, studentName }: { run: AnalysisRun; studen
           </Ring>
           <div className="grid gap-4">
             <p className="text-sm text-muted">{firstName ? `Best match for ${firstName}` : 'Best match'}</p>
-            <h1 id="best-match" className="display text-3xl sm:text-4xl">{top.career.name}</h1>
+            <h1 id="best-match" className="display text-2xl sm:text-3xl">{top.career.name}</h1>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
               <span>{sectorLabel(top.career.sector)}</span>
               <FundingMeter value={top.financial.affordability_class} />
@@ -145,7 +145,7 @@ function Summary({ runId, lang }: { runId: string; lang: 'en' | 'ta' | 'hi' }) {
   return (
     <section aria-labelledby="summary" lang={n.data.language} className="grid gap-4 border-l border-accent pl-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h2 id="summary" className="display text-2xl leading-snug">{n.data.headline}</h2>
+        <h2 id="summary" className="lead text-2xl leading-snug">{n.data.headline}</h2>
         {n.data.source === 'model' && (
           <Tip label="A language model rephrased this from the facts below. It never changes scores or rankings.">
             <span className="rounded-full border border-line px-2 py-0.5 text-[11px] text-muted">Rephrased by AI</span>
@@ -168,7 +168,7 @@ function Ranked({ run, isParent, onOpen }: { run: AnalysisRun; isParent: boolean
   return (
     <section aria-labelledby="ranked" className="grid min-w-0 grid-cols-1 gap-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="ranked" className="display text-2xl">All matches</h2>
+        <h2 id="ranked" className="display text-xl">All matches</h2>
         <PartLegend />
       </div>
       <Tabs.Root value={tab} onValueChange={(v) => setTab(v as Bucket)} className="min-w-0">

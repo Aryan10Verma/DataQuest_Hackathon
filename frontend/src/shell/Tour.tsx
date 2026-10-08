@@ -208,7 +208,7 @@ export function Tour() {
         </div>
         <AnimatePresence mode="wait">
           <motion.div key={index} className="grid gap-2" initial={reduce ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
-            <h2 id="tour-title" className="display text-2xl leading-tight">{step.title}</h2>
+            <h2 id="tour-title" className="display text-xl leading-tight">{step.title}</h2>
             <p id="tour-body" className="text-sm text-muted">{step.body}</p>
             {inMore && <p className="text-xs text-muted">It lives in the menu at the top: open it to find this.</p>}
           </motion.div>

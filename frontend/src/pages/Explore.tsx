@@ -95,7 +95,7 @@ function CareerModal({ slug, onClose }: { slug: string | null; onClose: () => vo
         <Dialog.Overlay className="fixed inset-0 z-40 bg-void/70 backdrop-blur-sm" />
         <Dialog.Content aria-describedby={undefined} className="fixed inset-y-0 right-0 z-50 w-full max-w-[600px] overflow-y-auto border-l border-line bg-deep p-6 data-[state=open]:animate-[drawer-in_0.45s_var(--ease)] sm:p-10">
           <div className="mb-6 flex items-start justify-between gap-4">
-            <Dialog.Title className="display text-3xl">{c.data?.name ?? 'Career'}</Dialog.Title>
+            <Dialog.Title className="display text-2xl">{c.data?.name ?? 'Career'}</Dialog.Title>
             <Dialog.Close className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line text-muted hover:text-ink" aria-label="Close"><X size={18} /></Dialog.Close>
           </div>
           {c.isLoading ? <Skeleton className="h-64" /> : c.isError ? <ErrorState error={c.error} /> : c.data && (

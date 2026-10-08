@@ -104,7 +104,7 @@ function Body({ studentId, recs, runId }: { studentId: string; recs: { career: {
       </form>
 
       <aside className="grid content-start gap-5">
-        <h2 className="display text-2xl">Your answers so far</h2>
+        <h2 className="display text-xl">Your answers so far</h2>
         {list.isLoading ? <Skeleton className="h-32" /> : !list.data?.length ? (
           <EmptyState title="Nothing yet" body="Your first answer will appear here." />
         ) : (

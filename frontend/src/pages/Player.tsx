@@ -138,7 +138,7 @@ function Run({ userId, code, title, limitSec, questions }: { userId: string; cod
           <Complete result={result} next={next} onNext={() => navigate(next ? `/app/questionnaire/${next}` : '/app/questionnaire')} />
         ) : review ? (
           <div className="grid gap-6">
-            <h1 className="display text-2xl sm:text-3xl">{remaining === 0 ? 'Time is up' : 'Ready to submit?'}</h1>
+            <h1 className="display text-xl sm:text-2xl">{remaining === 0 ? 'Time is up' : 'Ready to submit?'}</h1>
             <p className="text-muted">
               You answered {answeredCount} of {sorted.length} questions.
               {answeredCount < sorted.length && remaining !== 0 ? ' You can go back to the ones you skipped, or submit now.' : ''}
@@ -165,7 +165,7 @@ function Run({ userId, code, title, limitSec, questions }: { userId: string; cod
               aria-labelledby="prompt"
             >
               <p className="text-sm text-muted">Question {index + 1} of {sorted.length}</p>
-              <h1 id="prompt" className="display text-2xl leading-snug sm:text-3xl">
+              <h1 id="prompt" className="text-xl font-medium leading-snug sm:text-2xl">
                 {q.type === 'likert5' && code === 'riasec_v1' ? <span className="mb-2 block text-base text-muted">How much would you enjoy this?</span> : null}
                 {q.prompt}
               </h1>
@@ -210,7 +210,7 @@ function Options({ q, value, onChoose }: { q: Q; value?: string; onChoose: (v: s
 function Complete({ result, next, onNext }: { result: SubmitResult; next?: string; onNext: () => void }) {
   return (
     <div className="grid justify-items-start gap-6">
-      <h1 className="display text-3xl">{PLAIN_NAME[result.instrument_code] ?? 'Section'} complete</h1>
+      <h1 className="display text-2xl">{PLAIN_NAME[result.instrument_code] ?? 'Section'} complete</h1>
       <p className="text-muted">{result.answered} of {result.total_items} questions answered and saved.</p>
       {(result.flags ?? []).length > 0 && (
         <ul className="grid max-w-measure gap-2 border-l border-line pl-4 text-sm text-muted">

@@ -36,10 +36,32 @@
   --part-family: #e0a458;
   --part-disruption: #d45a6e;
 
-  --serif: 'Cormorant Garamond', 'Cormorant', Garamond, 'Noto Serif Tamil', 'Noto Serif Devanagari', Georgia, serif;
-  --sans: 'Geist', 'Noto Sans Tamil', 'Noto Sans Devanagari', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Type: Isometra for headings (28px and up), Noto Sans for everything you read, Noto Serif Display
+     italic for the one sentence that sums up a page. Tamil and Hindi fall back to the matching Noto faces. */
+  --display: 'Isometra', 'Noto Sans Variable', 'Noto Sans Tamil', 'Noto Sans Devanagari', sans-serif;
+  --sans: 'Noto Sans Variable', 'Noto Sans', 'Noto Sans Tamil', 'Noto Sans Devanagari', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --lead: 'Noto Serif Display', 'Noto Sans Tamil', 'Noto Sans Devanagari', Georgia, serif;
+  --serif: var(--display); /* older name, still used by the landing page */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --bar: 72px;
+}
+
+/* Isometra (Ben Dunkle, SIL Open Font License, see assets/fonts/isometra/OFL.txt). One weight only. */
+@font-face {
+  font-family: 'Isometra';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/isometra/isometra-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Isometra';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/isometra/isometra-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @layer base {
@@ -122,9 +144,15 @@
   .input[aria-invalid='true'] { border-color: var(--danger); }
 
   .label { @apply text-xs text-muted; }
-  /* Cormorant is light and fine: 400 for headings, 500 where it must hold up at small sizes. */
-  .display { font-family: var(--serif); font-weight: 400; letter-spacing: -0.005em; }
-  .figure { @apply display; font-weight: 500; font-variant-numeric: lining-nums tabular-nums; }
+  /* Isometra is heavy and wide: it carries headings from 28px up. Smaller "display" text switches to
+     Noto Sans semibold, where Isometra would turn into a dark smudge. Never fake a bold. */
+  .display { font-family: var(--display); font-weight: 400; letter-spacing: 0.01em; line-height: 1.12; font-synthesis: none; }
+  .display:where(.text-xs, .text-sm, .text-base, .text-lg) { font-family: var(--sans); font-weight: 600; letter-spacing: -0.005em; }
+  /* Numbers stay in Noto Sans Light: thin against the heavy headings, and with a plain zero
+     (Isometra draws 0 as a slashed Ø). */
+  .figure { font-family: var(--sans); font-weight: 300; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+  /* The one sentence that sums up a page. */
+  .lead { font-family: var(--lead); font-style: italic; font-weight: 400; letter-spacing: 0; }
 
   .hatch {
     background-image: repeating-linear-gradient(135deg, var(--part-disruption) 0 3px, transparent 3px 6px);

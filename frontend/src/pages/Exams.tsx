@@ -155,7 +155,7 @@ function Month({ events, today, next }: { events: Event[]; today: string; next: 
         <div className="flex items-center justify-between">
           <button className="grid h-11 w-11 place-items-center rounded-full border border-line text-muted hover:border-accent hover:text-ink" onClick={() => shift(-1)} aria-label="Previous month"><ChevronLeft size={18} /></button>
           <div className="text-center">
-            <h2 className="display text-3xl">{first.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}</h2>
+            <h2 className="display text-2xl">{first.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}</h2>
             <p className="text-xs text-muted">{inMonth} {inMonth === 1 ? 'date' : 'dates'} this month</p>
           </div>
           <button className="grid h-11 w-11 place-items-center rounded-full border border-line text-muted hover:border-accent hover:text-ink" onClick={() => shift(1)} aria-label="Next month"><ChevronRight size={18} /></button>
@@ -190,7 +190,7 @@ function Month({ events, today, next }: { events: Event[]; today: string; next: 
 
       <aside className="grid content-start gap-10">
         <section className="grid gap-4" aria-live="polite">
-          <h2 className="display text-2xl">{formatDate(selected)}</h2>
+          <h2 className="display text-xl">{formatDate(selected)}</h2>
           {dayEvents.length ? (
             <ul className="grid gap-6">{dayEvents.map((e) => <EventItem key={e.key} e={e} today={today} />)}</ul>
           ) : (
@@ -206,7 +206,7 @@ function Month({ events, today, next }: { events: Event[]; today: string; next: 
         </section>
         {next.length > 0 && (
           <section className="grid gap-4">
-            <h2 className="display text-2xl">Coming up next</h2>
+            <h2 className="display text-xl">Coming up next</h2>
             <ul className="grid gap-6">{next.map((e) => <EventItem key={e.key} e={e} today={today} />)}</ul>
           </section>
         )}
