@@ -178,3 +178,21 @@ body::after {
   from { transform: translateX(40px); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
+
+/* The claret light that follows the mouse (components/CursorGlow). Screen blend only ever adds light,
+   so text stays crisp; it sits under the film grain and never takes clicks. */
+.cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(184, 67, 94, 0.3) 0%, rgba(184, 67, 94, 0.13) 32%, rgba(91, 127, 230, 0.04) 55%, transparent 70%);
+  transition: opacity 600ms var(--ease);
+  will-change: transform;
+}
