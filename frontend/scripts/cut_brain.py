@@ -18,14 +18,21 @@ its 4x crop goes through Real-ESRGAN again (16x in all) and is cut on its own, a
     python -I frontend/scripts/cut_brain.py --neural neural-x16.png frontend/public/brain
 
 which writes neural.webp (2400px) and neural-sm.webp (1200px), lightly sharpened.
+
+With --preview, prints a 96px blurred copy of the top view as a data URI for src/landing/landing.css,
+so the first brain shows the moment the page does and sharpens when the real picture arrives:
+
+    python -I frontend/scripts/cut_brain.py --preview frontend/public/brain/top.webp
 """
 
+import base64
+import io
 import sys
 from pathlib import Path
 
 import cv2
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 def save(img: np.ndarray, out: Path, name: str, widths: tuple[tuple[str, int], ...], sharpen: float = 0) -> None:
     h, w = img.shape[:2]
@@ -36,6 +43,14 @@ def save(img: np.ndarray, out: Path, name: str, widths: tuple[tuple[str, int], .
         Image.fromarray(resized[..., ::-1]).save(out / f"{name}{suffix}.webp", quality=84, method=6)
     print(name, f"{w}x{h} ->", ", ".join(f"{(out / f'{name}{s}.webp').stat().st_size // 1024} KB" for s, _ in widths))
 
+
+if sys.argv[1] == "--preview":
+    im = Image.open(sys.argv[2]).convert("RGB")
+    tiny = im.resize((96, round(im.height * 96 / im.width)), Image.LANCZOS).filter(ImageFilter.GaussianBlur(1.2))
+    buf = io.BytesIO()
+    tiny.save(buf, "WEBP", quality=80)
+    print("data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode())
+    sys.exit()
 
 if sys.argv[1] == "--map":
     out = Path(sys.argv[3])

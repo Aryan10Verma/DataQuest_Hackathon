@@ -34,6 +34,8 @@ function Split({ text, as: Tag = 'span', className = '' }: { text: string; as?: 
 }
 
 const BRAINS = ['top', 'left', 'front', 'right', 'back'] as const;
+// Pixel sizes of the 1600px views, so each one takes its shape before its file arrives.
+const BRAIN_HEIGHT: Record<(typeof BRAINS)[number], number> = { top: 1592, left: 1239, front: 1413, right: 1215, back: 1528 };
 const INSTRUMENTS = ['Interests', 'Aptitude', 'Thinking style', 'Values', 'Family budget', 'Job market'];
 
 // The scroll story: five views of the brain (what PRISM measures), a fly into the neural network
@@ -232,12 +234,8 @@ export default function Landing() {
 
       // The one page-load moment: the brain comes into focus and the word appears.
       if (!RM) {
-        // The brain fades in once its picture is ready, so it never pops in after the fade has played.
-        const top = q('.l-brain.is-top')[0] as HTMLImageElement;
-        gsap.set(top, { opacity: 0, scale: 0.9 });
-        const reveal = () => gsap.to(top, { opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out' });
-        top.decode().then(reveal, reveal);
         gsap.timeline({ defaults: { ease: 'power3.out' } })
+          .fromTo('.l-brain.is-top', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 1.4 }, 0.15)
           .fromTo(chars(q('.l-word')[0]), HIDDEN, { ...SHOWN, duration: 0.8, stagger: 0.05 }, 0.3)
           .fromTo('.l-hero, .l-bar', { opacity: 0 }, { opacity: 1, duration: 0.9, stagger: 0.1 }, 0.9);
         gsap.to('.l-float', { y: -12, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
@@ -303,6 +301,8 @@ export default function Landing() {
                 <img
                   key={b}
                   className={`l-brain is-${b}`}
+                  width={1600}
+                  height={BRAIN_HEIGHT[b]}
                   {...(i === 0 || rest ? pic(`brain/${b}`, 800, 1600, BRAIN_SIZES) : {})}
                   onLoad={i === 0 ? () => setRest(true) : undefined}
                   onError={i === 0 ? () => setRest(true) : undefined}
