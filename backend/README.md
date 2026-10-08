@@ -91,6 +91,23 @@ python scripts/send_reminders.py                       # send reminders due toda
 python scripts/local_problems.py data/partners/local_problems_template.csv
 ```
 
+## Where people live
+
+PRISM covers 24 Indian cities (`data/seed/regions.json`). `data/seed/places.json` says what each is
+known for: sector strengths that scale national job demand for that city (estimates, marked as such
+everywhere), its main industries and its languages.
+
+- Sign-up takes an optional `region_code` and `pincode`; `PUT /api/v1/auth/me/location` changes them.
+- `GET /api/v1/places` (public) lists the cities with their industries and languages.
+- `GET/PUT /api/v1/students/me/place` holds the student's "Where you live" answers: interest in each
+  local industry (1 to 5), how far they'd move (`home`, `state`, `india`, `abroad`), languages, and
+  whether family needs them nearby (`none`, `some`, `strong`). These set willingness to relocate and go
+  abroad (capped by home commitments), preferred cities in the same state, and a local pull: job
+  demand at home counts up to double for careers in the sectors they liked.
+- `GET /api/v1/market/map` (public) summarises demand per city for the map.
+
+When the seed files change, `scripts/seed.py` loads them as a new catalogue version on the next start.
+
 ## Security
 
 | Area | What is in place |
