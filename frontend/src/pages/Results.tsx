@@ -121,7 +121,7 @@ function ResultsView({ run, studentId, studentName }: { run: AnalysisRun; studen
       </div>
 
       {/* The six composite scores, in the same bar as the landing page. */}
-      <section aria-label="Overall scores" className="z-20 -mx-4 border-t border-line bg-void/90 px-4 backdrop-blur sm:-mx-8 sm:px-8 lg:sticky lg:bottom-0 lg:-ml-10 lg:-mr-12 lg:pl-10 lg:pr-12">
+      <section aria-label="Overall scores" className="z-20 -mx-4 border-t border-line bg-void/90 px-4 backdrop-blur sm:-mx-8 sm:px-8 lg:sticky lg:bottom-0 lg:-mx-12 lg:px-12">
         <dl className="grid grid-cols-3 sm:grid-cols-6">
           {COMPOSITES.map((c, i) => (
             <div key={c.key} className={`flex flex-col justify-center py-3 sm:min-h-[72px] sm:flex-row sm:items-center sm:gap-3 sm:py-0 ${i % 3 ? 'border-l border-line pl-3' : ''} sm:border-l sm:pl-4 sm:first:border-l-0 sm:first:pl-0`}>

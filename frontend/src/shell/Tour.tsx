@@ -33,7 +33,7 @@ const STEPS: Record<Role, Step[]> = {
     { target: 'plan', title: 'Plan', body: 'A five-year roadmap from now to the first job: exams, applications, scholarships and skills.' },
     { target: 'family', title: 'Family', body: 'Where you and your parents agree and differ, with questions to talk through together.' },
     { target: 'explore', title: 'Explore', body: 'Browse every career, see where jobs are growing, and find real problems to work on near you.' },
-    { target: 'profile', title: 'My profile', body: 'What the questionnaire found about you: your Holland code, aptitude, thinking style and values.' },
+    { target: 'account', title: 'My profile', body: 'What the questionnaire found about you: your Holland code, aptitude, thinking style and values. Open it from your account menu here.' },
     ...COMMON_TOOLS,
   ],
   parent: [
@@ -42,7 +42,7 @@ const STEPS: Record<Role, Step[]> = {
     { target: 'plan', title: 'Plan', body: 'A five-year roadmap: exams, applications, scholarship deadlines and skills.' },
     { target: 'family', title: 'Family', body: "Add your budget and hopes privately, then see where you and your child differ and careers you could both back." },
     { target: 'explore', title: 'Explore', body: 'Browse every career, where jobs are growing, and real problems in your district.' },
-    { target: 'profile', title: "Child's profile", body: "What the questionnaire found about your child's interests, aptitude and values." },
+    { target: 'account', title: "Child's profile", body: "What the questionnaire found about your child's interests, aptitude and values. Open it from your account menu here." },
     ...COMMON_TOOLS,
   ],
   educator: [
@@ -79,7 +79,7 @@ function find(target?: string): Box | null {
   return { top: r.top - PAD, left: r.left - PAD, width: r.width + PAD * 2, height: r.height + PAD * 2 };
 }
 
-/** On a phone most links sit in the bottom bar's More menu: light that up instead. */
+/** Tools live in the Tools panel (and everything on a phone sits in the menu): light that button up instead. */
 function measure(target?: string): { box: Box | null; inMore: boolean } {
   const box = find(target);
   if (box || !target) return { box, inMore: false };
@@ -185,7 +185,7 @@ export function Tour() {
         animate={box ? { ...box } : { top: window.innerHeight / 2, left: window.innerWidth / 2, width: 0, height: 0 }}
         transition={spring}
         style={{
-          boxShadow: '0 0 0 9999px rgba(10, 9, 8, 0.74), 0 0 0 1px rgba(201, 176, 126, 0.9), 0 0 28px rgba(201, 176, 126, 0.45)',
+          boxShadow: '0 0 0 9999px rgba(5, 6, 14, 0.78), 0 0 0 1px rgba(91, 127, 230, 0.9), 0 0 28px rgba(91, 127, 230, 0.45)',
         }}
       />
       {/* Clicks outside the card do nothing, so the tour isn't lost by accident. */}
@@ -210,7 +210,7 @@ export function Tour() {
           <motion.div key={index} className="grid gap-2" initial={reduce ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
             <h2 id="tour-title" className="display text-2xl leading-tight">{step.title}</h2>
             <p id="tour-body" className="text-sm text-muted">{step.body}</p>
-            {inMore && <p className="text-xs text-muted">Find it under More in the bottom bar.</p>}
+            {inMore && <p className="text-xs text-muted">It lives in the menu at the top: open it to find this.</p>}
           </motion.div>
         </AnimatePresence>
         <div className="h-px overflow-hidden bg-line" aria-hidden>

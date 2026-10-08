@@ -131,15 +131,15 @@ function Hexagon({ by }: { by: Record<string, TraitScore> }) {
       <svg viewBox="-12 -8 224 216" className="w-full max-w-[340px]" role="img"
         aria-label={RIASEC.map((r) => `${r.label} ${Math.round((by[r.key]?.normalized ?? 0) * 100)}`).join(', ')}>
         {[0.25, 0.5, 0.75, 1].map((k) => (
-          <polygon key={k} points={RIASEC.map((_, i) => pt(i, k).join(',')).join(' ')} fill="none" stroke="rgba(201, 176, 126, 0.12)" strokeWidth="0.8" />
+          <polygon key={k} points={RIASEC.map((_, i) => pt(i, k).join(',')).join(' ')} fill="none" stroke="rgba(91, 127, 230, 0.12)" strokeWidth="0.8" />
         ))}
         {RIASEC.map((_, i) => {
           const [x, y] = pt(i, 1);
-          return <line key={i} x1="100" y1="100" x2={x} y2={y} stroke="rgba(201, 176, 126, 0.1)" strokeWidth="0.8" />;
+          return <line key={i} x1="100" y1="100" x2={x} y2={y} stroke="rgba(91, 127, 230, 0.1)" strokeWidth="0.8" />;
         })}
-        <motion.polygon points={shape} fill="rgba(201, 176, 126, 0.14)" stroke="#C9B07E" strokeWidth="1.6" strokeLinejoin="round"
+        <motion.polygon points={shape} fill="rgba(91, 127, 230, 0.14)" stroke="#7E9BF0" strokeWidth="1.6" strokeLinejoin="round"
           initial={{ opacity: 0, scale: 0.6 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          style={{ transformOrigin: '100px 100px', filter: 'drop-shadow(0 0 8px rgba(201, 176, 126, 0.5))' }} />
+          style={{ transformOrigin: '100px 100px', filter: 'drop-shadow(0 0 8px rgba(91, 127, 230, 0.5))' }} />
         {RIASEC.map((r, i) => {
           const [x, y] = pt(i, 1.17);
           return (

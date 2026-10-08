@@ -186,14 +186,14 @@ export function Ring({ size = 160, progress = 1, stroke = 2.2, draw = true, chil
   return (
     <div className={`relative grid shrink-0 place-items-center ${className}`} style={{ width: size, height: size }}>
       <svg viewBox="0 0 200 200" className="absolute inset-0 overflow-visible" aria-hidden>
-        <circle cx="100" cy="100" r={r} fill="none" stroke="rgba(201, 176, 126, 0.12)" strokeWidth={stroke} />
+        <circle cx="100" cy="100" r={r} fill="none" stroke="rgba(91, 127, 230, 0.12)" strokeWidth={stroke} />
         <motion.circle
           cx="100" cy="100" r={r} fill="none" stroke="#F3ECDD" strokeWidth={stroke} strokeLinecap="round"
           transform="rotate(-90 100 100)" strokeDasharray={c}
           initial={draw && !reduce ? { strokeDashoffset: c } : { strokeDashoffset: c * (1 - progress) }}
           animate={{ strokeDashoffset: c * (1 - progress) }}
           transition={{ duration: 1.6, ease: [0.65, 0, 0.35, 1] }}
-          style={{ filter: 'drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px var(--glow)) drop-shadow(0 0 32px rgba(201, 176, 126, 0.3))' }}
+          style={{ filter: 'drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px var(--glow)) drop-shadow(0 0 32px rgba(91, 127, 230, 0.3))' }}
         />
       </svg>
       <div className="relative text-center">{children}</div>

@@ -4,35 +4,41 @@
 
 :root {
   color-scheme: dark;
-  /* Champagne noir (design/PLAN.md). Channels let Tailwind apply opacity (bg-accent/10). */
-  --void-rgb: 18 17 16;      /* Graphite: the page */
-  --deep-rgb: 26 25 23;      /* Umber: raised surfaces */
-  --ink-rgb: 237 230 216;    /* Ivory: text */
-  --muted-rgb: 154 147 134;  /* Stone: secondary text */
-  --accent-rgb: 201 176 126; /* Champagne: the one accent */
-  --danger-rgb: 227 139 122;
-  --void: #121110;
-  --deep: #1a1917;
-  --ink: #ede6d8;
-  --muted: #9a9386;
-  --accent: #c9b07e;
-  --danger: #e38b7a;
-  --line: rgba(237, 230, 216, 0.12);
-  --line-strong: rgba(237, 230, 216, 0.26);
-  --glow: rgba(201, 176, 126, 0.45);
+  /* Midnight claret (design/PLAN.md). Channels let Tailwind apply opacity (bg-accent/10).
+     Blue-black ground, wine for actions and key numbers, electric blue for light and glow. */
+  --void-rgb: 11 13 26;      /* Midnight: the page */
+  --deep-rgb: 18 21 40;      /* Indigo night: raised surfaces */
+  --ink-rgb: 236 231 240;    /* Soft ivory: text */
+  --muted-rgb: 154 155 181;  /* Lavender grey: secondary text (7.1:1) */
+  --accent-rgb: 208 98 124;  /* Claret, lifted for text and key numbers (5.3:1) */
+  --claret-rgb: 184 67 94;   /* Claret: fills, rules, the wine itself */
+  --glow-rgb: 91 127 230;    /* Electric blue: light, rings, focus */
+  --live-rgb: 224 86 111;    /* Signal red: live points on the map */
+  --danger-rgb: 242 132 143;
+  --void: #0b0d1a;
+  --deep: #121528;
+  --ink: #ece7f0;
+  --muted: #9a9bb5;
+  --accent: #d0627c;
+  --claret: #b8435e;
+  --blue: #5b7fe6;
+  --live: #e0566f;
+  --danger: #f2848f;
+  --line: rgba(236, 231, 240, 0.12);
+  --line-strong: rgba(236, 231, 240, 0.26);
+  --glow: rgba(91, 127, 230, 0.5);
 
-  /* Score parts: the only other colours, and only inside charts. Muted to sit in the palette. */
-  --part-fit: #8e86c8;
-  --part-market: #6f93c4;
-  --part-affordability: #5fa99b;
-  --part-roi: #8fae6e;
-  --part-family: #d39a5b;
-  --part-disruption: #c46a6a;
+  /* Score parts: the only other colours, and only inside charts. Tuned to sit on midnight blue. */
+  --part-fit: #9b8ce8;
+  --part-market: #5fa8e6;
+  --part-affordability: #4fb3a5;
+  --part-roi: #8fbf6e;
+  --part-family: #e0a458;
+  --part-disruption: #d45a6e;
 
   --serif: 'Cormorant Garamond', 'Cormorant', Garamond, 'Noto Serif Tamil', 'Noto Serif Devanagari', Georgia, serif;
   --sans: 'Geist', 'Noto Sans Tamil', 'Noto Sans Devanagari', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --rail: 168px;
   --bar: 72px;
 }
 
@@ -44,7 +50,12 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background: var(--void);
+    /* A faint blue dawn at the top and a trace of wine at the foot, fixed so it never scrolls. */
+    background:
+      radial-gradient(1100px 520px at 50% -12%, rgba(91, 127, 230, 0.11), transparent 62%),
+      radial-gradient(900px 480px at 85% 115%, rgba(184, 67, 94, 0.08), transparent 60%),
+      var(--void);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--sans);
     font-size: 16px;
@@ -61,7 +72,7 @@
     outline-offset: 3px;
     border-radius: 4px;
   }
-  ::selection { background: rgba(201, 176, 126, 0.32); color: var(--ink); }
+  ::selection { background: rgba(184, 67, 94, 0.45); color: var(--ink); }
 }
 
 @layer components {
@@ -75,7 +86,7 @@
     border-top: 1px solid var(--line-strong);
     padding-top: 1.25rem;
   }
-  /* A note: a slim champagne rule on the left instead of an outlined box. */
+  /* A note: a slim claret rule on the left instead of an outlined box. */
   .note {
     @apply border-l border-accent py-1 pl-5;
   }
@@ -84,8 +95,15 @@
   .btn {
     @apply inline-flex min-h-[46px] items-center justify-center gap-2 rounded-full px-6 text-sm font-medium tracking-[0.01em] transition-colors duration-300;
   }
+  /* Wine for the one action that matters; a faint blue halo on hover. */
   .btn-primary {
-    @apply btn bg-ink text-void hover:bg-accent;
+    @apply btn text-[#fff7f9];
+    background: linear-gradient(180deg, #b8435e, #9c3550);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 0 0 1px rgba(184, 67, 94, 0.6);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(180deg, #c64f6b, #a83b57);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0 0 1px rgba(208, 98, 124, 0.8), 0 0 24px rgba(91, 127, 230, 0.35);
   }
   .btn-quiet {
     @apply btn border border-ink/25 text-ink hover:border-accent hover:text-accent;
@@ -130,6 +148,30 @@ body::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* The top bar's bottom edge: a hairline that fades from blue through wine to nothing. */
+.topbar::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(91, 127, 230, 0.55) 30%, rgba(184, 67, 94, 0.55) 70%, transparent);
+  pointer-events: none;
+}
+.tools-panel {
+  box-shadow: 0 30px 80px rgba(3, 4, 12, 0.7), 0 0 0 1px rgba(91, 127, 230, 0.08), 0 0 40px rgba(91, 127, 230, 0.08);
+  transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+}
+.tools-panel[data-state='open'] { animation: panel-in 260ms var(--ease); }
+.sheet-in[data-state='open'] { animation: sheet-in 320ms var(--ease); }
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes drawer-in {

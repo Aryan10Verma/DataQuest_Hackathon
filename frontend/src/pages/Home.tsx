@@ -187,7 +187,7 @@ function Family({ family }: { family: FamilyOut }) {
             return (
               <label key={type} className="flex min-h-[44px] cursor-pointer items-center justify-between gap-4 border-b border-line text-sm">
                 <span>{CONSENT_TEXT[type].replace('{child}', child)}</span>
-                <input type="checkbox" className="h-5 w-5 accent-[#C9B07E]" checked={on} disabled={consent.isPending || !subject}
+                <input type="checkbox" className="h-5 w-5 accent-[#B8435E]" checked={on} disabled={consent.isPending || !subject}
                   onChange={(e) => subject && consent.mutate({ consent_type: type, subject_user_id: subject, granted: e.target.checked })} />
               </label>
             );

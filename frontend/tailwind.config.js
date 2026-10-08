@@ -10,6 +10,9 @@ export default {
         ink: 'rgb(var(--ink-rgb) / <alpha-value>)',
         muted: 'rgb(var(--muted-rgb) / <alpha-value>)',
         accent: 'rgb(var(--accent-rgb) / <alpha-value>)',
+        claret: 'rgb(var(--claret-rgb) / <alpha-value>)',
+        glow: 'rgb(var(--glow-rgb) / <alpha-value>)',
+        live: 'rgb(var(--live-rgb) / <alpha-value>)',
         danger: 'rgb(var(--danger-rgb) / <alpha-value>)',
         part: {
           fit: 'var(--part-fit)',

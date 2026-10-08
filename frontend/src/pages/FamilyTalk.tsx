@@ -127,19 +127,19 @@ function Gauge({ value, band }: { value: number; band: string }) {
   return (
     <figure className="grid gap-2">
       <svg viewBox="-24 -10 248 122" className="w-full overflow-visible" role="img" aria-label={`Family difference ${Math.round(value)} out of 100, ${band}`}>
-        <path d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="rgba(201, 176, 126, 0.12)" strokeWidth="2" />
+        <path d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="rgba(91, 127, 230, 0.12)" strokeWidth="2" />
         <motion.path
           d={`M10 100 A${r} ${r} 0 0 1 190 100`} fill="none" stroke="#F3ECDD" strokeWidth="2.2" strokeLinecap="round"
           strokeDasharray={len}
           initial={{ strokeDashoffset: reduce ? len * (1 - value / 100) : len }}
           animate={{ strokeDashoffset: len * (1 - value / 100) }}
           transition={{ duration: 1.4, ease: [0.65, 0, 0.35, 1] }}
-          style={{ filter: 'drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px rgba(201, 176, 126, 0.55))' }}
+          style={{ filter: 'drop-shadow(0 0 3px #fff) drop-shadow(0 0 12px rgba(91, 127, 230, 0.55))' }}
         />
         {BANDS.slice(0, 3).map((b) => {
           const [x1, y1] = point(b.upTo);
           const [x2, y2] = [100 + (x1 - 100) * 1.1, 100 + (y1 - 100) * 1.1];
-          return <line key={b.upTo} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(201, 176, 126, 0.4)" strokeWidth="1" />;
+          return <line key={b.upTo} x1={x1} y1={y1} x2={x2} y2={y2} stroke="rgba(91, 127, 230, 0.4)" strokeWidth="1" />;
         })}
         {BANDS.map((b, i) => {
           const mid = ((i ? BANDS[i - 1].upTo : 0) + b.upTo) / 2;
