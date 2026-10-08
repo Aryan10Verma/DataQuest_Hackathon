@@ -294,7 +294,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="l-neural" aria-hidden>
-            <img src={src('brain/neural.webp')} srcSet={`${src('brain/neural-sm.webp')} 800w, ${src('brain/neural.webp')} 1600w`} sizes="110vh" alt="" decoding="async" />
+            <img src={src('brain/neural.webp')} srcSet={`${src('brain/neural-sm.webp')} 1200w, ${src('brain/neural.webp')} 2400w`} sizes="(max-width: 760px) 140vw, min(110vh, 120vw)" alt="" decoding="async" />
           </div>
 
           {/* The map image is screen-blended like the brain; the points and the card sit in a twin layer
