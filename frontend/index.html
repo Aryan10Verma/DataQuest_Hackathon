@@ -9,6 +9,44 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
+    <!-- Loading screen: plain HTML and CSS so it shows before any script arrives. The logo draws in for
+         0.26 s, then the screen fades out by 0.40 s. The fade is a CSS animation, so it keeps time even
+         while the page is busy starting up; main.tsx only removes the element afterwards. -->
+    <div id="splash" aria-hidden="true">
+      <svg viewBox="0 0 72 58" width="86" height="70">
+        <defs>
+          <linearGradient id="spl" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#3f6fdc" /><stop offset="1" stop-color="#62a6f2" /></linearGradient>
+          <linearGradient id="spr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7a447" /><stop offset="0.5" stop-color="#ec5f8c" /><stop offset="1" stop-color="#8a5ae6" /></linearGradient>
+          <linearGradient id="spb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#cfdcff" /><stop offset="1" stop-color="#f8d4e4" /></linearGradient>
+        </defs>
+        <g class="r" stroke-linecap="round" stroke-width="2.6">
+          <path d="M38 19 L70 9" stroke="#f5c84a" pathLength="1" />
+          <path d="M40 24 L70 23" stroke="#ec5f8c" pathLength="1" />
+          <path d="M42 29 L70 37" stroke="#6c68e6" pathLength="1" />
+        </g>
+        <path class="f" d="M26 3 L5 39 L29 31 Z" fill="url(#spl)" />
+        <path class="f" d="M26 3 L29 31 L47 39 Z" fill="url(#spr)" />
+        <path class="f" d="M5 39 L29 31 L47 39 Z" fill="url(#spb)" />
+        <g class="b" fill="#ece7f0">
+          <path d="M26 48.5 C20 44.5 12 44 4 45.6 L4 51.6 C12 50 20 50.6 26 55 Z" />
+          <path d="M26 48.5 C32 44.5 40 44 48 45.6 L48 51.6 C40 50 32 50.6 26 55 Z" opacity="0.78" />
+        </g>
+      </svg>
+    </div>
+    <style>
+      #splash { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; pointer-events: none; background: radial-gradient(420px 320px at 50% 50%, rgba(91, 127, 230, 0.16), transparent 70%), #0b0d1a; animation: sp-out 140ms ease-out 260ms forwards; }
+      @keyframes sp-out { to { opacity: 0; visibility: hidden; } }
+      #splash svg { overflow: visible; filter: drop-shadow(0 0 10px rgba(91, 127, 230, 0.6)) drop-shadow(0 0 26px rgba(184, 67, 94, 0.35)); }
+      #splash .f { transform-box: fill-box; transform-origin: 50% 100%; animation: sp-f 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+      #splash .f:nth-of-type(2) { animation-delay: 40ms; }
+      #splash .f:nth-of-type(3) { animation-delay: 80ms; }
+      #splash .b { animation: sp-b 240ms cubic-bezier(0.22, 1, 0.36, 1) 60ms both; }
+      #splash .r path { stroke-dasharray: 1; animation: sp-r 160ms cubic-bezier(0.22, 1, 0.36, 1) 100ms both; }
+      @keyframes sp-f { from { opacity: 0; transform: translateY(5px) scale(0.45); } to { opacity: 1; transform: none; } }
+      @keyframes sp-b { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      @keyframes sp-r { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+      @media (prefers-reduced-motion: reduce) { #splash * { animation: none !important; } }
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

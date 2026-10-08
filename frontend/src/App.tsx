@@ -2,6 +2,7 @@ import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import type { Role } from '@/api/client';
 import { CursorGlow } from '@/components/CursorGlow';
+import { RouteCurtain } from '@/components/RouteCurtain';
 import { homeFor, useSession } from '@/auth/session';
 import { PageSkeleton } from '@/components/ui';
 import { Shell } from '@/shell/Shell';
@@ -54,6 +55,7 @@ export default function App() {
   return (
     <>
       <CursorGlow />
+      <RouteCurtain />
       <Suspense fallback={<div className="min-h-screen bg-void" />}>
         <Routes>
           <Route path="/" element={<Landing />} />

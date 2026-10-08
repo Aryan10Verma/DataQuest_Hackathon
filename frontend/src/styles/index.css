@@ -224,3 +224,43 @@ body::after {
   transition: opacity 600ms var(--ease);
   will-change: transform;
 }
+
+/* ---------- The logo, alive ----------
+   Hover: the prism tilts toward the pointer (Brand.tsx sets --rx/--ry) and light runs down the rays. */
+.logo .prism-mark {
+  transform: perspective(160px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 280ms var(--ease), filter 280ms var(--ease);
+}
+.logo:hover .prism-mark {
+  filter: drop-shadow(0 0 6px rgba(91, 127, 230, 0.55)) drop-shadow(0 0 14px rgba(184, 67, 94, 0.35));
+}
+.pm-glint { opacity: 0; mix-blend-mode: screen; transition: opacity 200ms; }
+.pm-glint path { stroke-dasharray: 0.18 1.2; stroke-dashoffset: 0.18; }
+.logo:hover .pm-glint { opacity: 0.95; }
+.logo:hover .pm-glint path { animation: pm-glint 0.9s linear infinite; }
+.logo:hover .pm-glint path:nth-child(2) { animation-delay: 0.12s; }
+.logo:hover .pm-glint path:nth-child(3) { animation-delay: 0.24s; }
+@keyframes pm-glint { from { stroke-dashoffset: 0.18; } to { stroke-dashoffset: -1.2; } }
+
+/* Draw-in, used by the loading screen and the page-change curtain: the three faces of the prism
+   rise into place, the book settles, then the rays shoot out. Drawn in 0.28 s. */
+.pm-draw .pm-face { transform-box: fill-box; transform-origin: 50% 100%; animation: pm-face 240ms var(--ease) both; }
+.pm-draw .pm-face:nth-child(2) { animation-delay: 40ms; }
+.pm-draw .pm-face:nth-child(3) { animation-delay: 80ms; }
+.pm-draw .pm-book { animation: pm-book 240ms var(--ease) 60ms both; }
+.pm-draw .pm-rays path { stroke-dasharray: 1; animation: pm-ray 160ms var(--ease) both; }
+.pm-draw .pm-rays path:nth-child(1) { animation-delay: 90ms; }
+.pm-draw .pm-rays path:nth-child(2) { animation-delay: 105ms; }
+.pm-draw .pm-rays path:nth-child(3) { animation-delay: 120ms; }
+@keyframes pm-face { from { opacity: 0; transform: translateY(5px) scale(0.45); } to { opacity: 1; transform: none; } }
+@keyframes pm-book { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes pm-ray { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* The page-change curtain (components/RouteCurtain): 0.4 s from first frame to gone. */
+.curtain {
+  position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; pointer-events: none;
+  background: radial-gradient(420px 320px at 50% 50%, rgba(91, 127, 230, 0.16), transparent 70%), var(--void);
+  animation: curtain 400ms var(--ease) both;
+}
+.curtain .prism-mark { filter: drop-shadow(0 0 10px rgba(91, 127, 230, 0.6)) drop-shadow(0 0 26px rgba(184, 67, 94, 0.35)); }
+@keyframes curtain { 0% { opacity: 0; } 12% { opacity: 1; } 72% { opacity: 1; } 100% { opacity: 0; } }

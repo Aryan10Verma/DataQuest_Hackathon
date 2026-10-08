@@ -40,3 +40,8 @@ createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </StrictMode>,
 );
+
+// The HTML loading screen fades itself out by 0.40 s (a CSS animation in index.html); once that is
+// over, take it out of the page.
+const splash = document.getElementById('splash');
+if (splash) window.setTimeout(() => splash.remove(), Math.max(0, 420 - performance.now()));
