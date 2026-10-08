@@ -11,7 +11,7 @@
   background: linear-gradient(to bottom, rgba(11, 13, 26, 0.7), transparent);
 }
 .l-top nav { display: flex; gap: 1.6rem; margin-left: auto; align-items: center; color: var(--muted); }
-.l-top nav a { min-height: 44px; display: inline-flex; align-items: center; transition: color 0.3s; }
+.l-top nav a { min-height: 44px; display: inline-flex; align-items: center; white-space: nowrap; transition: color 0.3s; }
 .l-top nav a:hover { color: var(--ink); }
 
 .l-stage { position: relative; height: 100vh; height: 100svh; overflow: hidden;
@@ -21,58 +21,93 @@
     var(--void); }
 /* A soft vignette above the body and below the text, like a lit gallery wall. */
 .l-stage::after { content: ''; position: absolute; inset: 0; z-index: 4; pointer-events: none;
-  background: radial-gradient(120% 95% at 50% 42%, transparent 52%, rgba(8, 7, 6, 0.62) 100%); }
+  background: radial-gradient(120% 95% at 50% 42%, transparent 52%, rgba(5, 6, 14, 0.62) 100%); }
 .l-guides { position: absolute; inset: 0 var(--gutter); display: grid; grid-template-columns: repeat(5, 1fr); pointer-events: none; }
 .l-guides i { border-left: 1px solid rgba(236, 231, 240, 0.045); }
 .l-guides i:last-child { border-right: 1px solid rgba(236, 231, 240, 0.045); }
 
-.l-ring { position: absolute; left: 50%; top: 40%; width: min(66vh, 78vw); aspect-ratio: 1; translate: -50% -50%; overflow: visible; pointer-events: none; }
+.l-ring { position: absolute; left: 50%; top: calc(50% + 1.5vh); width: min(70vh, 80vw); aspect-ratio: 1; translate: -50% -50%; overflow: visible; pointer-events: none; }
 .l-ring circle { fill: none; stroke: #f3ecdd; stroke-width: 1.6;
   filter: drop-shadow(0 0 2px rgba(238, 243, 255, 0.9)) drop-shadow(0 0 12px rgba(91, 127, 230, 0.45)) drop-shadow(0 0 36px rgba(91, 127, 230, 0.22)); }
 
 .l-word {
   position: absolute; left: 0; right: 0; top: 46%; translate: 0 -50%; z-index: 2;
   margin: 0; text-align: center; white-space: nowrap; pointer-events: none;
-  font: 300 min(18vw, 17rem)/1 var(--serif);
-  letter-spacing: 0.16em; padding-left: 0.16em;
+  font: 400 min(15vw, 13rem)/1 var(--display);
+  letter-spacing: 0.08em; padding-left: 0.08em;
   color: var(--ink);
 }
 
 .l-word .c { background: linear-gradient(180deg, #f8f5fb 0%, #ece7f0 45%, #8d95c8 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-.l-bodies { position: absolute; inset: 0 0 var(--lbar); z-index: 3; display: grid; place-items: center; pointer-events: none; }
-.l-bodies-inner { position: relative; display: grid; grid-template-rows: 100%; place-items: center; height: min(74vh, 900px); margin-top: 4vh; }
-.l-body {
-  grid-area: 1 / 1; display: block; height: 100%; width: auto; max-width: none;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 90%, transparent), linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 90%, transparent), linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
-  mask-composite: intersect;
-  will-change: transform, opacity;
+/* The brain: five views stacked in one cell. Each layer is screen-blended as a whole against the stage
+   behind it, so the images' black backgrounds vanish and only light shows, whatever the animation does
+   inside the layer. (Blending the images themselves fails once a parent is transformed.) */
+.l-brains, .l-neural, .l-map { position: absolute; inset: 0 0 var(--lbar); display: grid; place-items: center; pointer-events: none; mix-blend-mode: screen; }
+.l-brains { z-index: 3; }
+.l-float { display: grid; place-items: center; height: min(66vh, 760px); margin-top: 3vh; mix-blend-mode: screen; }
+.l-brain {
+  grid-area: 1 / 1; display: block; height: 100%; width: auto; max-width: 86vw; object-fit: contain;
+  /* Views also screen-blend with each other, so a fading view's black never dims the one behind it. */
+  mix-blend-mode: screen; will-change: transform, opacity;
 }
-.l-body.is-top { height: 66%; -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent); mask-image: radial-gradient(closest-side, #000 72%, transparent); }
-.l-body:not(.is-front) { opacity: 0; }
-.l-scanline { position: absolute; left: -10%; right: -10%; top: 0; height: 2px; opacity: 0; mix-blend-mode: screen;
-  background: linear-gradient(90deg, transparent, rgba(91, 127, 230, 0.9), transparent); box-shadow: 0 0 18px 4px rgba(91, 127, 230, 0.35); }
+.l-brain.is-top { height: 92%; }
+.l-brain:not(.is-top) { opacity: 0; visibility: hidden; }
+
+/* Inside the brain: the neural network fills the stage, fading out at its edges. */
+.l-neural { z-index: 2; opacity: 0; visibility: hidden; will-change: transform, opacity; }
+.l-neural img { width: min(110vh, 120vw); height: auto;
+  -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent); mask-image: radial-gradient(closest-side, #000 55%, transparent); }
+
+/* India, with a live point for every city PRISM covers. */
+.l-map { z-index: 4; opacity: 0; visibility: hidden; will-change: transform, opacity; }
+.l-map-ui { z-index: 5; mix-blend-mode: normal; }
+.l-map-inner { position: relative; height: min(80vh, 900px); margin-top: 2vh; aspect-ratio: 1000 / 1170; }
+.l-map-inner img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.l-city { all: unset; position: absolute; translate: -50% -50%; cursor: pointer; width: calc(var(--s) + 14px); height: calc(var(--s) + 14px); display: grid; place-items: center; }
+.l-city .dot { width: var(--s); height: var(--s); border-radius: 50%; background: radial-gradient(circle, #fff 0 18%, var(--live) 40%, rgba(224, 86, 111, 0.15) 72%, transparent 74%);
+  box-shadow: 0 0 calc(var(--s) * 0.9) rgba(224, 86, 111, var(--g)), 0 0 calc(var(--s) * 2.2) rgba(184, 67, 94, calc(var(--g) * 0.6));
+  animation: city-pulse 2.6s ease-in-out infinite; }
+.l-city:nth-child(3n) .dot { animation-delay: -0.9s; }
+.l-city:nth-child(3n + 1) .dot { animation-delay: -1.7s; }
+.l-city.is-quiet .dot { background: radial-gradient(circle, #dfe6ff 0 20%, rgba(91, 127, 230, 0.6) 45%, transparent 72%); box-shadow: 0 0 8px rgba(91, 127, 230, 0.5); animation: none; }
+.l-city .name { position: absolute; left: calc(100% - 2px); top: 50%; translate: 0 -50%; white-space: nowrap; font-size: 11px; letter-spacing: 0.02em; color: rgba(236, 231, 240, 0.82);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9); pointer-events: none; transition: color 0.25s; }
+.l-city.is-left .name { left: auto; right: calc(100% - 2px); }
+.l-city:hover .name, .l-city:focus-visible .name, .l-city.is-picked .name { color: #fff; }
+.l-city.is-picked .dot { outline: 1px solid rgba(255, 255, 255, 0.8); outline-offset: 4px; }
+.l-city:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 50%; }
+@keyframes city-pulse { 50% { transform: scale(1.18); filter: brightness(1.25); } }
+
+.l-citycard { position: absolute; z-index: 2; width: 16rem; padding: 1rem 1.1rem; translate: 22px -50%;
+  border: 1px solid var(--line-strong); border-radius: 14px; background: rgba(18, 21, 40, 0.86); backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(3, 4, 12, 0.6), 0 0 30px rgba(184, 67, 94, 0.18); pointer-events: none; animation: card-in 220ms var(--ease); }
+.l-citycard.is-left { translate: calc(-100% - 22px) -50%; }
+@keyframes card-in { from { opacity: 0; scale: 0.96; } }
+.l-citycard .city { font: 400 1.5rem/1.1 var(--display); margin: 0 0 0.7rem; }
+.l-citycard .nums { display: flex; gap: 1.2rem; font-size: 0.78rem; color: var(--muted); }
+.l-citycard .nums strong { display: block; font: 300 1.5rem/1 var(--sans); color: var(--ink); font-variant-numeric: tabular-nums; }
+.l-citycard .sectors { margin-top: 0.8rem; font-size: 0.82rem; }
+.l-citycard .rising { margin-top: 0.3rem; font-size: 0.78rem; color: var(--muted); }
+.l-citycard .est { margin-top: 0.6rem; font-size: 0.7rem; color: var(--muted); }
 
 .l-hero { position: absolute; left: calc(var(--gutter) + 6vw); bottom: calc(var(--lbar) + 5vh); z-index: 5; max-width: 25rem; }
-.l-hero h1 { font: 400 clamp(2.2rem, 3vw, 3rem)/1.04 var(--serif); margin-bottom: 0.9rem; }
+.l-hero h1 { font: 400 clamp(1.8rem, 2.3vw, 2.4rem)/1.08 var(--display); margin-bottom: 0.9rem; max-width: 15ch; }
 .l-hero p { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.4rem; max-width: 23rem; }
 .l-hero .ctas { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
-.l-copy { position: absolute; z-index: 5; left: calc(var(--gutter) + 6vw); top: 46%; translate: 0 -50%; width: min(30rem, 38vw); visibility: hidden; }
-.l-copy h2 { margin: 0 0 3.2rem; font: 500 1rem/1 var(--sans); color: var(--accent); letter-spacing: 0.04em; }
-.l-copy h2 span.view { color: var(--muted); font-weight: 400; margin-left: 0.6rem; }
+.l-copy { position: absolute; z-index: 5; left: calc(var(--gutter) + 13vw); top: 46%; translate: 0 -50%; width: min(30rem, 38vw); visibility: hidden; }
+.l-copy h2 { margin: 0 0 2.6rem; display: grid; gap: 0.7rem; }
+.l-copy h2 .where { font: 500 0.8rem/1 var(--sans); color: var(--accent); letter-spacing: 0.04em; }
+.l-copy h2 .title { font: 400 clamp(1.9rem, 2.8vw, 2.6rem)/1.05 var(--display); }
 .l-fact + .l-fact { margin-top: 3rem; }
-.l-fact h3 { margin: 0 0 0.6rem; font: 400 clamp(2.3rem, 3.6vw, 3.4rem)/1 var(--serif); }
+.l-fact h3 { margin: 0 0 0.5rem; font: italic 400 clamp(1.5rem, 2.2vw, 2rem)/1.1 var(--lead); }
 .l-fact p { color: var(--muted); font-size: 0.98rem; max-width: 26ch; }
-.l-parts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.6rem 2rem; }
-.l-parts li { display: grid; gap: 0.7rem; }
-.l-parts .swatch { width: 2.2rem; height: 3px; border-radius: 2px; }
-.l-parts .strong-split { font: 400 1.9rem/1.05 var(--serif); }
 
-.l-rail { position: absolute; left: var(--gutter); top: 50%; translate: 0 -50%; z-index: 6; display: grid; gap: 0.2rem; padding-left: 14px; }
+.l-rail { position: absolute; left: var(--gutter); top: 50%; translate: 0 -50%; z-index: 6; display: grid; gap: 0.2rem; padding-left: 14px; transition: opacity 0.5s var(--ease); }
+/* Out of the way of the opening headline; it appears once the story starts. */
+.l-rail.is-idle { opacity: 0; pointer-events: none; }
 .l-rail button { all: unset; cursor: pointer; font-size: 0.74rem; color: var(--muted); min-height: 30px; display: flex; align-items: center; transition: color 0.3s; }
 .l-rail button:hover, .l-rail button.is-active { color: var(--ink); }
 .l-rail button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -83,7 +118,7 @@
   border-top: 1px solid var(--line); background: linear-gradient(to top, rgba(11, 13, 26, 0.92), rgba(11, 13, 26, 0.55)); backdrop-filter: blur(6px); }
 .l-stat { display: flex; align-items: center; gap: 0.75rem; padding: 0 2.4rem; height: 46%; border-right: 1px solid var(--line); }
 .l-stat:first-child { padding-left: 0; }
-.l-stat strong { font: 500 1.9rem/1 var(--serif); white-space: nowrap; }
+.l-stat strong { font: 300 1.9rem/1 var(--sans); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .l-stat span { font-size: 0.74rem; color: var(--muted); }
 .l-instruments { justify-self: end; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.4rem 1.1rem; margin: 0; padding: 0 0 0 2rem; list-style: none; font-size: 0.74rem; color: var(--muted); }
 .l-instruments li { display: flex; align-items: center; gap: 0.45rem; transition: color 0.4s; }
@@ -96,31 +131,34 @@
 .l-steps h2 { font: 400 clamp(2.2rem, 4.4vw, 3.6rem)/1.05 var(--serif); max-width: 16ch; }
 .l-steps ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; counter-reset: step; }
 .l-steps li { border-top: 1px solid var(--line); padding-top: 1.4rem; counter-increment: step; }
-.l-steps li::before { content: counter(step); display: block; font: 400 1rem var(--serif); color: var(--accent); margin-bottom: 1.2rem; }
+.l-steps li::before { content: counter(step); display: block; font: 300 1.4rem var(--sans); color: var(--accent); margin-bottom: 1.2rem; }
 .l-steps h3 { font: 400 1.75rem/1.1 var(--serif); margin-bottom: 0.7rem; }
 .l-steps p { color: var(--muted); max-width: 30ch; }
 .l-close { border-top: 1px solid var(--line); padding: 4rem var(--gutter) 5rem; max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2rem; }
-.l-close p { font: 400 clamp(1.3rem, 2.2vw, 1.9rem)/1.3 var(--serif); max-width: 30ch; }
+.l-close p { font: italic 400 clamp(1.3rem, 2.2vw, 1.9rem)/1.3 var(--lead); max-width: 30ch; }
 .l-foot { padding: 0 var(--gutter) 3rem; max-width: 1200px; margin: 0 auto; color: var(--muted); font-size: 0.78rem; }
 
 @media (max-width: 760px) {
   .landing { --lbar: 68px; }
   .l-top nav a.hide-sm { display: none; }
   .l-rail { display: none; }
-  .l-bodies-inner { height: 58vh; margin-top: -12vh; }
-  .l-ring { top: 30%; width: min(54vh, 86vw); }
-  .l-word { top: 30%; font-size: 23vw; letter-spacing: 0.1em; padding-left: 0.1em; }
+  .l-float { height: 46vh; margin-top: -14vh; }
+  .l-map-inner { height: 52vh; margin-top: -14vh; }
+  .l-neural img { width: 140vw; }
+  .l-citycard { display: none; }
+  .l-city .name { font-size: 9px; }
+  .l-ring { top: calc(50% - 7vh); width: min(52vh, 92vw); }
+  .l-word { top: 30%; font-size: 17vw; letter-spacing: 0.04em; padding-left: 0.04em; }
   .l-hero { left: 0; right: 0; bottom: var(--lbar); max-width: none; padding: 3.5rem var(--gutter) 3vh;
     background: linear-gradient(to top, var(--void) 62%, rgba(11, 13, 26, 0.75) 82%, transparent); }
   .l-hero h1 { font-size: 1.9rem; }
   .l-copy { left: var(--gutter); right: var(--gutter); width: auto; top: auto; bottom: calc(var(--lbar) + 2vh); translate: none;
     padding-top: 2rem; background: linear-gradient(to top, var(--void) 60%, transparent); }
-  .l-copy h2 { margin-bottom: 1.4rem; }
   .l-fact + .l-fact { margin-top: 1.4rem; }
-  .l-fact h3 { font-size: 1.9rem; }
+  .l-fact h3 { font-size: 1.35rem; }
+  .l-copy h2 .title { font-size: 1.7rem; }
+  .l-copy h2 { margin-bottom: 1rem; }
   .l-fact p { font-size: 0.9rem; }
-  .l-parts { gap: 0.9rem 1.2rem; }
-  .l-parts .strong-split { font-size: 1.35rem; }
   .l-bar { grid-template-columns: repeat(3, 1fr); }
   .l-stat { flex-direction: column; align-items: flex-start; justify-content: center; gap: 0.25rem; padding: 0 0.9rem; height: 60%; }
   .l-stat:last-of-type { border-right: 0; }

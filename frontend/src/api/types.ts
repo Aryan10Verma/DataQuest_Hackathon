@@ -82,6 +82,7 @@ export type LoginRequest = S['LoginRequest'];
 export type MarketDetail = S['MarketDetail'];
 export type MarketSignal = S['MarketSignal'];
 export type MarketTrends = S['MarketTrends'];
+export type RegionDemand = S['RegionDemand'];
 export type MentorDirectory = S['MentorDirectory'];
 export type MentorIn = S['MentorIn'];
 export type MentorOut = S['MentorOut'];

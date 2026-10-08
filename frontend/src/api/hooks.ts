@@ -125,6 +125,9 @@ export const useAlternatives = (idOrSlug?: string) =>
     queryFn: () => api<T.CareerAlternative[]>(`/api/v1/careers/${idOrSlug}/alternatives`),
     enabled: enabled(idOrSlug),
   });
+/** Job demand by city, for the India map. Public: works signed out too. */
+export const useMarketMap = () =>
+  useQuery({ queryKey: ['market-map'], queryFn: () => api<T.RegionDemand[]>('/api/v1/market/map', { anonymous: true }), staleTime: 10 * 60_000 });
 export const useRegions = () => useQuery({ queryKey: ['regions'], queryFn: () => api<T.Region[]>('/api/v1/regions'), staleTime: Infinity });
 export const useMarketTrends = (regionCode?: string, sector?: string) =>
   useQuery({

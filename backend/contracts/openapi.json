@@ -3675,6 +3675,28 @@
         }
       }
     },
+    "/api/v1/market/map": {
+      "get": {
+        "tags": [
+          "catalog"
+        ],
+        "summary": "Market Map",
+        "description": "Job demand by city across India, for the map. Public: no personal data, only market signals.",
+        "operationId": "market_map_api_v1_market_map_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_RegionDemand__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/pathways": {
       "get": {
         "tags": [
@@ -8870,6 +8892,47 @@
         ],
         "title": "Envelope[list[Question]]"
       },
+      "Envelope_list_RegionDemand__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/RegionDemand"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ErrorBody"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "meta"
+        ],
+        "title": "Envelope[list[RegionDemand]]"
+      },
       "Envelope_list_Region__": {
         "properties": {
           "success": {
@@ -12383,6 +12446,69 @@
           "cost_of_living_index"
         ],
         "title": "Region"
+      },
+      "RegionDemand": {
+        "properties": {
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "demand_index": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Demand Index",
+            "description": "Mean demand across the careers tracked here"
+          },
+          "job_velocity": {
+            "type": "number",
+            "title": "Job Velocity",
+            "description": "Mean year-on-year change in postings, e.g. 0.12 = +12 %"
+          },
+          "top_sectors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Top Sectors",
+            "description": "Up to three sectors with the highest mean demand"
+          },
+          "rising": {
+            "items": {
+              "$ref": "#/components/schemas/CareerRef"
+            },
+            "type": "array",
+            "title": "Rising",
+            "description": "Up to three careers whose postings grow fastest here"
+          },
+          "careers_tracked": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Careers Tracked"
+          },
+          "is_estimate": {
+            "type": "boolean",
+            "title": "Is Estimate",
+            "description": "true if any signal behind these numbers is an estimate"
+          },
+          "period": {
+            "type": "string",
+            "title": "Period"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "region",
+          "demand_index",
+          "job_velocity",
+          "top_sectors",
+          "rising",
+          "careers_tracked",
+          "is_estimate",
+          "period"
+        ],
+        "title": "RegionDemand",
+        "description": "One city on the job-demand map: market signals for every tracked career, summarised."
       },
       "RegionType": {
         "type": "string",

@@ -264,3 +264,7 @@ body::after {
 }
 .curtain .prism-mark { filter: drop-shadow(0 0 10px rgba(91, 127, 230, 0.6)) drop-shadow(0 0 26px rgba(184, 67, 94, 0.35)); }
 @keyframes curtain { 0% { opacity: 0; } 12% { opacity: 1; } 72% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Sign-in and sign-up: the brain breathes slowly beside the form. */
+.auth-brain { animation: auth-float 6s ease-in-out infinite; }
+@keyframes auth-float { 50% { translate: 0 -10px; } }

@@ -773,6 +773,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/market/map": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Market Map
+         * @description Job demand by city across India, for the map. Public: no personal data, only market signals.
+         */
+        get: operations["market_map_api_v1_market_map_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/pathways": {
         parameters: {
             query?: never;
@@ -2444,6 +2464,15 @@ export interface components {
             error?: components["schemas"]["ErrorBody"] | null;
             meta: components["schemas"]["Meta"];
         };
+        /** Envelope[list[RegionDemand]] */
+        Envelope_list_RegionDemand__: {
+            /** Success */
+            success: boolean;
+            /** Data */
+            data?: components["schemas"]["RegionDemand"][] | null;
+            error?: components["schemas"]["ErrorBody"] | null;
+            meta: components["schemas"]["Meta"];
+        };
         /** Envelope[list[Region]] */
         Envelope_list_Region__: {
             /** Success */
@@ -3809,6 +3838,42 @@ export interface components {
              * @description Bengaluru = 1.00
              */
             cost_of_living_index: number;
+        };
+        /**
+         * RegionDemand
+         * @description One city on the job-demand map: market signals for every tracked career, summarised.
+         */
+        RegionDemand: {
+            region: components["schemas"]["Region"];
+            /**
+             * Demand Index
+             * @description Mean demand across the careers tracked here
+             */
+            demand_index: number;
+            /**
+             * Job Velocity
+             * @description Mean year-on-year change in postings, e.g. 0.12 = +12 %
+             */
+            job_velocity: number;
+            /**
+             * Top Sectors
+             * @description Up to three sectors with the highest mean demand
+             */
+            top_sectors: string[];
+            /**
+             * Rising
+             * @description Up to three careers whose postings grow fastest here
+             */
+            rising: components["schemas"]["CareerRef"][];
+            /** Careers Tracked */
+            careers_tracked: number;
+            /**
+             * Is Estimate
+             * @description true if any signal behind these numbers is an estimate
+             */
+            is_estimate: boolean;
+            /** Period */
+            period: string;
         };
         /**
          * RegionType
@@ -6359,6 +6424,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    market_map_api_v1_market_map_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_RegionDemand__"];
                 };
             };
         };

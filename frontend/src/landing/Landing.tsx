@@ -1,11 +1,14 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useMarketMap } from '@/api/hooks';
+import type { RegionDemand } from '@/api/types';
 import { homeFor, useSession } from '@/auth/session';
+import { sectorLabel } from '@/lib/format';
 import { Logo } from '@/shell/Shell';
-import { PARTS } from '@/components/parts';
+import { CITIES } from './cities';
 import './landing.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -28,50 +31,83 @@ function Split({ text, as: Tag = 'span', className = '' }: { text: string; as?: 
   );
 }
 
-// Each view of the scan is one part of the questionnaire.
-const VIEWS = [
+const BRAINS = ['top', 'left', 'front', 'right', 'back'] as const;
+const INSTRUMENTS = ['Interests', 'Aptitude', 'Thinking style', 'Values', 'Family budget', 'Job market'];
+
+// The scroll story: five views of the brain (what PRISM measures), a fly into the neural network
+// (how it connects into one score), then out onto India (where those strengths are needed).
+const STORY: { key: string; rail: string; where: string; title: string; facts: [string, string][]; lit: number[] }[] = [
   {
-    body: 'front', rail: 'Interests', view: 'Front view', title: 'Interests',
+    key: 'top', rail: 'The whole you', where: 'From above', title: 'The whole student',
+    facts: [
+      ['Four sides of you', 'Interests, aptitude, thinking style and values, in one 25-minute questionnaire.'],
+      ['And your family', 'The budget and hopes your parents add, kept private.'],
+    ],
+    lit: [0, 1, 2, 3, 4],
+  },
+  {
+    key: 'left', rail: 'Interests', where: 'Left side', title: 'Interests',
     facts: [
       ['What you enjoy', 'Activities, not job titles.'],
       ['About 4 minutes', 'Your top three become your Holland code.'],
     ],
+    lit: [0],
   },
   {
-    body: 'back', rail: 'Aptitude', view: 'Back view', title: 'Aptitude',
+    key: 'front', rail: 'Aptitude', where: 'Front', title: 'Aptitude',
     facts: [
       ['What comes easily', 'Numbers, words, logic and shapes.'],
       ['About 15 minutes', 'Corrected for lucky guesses.'],
     ],
+    lit: [1],
   },
   {
-    body: 'left', rail: 'Thinking', view: 'Left side', title: 'Thinking style',
+    key: 'right', rail: 'Thinking and values', where: 'Right side', title: 'Thinking and values',
     facts: [
       ['How you solve problems', 'Analytical, creative or practical.'],
-      ['About 2 minutes', 'Twelve short statements.'],
+      ['What matters to you', 'Security, freedom, impact or pay, and how much risk you would take.'],
     ],
+    lit: [2, 3],
   },
   {
-    body: 'right', rail: 'Values', view: 'Right side', title: 'Values',
+    key: 'back', rail: 'Family and money', where: 'Back', title: 'Family and money',
     facts: [
-      ['What matters to you', 'Security, freedom, impact or pay.'],
-      ['Grit and risk', 'How you persevere, and what you would risk.'],
+      ['What your family can do', 'Budget, savings and loans, added privately by a parent.'],
+      ['Where you agree', 'Where you and your parents differ, and careers you could both back.'],
     ],
+    lit: [4],
   },
-  { body: 'top', rail: 'Full picture', view: 'From above', title: 'The full picture', facts: [] },
-] as const;
+  {
+    key: 'neural', rail: 'Connections', where: 'Closer', title: 'How it all connects',
+    facts: [
+      ['Six parts, one score', 'Fit, job market, affordability, return on cost, family agreement and automation risk.'],
+      ['Every link shown', 'How much each part added, and where every number came from.'],
+    ],
+    lit: [0, 1, 2, 3, 4, 5],
+  },
+  {
+    key: 'map', rail: 'Where you are needed', where: 'India', title: 'Where you are needed',
+    facts: [
+      ['Job demand by city', 'The brighter the point, the more openings in the careers PRISM tracks.'],
+      ['Your city matters', 'It changes the jobs, colleges and exams PRISM shows you.'],
+    ],
+    lit: [5],
+  },
+];
 
-const INSTRUMENTS = ['Interests', 'Aptitude', 'Thinking style', 'Values', 'Grit and risk'];
-// Which instruments light up in the bar for each view.
-const LIT: number[][] = [[0], [1], [2], [3, 4], [0, 1, 2, 3, 4]];
+const src = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+const pct = (v: number) => `${Math.round(v * 100)}%`;
 
 export default function Landing() {
   const root = useRef<HTMLDivElement>(null);
   const masterRef = useRef<gsap.core.Timeline | null>(null);
   const lenisRef = useRef<Lenis | null>(null);
-  const [view, setView] = useState(-1);
+  const [step, setStep] = useState(-1);
+  const [picked, setPicked] = useState<string | null>(null);
   const { status, user } = useSession();
   const navigate = useNavigate();
+  const market = useMarketMap();
+  const demand = useMemo(() => new Map((market.data ?? []).map((r) => [r.region.code, r])), [market.data]);
 
   useLayoutEffect(() => {
     const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -91,95 +127,84 @@ export default function Landing() {
       const SHOWN = { opacity: 1, yPercent: 0, filter: 'blur(0px)' };
       const HIDDEN = RM ? { opacity: 0 } : { opacity: 0, yPercent: 70, filter: 'blur(8px)' };
 
-      const turn = (tl: gsap.core.Timeline, from: Element, to: Element, at: number, rise: boolean) => {
+      // Camera fly-through: the current view grows past the camera and dissolves while the next one
+      // comes into focus from slightly smaller. Scrubbed, so it plays backwards just as smoothly.
+      const fly = (tl: gsap.core.Timeline, from: gsap.TweenTarget, to: gsap.TweenTarget, at: number, depth = 1.6) => {
         if (RM) {
-          tl.to(from, { opacity: 0, duration: 0.5 }, at).to(to, { opacity: 1, duration: 0.5 }, at + 0.3);
-        } else if (rise) {
-          tl.to(from, { scale: 1.25, yPercent: -8, opacity: 0, duration: 0.6, ease: 'power2.in' }, at);
-          tl.fromTo(to, { scale: 0.55, rotation: -30, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.7, ease: 'power3.out' }, at + 0.45);
-        } else {
-          tl.to(from, { scaleX: 0.06, opacity: 0, filter: 'brightness(2)', duration: 0.45, ease: 'power2.in' }, at);
-          tl.fromTo(to, { scaleX: 0.06, opacity: 0, filter: 'brightness(2)' }, { scaleX: 1, opacity: 1, filter: 'brightness(1)', duration: 0.55, ease: 'power3.out' }, at + 0.45);
+          tl.to(from, { autoAlpha: 0, duration: 0.5 }, at).to(to, { autoAlpha: 1, duration: 0.5 }, at + 0.3);
+          return;
         }
+        tl.to(from, { scale: depth, autoAlpha: 0, duration: 0.75, ease: 'power2.in' }, at);
+        tl.fromTo(to, { scale: 0.78, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.85, ease: 'power3.out' }, at + 0.3);
       };
 
       const mm = gsap.matchMedia();
       mm.add({ desktop: '(min-width: 761px)', mobile: '(max-width: 760px)' }, (c) => {
         const desktop = !!c.conditions?.desktop;
-        const bodies = q('.l-body') as HTMLElement[];
+        const brains = q('.l-brain') as HTMLElement[];
         const copies = q('.l-copy') as HTMLElement[];
         const shift = desktop ? '17vw' : '0vw';
-        const RINGS = desktop
-          ? [
-              { x: '17vw', y: '-4vh', scale: 1.15 },
-              { x: '31vw', y: '-24vh', scale: 0.9 },
-              { x: '6vw', y: '18vh', scale: 0.75 },
-              { x: '28vw', y: '22vh', scale: 1.25 },
-              { x: '17vw', y: '13vh', scale: 1 },
-            ]
-          : [
-              { x: 0, y: '-4vh', scale: 1.1 },
-              { x: '22vw', y: '-12vh', scale: 0.8 },
-              { x: '-18vw', y: '4vh', scale: 0.7 },
-              { x: '16vw', y: '8vh', scale: 1.15 },
-              { x: 0, y: '0vh', scale: 0.95 },
-            ];
 
         const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
         const showAt: number[] = [];
 
-        // The giant word spreads apart and dissolves; the hero copy lifts away.
+        // Opening: the giant word spreads and dissolves, the hero copy lifts, the brain slides aside.
         tl.fromTo('.l-word', { opacity: 1, filter: 'blur(0px)' }, { opacity: 0, filter: RM ? 'blur(0px)' : 'blur(10px)', duration: 0.7, ease: 'power2.in' }, 0);
-        if (!RM) tl.to('.l-word', { letterSpacing: '0.5em', duration: 0.8, ease: 'power2.in' }, 0);
+        if (!RM) tl.to('.l-word', { letterSpacing: '0.4em', duration: 0.8, ease: 'power2.in' }, 0);
         tl.fromTo('.l-hero', { opacity: 1, y: 0 }, { opacity: 0, y: RM ? 0 : -20, duration: 0.4 }, 0);
         tl.set('.l-hero', { visibility: 'hidden' }, 0.45);
-        tl.to('.l-bodies', { x: shift, duration: 1.2 }, 0.1);
-        tl.to('.l-ring', { ...RINGS[0], duration: 1.2 }, 0);
+        tl.to('.l-brains, .l-neural, .l-map', { x: shift, duration: 1.2 }, 0.1);
 
         let t = 0.9;
         copies.forEach((copy, i) => {
           if (i > 0) {
             tl.to(copies[i - 1], { autoAlpha: 0, y: RM ? 0 : -40, duration: 0.5, ease: 'power2.in' }, t);
-            turn(tl, bodies[i - 1], bodies[i], t + 0.2, i === 4);
-            tl.to('.l-ring', { ...RINGS[i], duration: 1.1 }, t + 0.1);
-            if (!RM) {
-              tl.fromTo('.l-scanline', { top: '0%', opacity: 0 }, { top: '100%', opacity: 1, duration: 0.8, ease: 'none' }, t + 0.45);
-              tl.to('.l-scanline', { opacity: 0, duration: 0.15 }, t + 1.15);
+            if (i < 5) {
+              fly(tl, brains[i - 1], brains[i], t + 0.15);
+              if (!RM) tl.fromTo('.l-ring', { scale: 1 }, { scale: 1.12, duration: 0.45, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t + 0.15);
+            } else if (i === 5) {
+              // Into the brain: the back view rushes past and the neural network opens up.
+              fly(tl, brains[4], '.l-neural', t + 0.15, 3.2);
+              tl.to('.l-ring', { scale: RM ? 1 : 2.4, autoAlpha: 0, duration: 0.8, ease: 'power2.in' }, t + 0.15);
+            } else {
+              // And back out: the network shrinks to a point and India opens around it.
+              if (RM) {
+                tl.to('.l-neural', { autoAlpha: 0, duration: 0.5 }, t + 0.15).to('.l-map', { autoAlpha: 1, duration: 0.5 }, t + 0.45);
+              } else {
+                tl.to('.l-neural', { scale: 0.12, autoAlpha: 0, duration: 0.8, ease: 'power3.in' }, t + 0.15);
+                tl.fromTo('.l-map', { scale: 2.6, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.95, ease: 'power3.out' }, t + 0.5);
+              }
+              tl.fromTo('.l-city', { scale: 0, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.4, stagger: 0.025, ease: 'back.out(2)' }, t + 1.0);
+              tl.set('.l-map', { pointerEvents: 'auto' }, t + 1.3);
             }
-            t += 1.1;
+            t += i >= 5 ? 1.5 : 1.1;
           }
           showAt.push(t);
           tl.set(copy, { autoAlpha: 1, y: 0 }, t);
-          tl.fromTo(chars(copy.querySelector('h2')), HIDDEN, { ...SHOWN, duration: 0.5, stagger: 0.03, ease: 'power3.out' }, t);
-          copy.querySelectorAll('.l-fact, .l-parts li').forEach((fact, k) => {
+          tl.fromTo(chars(copy.querySelector('h2 .split')), HIDDEN, { ...SHOWN, duration: 0.5, stagger: 0.03, ease: 'power3.out' }, t);
+          copy.querySelectorAll('.l-fact').forEach((fact, k) => {
             const at = t + 0.15 + k * 0.16;
-            const h = fact.querySelector('h3, .strong-split');
-            if (h) tl.fromTo(chars(h), HIDDEN, { ...SHOWN, duration: 0.5, stagger: 0.02, ease: 'power3.out' }, at);
-            const rest = fact.querySelectorAll('p, .help, .swatch');
-            tl.fromTo(rest, { opacity: 0, y: RM ? 0 : 10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, at + 0.2);
+            tl.fromTo(chars(fact.querySelector('h3')), HIDDEN, { ...SHOWN, duration: 0.5, stagger: 0.02, ease: 'power3.out' }, at);
+            tl.fromTo(fact.querySelectorAll('p'), { opacity: 0, y: RM ? 0 : 10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, at + 0.2);
           });
           tl.addLabel(`v${i}`, t + 0.95);
           t += 1.5;
         });
-
-        tl.to(copies[copies.length - 1], { autoAlpha: 0, y: RM ? 0 : -40, duration: 0.5, ease: 'power2.in' }, t);
-        tl.to('.l-bodies', { opacity: 0.2, duration: 0.8 }, t);
-        tl.to('.l-ring', { x: shift, y: '6vh', scale: RM ? 1 : 1.9, opacity: 0.25, duration: 0.9 }, t);
-        t += 0.9;
+        t += 0.3;
 
         tl.eventCallback('onUpdate', () => {
           let i = -1;
           showAt.forEach((s, k) => {
             if (tl.time() >= s - 0.05) i = k;
           });
-          setView(i);
+          setStep(i);
         });
 
         ScrollTrigger.create({
           animation: tl,
           trigger: '.l-stage',
           start: 'top top',
-          // About half a screen of scrolling per unit of timeline: the whole scan takes ~5 screens.
+          // About half a screen of scrolling per unit of timeline.
           end: () => `+=${window.innerHeight * t * 0.45}`,
           pin: true,
           scrub: RM ? true : 0.6,
@@ -192,15 +217,15 @@ export default function Landing() {
         };
       });
 
-      // The one page-load moment: the ring draws, the body and the word appear.
+      // The one page-load moment: the ring draws, the brain comes into focus, the word appears.
       if (!RM) {
         const circ = 2 * Math.PI * 88;
         gsap.timeline({ defaults: { ease: 'power3.out' } })
-          .fromTo('.l-ring circle', { strokeDasharray: circ, strokeDashoffset: circ }, { strokeDashoffset: 0, duration: 1.8, ease: 'power3.inOut' }, 0)
-          .fromTo('.l-body.is-front', { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 1.6 }, 0.2)
-          .fromTo(chars(q('.l-word')[0]), HIDDEN, { ...SHOWN, duration: 0.9, stagger: 0.06 }, 0.4)
-          .fromTo('.l-hero, .l-rail, .l-bar', { opacity: 0 }, { opacity: 1, duration: 1, stagger: 0.1 }, 1.1);
-        gsap.to('.l-bodies-inner', { y: -12, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+          .fromTo('.l-ring circle', { strokeDasharray: circ, strokeDashoffset: circ }, { strokeDashoffset: 0, duration: 1.6, ease: 'power3.inOut' }, 0)
+          .fromTo('.l-brain.is-top', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 1.4 }, 0.15)
+          .fromTo(chars(q('.l-word')[0]), HIDDEN, { ...SHOWN, duration: 0.8, stagger: 0.05 }, 0.3)
+          .fromTo('.l-hero, .l-bar', { opacity: 0 }, { opacity: 1, duration: 0.9, stagger: 0.1 }, 0.9);
+        gsap.to('.l-float', { y: -12, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
       }
     }, root);
 
@@ -230,7 +255,9 @@ export default function Landing() {
   };
 
   const signedIn = status === 'signed-in' && user;
-  const lit = view >= 0 ? LIT[view] : [];
+  const lit = step >= 0 ? STORY[step].lit : [];
+  const pickedCity = picked ? demand.get(picked) : undefined;
+  const pickedAt = CITIES.find((c) => c.code === picked);
 
   return (
     <div className="landing" ref={root}>
@@ -253,15 +280,58 @@ export default function Landing() {
       <main>
         <section className="l-stage" aria-label="How PRISM reads a student">
           <div className="l-guides" aria-hidden><i /><i /><i /><i /><i /></div>
-          <svg className="l-ring" viewBox="0 0 200 200" aria-hidden><circle cx="100" cy="100" r="88" /></svg>
           <Split text="PRISM" as="p" className="l-word" />
 
-          <div className="l-bodies" aria-hidden>
-            <div className="l-bodies-inner">
-              {VIEWS.map((v) => (
-                <img key={v.body} className={`l-body is-${v.body}`} src={`${import.meta.env.BASE_URL}scan/${v.body}.webp`} alt="" />
+          <div className="l-brains" aria-hidden>
+            {/* The ring lives in the brain's layer, so it always circles the brain as it moves. */}
+            <svg className="l-ring" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" /></svg>
+            <div className="l-float">
+              {BRAINS.map((b) => (
+                <img
+                  key={b}
+                  className={`l-brain is-${b}`}
+                  src={src(`brain/${b}.webp`)}
+                  srcSet={`${src(`brain/${b}-sm.webp`)} 800w, ${src(`brain/${b}.webp`)} 1600w`}
+                  sizes="(max-width: 760px) 92vw, 62vh"
+                  alt=""
+                  decoding="async"
+                />
               ))}
-              <span className="l-scanline" />
+            </div>
+          </div>
+          <div className="l-neural" aria-hidden>
+            <img src={src('brain/neural.webp')} srcSet={`${src('brain/neural-sm.webp')} 800w, ${src('brain/neural.webp')} 1600w`} sizes="110vh" alt="" decoding="async" />
+          </div>
+
+          {/* The map image is screen-blended like the brain; the points and the card sit in a twin layer
+              on top that isn't blended, so text and the card's glass stay crisp. Both move together. */}
+          <div className="l-map" aria-hidden>
+            <div className="l-map-inner">
+              <img src={src('map/india.webp')} srcSet={`${src('map/india-sm.webp')} 1200w, ${src('map/india.webp')} 2400w`} sizes="(max-width: 760px) 90vw, 70vh" alt="" decoding="async" />
+            </div>
+          </div>
+          <div className="l-map l-map-ui" role="group" aria-label="Job demand by city across India">
+            <div className="l-map-inner" onMouseLeave={() => setPicked(null)}>
+              {CITIES.map((c) => {
+                const d = demand.get(c.code);
+                const size = d ? 8 + d.demand_index * 14 : 6;
+                return (
+                  <button
+                    key={c.code}
+                    type="button"
+                    className={`l-city ${d ? '' : 'is-quiet'} ${c.side === 'left' ? 'is-left' : ''} ${picked === c.code ? 'is-picked' : ''}`}
+                    style={{ left: `${c.x * 100}%`, top: `${c.y * 100}%`, ['--s' as string]: `${size}px`, ['--g' as string]: d ? (0.35 + d.demand_index * 0.65).toFixed(2) : '0.2' }}
+                    onClick={() => setPicked(picked === c.code ? null : c.code)}
+                    onMouseEnter={() => setPicked(c.code)}
+                    onFocus={() => setPicked(c.code)}
+                    aria-label={d ? `${c.name}: job demand ${pct(d.demand_index)}` : `${c.name}: data coming soon`}
+                  >
+                    <span className="dot" aria-hidden />
+                    <span className="name" aria-hidden>{c.name}</span>
+                  </button>
+                );
+              })}
+              {pickedCity && pickedAt && <CityCard city={pickedCity} x={pickedAt.x} y={pickedAt.y} />}
             </div>
           </div>
 
@@ -274,37 +344,26 @@ export default function Landing() {
             </div>
           </div>
 
-          {VIEWS.map((v, i) => (
-            <article key={v.body} className="l-copy" aria-label={v.title}>
+          {STORY.map((s) => (
+            <article key={s.key} className="l-copy" aria-label={s.title}>
               <h2>
-                <Split text={v.title} />
-                <span className="view">{v.view}</span>
+                <span className="where">{s.where}</span>
+                <Split text={s.title} className="title" />
               </h2>
-              {i < 4 ? (
-                v.facts.map(([h, p]) => (
-                  <div key={h} className="l-fact">
-                    <Split text={h} as="h3" />
-                    <p>{p}</p>
-                  </div>
-                ))
-              ) : (
-                <ul className="l-parts">
-                  {PARTS.map((p) => (
-                    <li key={p.key}>
-                      <span className={`swatch ${p.key === 'disruption' ? 'hatch' : ''}`} style={p.key === 'disruption' ? undefined : { background: p.color }} />
-                      <Split text={p.label} as="span" className="strong-split" />
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {s.facts.map(([h, p]) => (
+                <div key={h} className="l-fact">
+                  <Split text={h} as="h3" />
+                  <p>{p}</p>
+                </div>
+              ))}
             </article>
           ))}
 
-          <nav className="l-rail" aria-label="Parts of the scan">
-            <span className="l-rail-marker" aria-hidden style={{ translate: `0 ${Math.max(view, 0) * 33.2}px`, opacity: view < 0 ? 0 : 1 }} />
-            {VIEWS.map((v, i) => (
-              <button key={v.body} type="button" className={view === i ? 'is-active' : ''} aria-current={view === i ? 'step' : undefined} onClick={() => goTo(i)}>
-                {v.rail}
+          <nav className={`l-rail ${step < 0 ? 'is-idle' : ''}`} aria-label="Parts of the story">
+            <span className="l-rail-marker" aria-hidden style={{ translate: `0 ${Math.max(step, 0) * 33.2}px`, opacity: step < 0 ? 0 : 1 }} />
+            {STORY.map((s, i) => (
+              <button key={s.key} type="button" className={step === i ? 'is-active' : ''} aria-current={step === i ? 'step' : undefined} onClick={() => goTo(i)}>
+                {s.rail}
               </button>
             ))}
           </nav>
@@ -312,8 +371,8 @@ export default function Landing() {
           <div className="l-bar">
             <div className="l-stat"><strong>74</strong><span>Questions</span></div>
             <div className="l-stat"><strong>25</strong><span>Minutes</span></div>
-            <div className="l-stat"><strong>6</strong><span>Score parts</span></div>
-            <ul className="l-instruments" aria-label="Questionnaire sections">
+            <div className="l-stat"><strong>{market.data?.length || 16}</strong><span>Cities</span></div>
+            <ul className="l-instruments" aria-label="What PRISM weighs">
               {INSTRUMENTS.map((name, i) => (
                 <li key={name} className={lit.includes(i) ? 'is-on' : ''}>{name}</li>
               ))}
@@ -351,6 +410,23 @@ export default function Landing() {
         </section>
       </main>
       <footer className="l-foot">PRISM, built for DataQuest 3.0. Figures marked as estimates have not been checked against their source yet.</footer>
+    </div>
+  );
+}
+
+/** The city under the pointer, in a small card beside its point (flipped left in the east). */
+function CityCard({ city, x, y }: { city: RegionDemand; x: number; y: number }) {
+  const growth = city.job_velocity;
+  return (
+    <div className={`l-citycard ${x > 0.55 ? 'is-left' : ''}`} style={{ left: `${x * 100}%`, top: `${y * 100}%` }} aria-live="polite">
+      <p className="city">{city.region.name}</p>
+      <div className="nums">
+        <span><strong>{pct(city.demand_index)}</strong> demand</span>
+        <span><strong>{growth >= 0 ? '+' : ''}{pct(growth)}</strong> hiring a year</span>
+      </div>
+      <p className="sectors">{city.top_sectors.map(sectorLabel).join(', ')}</p>
+      {city.rising.length > 0 && <p className="rising">Rising: {city.rising.map((r) => r.name).join(', ')}</p>}
+      {city.is_estimate && <p className="est">Estimates, not yet checked against a source.</p>}
     </div>
   );
 }

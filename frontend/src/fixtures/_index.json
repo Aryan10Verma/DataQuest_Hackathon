@@ -493,6 +493,14 @@
     "request": null
   },
   {
+    "name": "market_map",
+    "method": "GET",
+    "path": "/api/v1/market/map",
+    "status": 200,
+    "headers": {},
+    "request": null
+  },
+  {
     "name": "pathways",
     "method": "GET",
     "path": "/api/v1/pathways",

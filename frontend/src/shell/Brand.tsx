@@ -94,7 +94,7 @@ export function Logo({ tagline = false }: { tagline?: boolean }) {
       <PrismMark className={tagline ? 'h-10 w-auto' : 'h-7 w-auto'} />
       <span className="grid leading-none">
         <Wordmark className="text-[1.2rem]" />
-        {tagline && <span className="mt-1.5 text-[0.7rem] tracking-[0.02em] text-muted">{TAGLINE}</span>}
+        {tagline && <span className="mt-1.5 hidden text-[0.7rem] tracking-[0.02em] text-muted sm:block">{TAGLINE}</span>}
       </span>
     </Link>
   );

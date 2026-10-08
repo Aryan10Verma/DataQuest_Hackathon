@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from '@/shell/Shell';
-import { Ring } from '@/components/ui';
 
 /** Sign-in and register: the form on the left, the scanned body in its ring on the right. */
 export function AuthLayout({ title, intro, children, footer }: { title: string; intro: ReactNode; children: ReactNode; footer: ReactNode }) {
@@ -19,11 +18,14 @@ export function AuthLayout({ title, intro, children, footer }: { title: string; 
       </div>
       <div className="relative hidden overflow-hidden border-l border-line lg:block" aria-hidden
         style={{ background: 'radial-gradient(55% 50% at 50% 45%, rgba(91, 127, 230, 0.1), transparent 70%), var(--void)' }}>
-        <div className="absolute inset-0 grid place-items-center">
-          <Ring size={520} stroke={1.6} className="opacity-90" />
-        </div>
-        <img src={`${import.meta.env.BASE_URL}scan/front.webp`} alt="" className="absolute left-1/2 top-1/2 h-[78vh] -translate-x-1/2 -translate-y-1/2 opacity-80"
-          style={{ maskImage: 'linear-gradient(to bottom, transparent, #000 6%, #000 88%, transparent)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, #000 6%, #000 88%, transparent)' }} />
+        {/* The brain's front view, its black background screened away so only the light shows. */}
+        <img
+          src={`${import.meta.env.BASE_URL}brain/front.webp`}
+          srcSet={`${import.meta.env.BASE_URL}brain/front-sm.webp 800w, ${import.meta.env.BASE_URL}brain/front.webp 1600w`}
+          sizes="50vw"
+          alt=""
+          className="auth-brain absolute left-1/2 top-1/2 w-[min(78%,720px)] -translate-x-1/2 -translate-y-1/2 mix-blend-screen"
+        />
       </div>
     </div>
   );

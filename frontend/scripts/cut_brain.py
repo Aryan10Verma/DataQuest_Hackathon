@@ -2,11 +2,15 @@
 
     python -I frontend/scripts/cut_brain.py brain-x4.png frontend/public/brain
 
+    python -I frontend/scripts/cut_brain.py --map map-clean-x4.png frontend/public/map
+
 The sheet is first upscaled 4x with Real-ESRGAN (realesrgan-x4plus) from
 design/reference/brain/brain-sheet-original.jpg. Boxes below are in original-sheet pixels. Each view
-is lifted to pure black, so the page can lay it over any background with `mix-blend-mode: screen`,
-and its edges are feathered so no frame or label shows. Writes <name>.webp (1600px) and
+is lifted to pure black and its edges feathered so no frame or label shows; the page screen-blends
+the layer that holds them, so black vanishes against whatever is behind. (Real transparency was tried:
+alpha from brightness looks the same but triples the file size.) Writes <name>.webp (1600px) and
 <name>-sm.webp (800px).
+With --map, the cleaned 4x India map gets the same treatment (india.webp 2400px, india-sm.webp 1200px).
 """
 
 import sys
@@ -14,6 +18,21 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+from PIL import Image
+
+def save(img: np.ndarray, out: Path, name: str, widths: tuple[tuple[str, int], ...]) -> None:
+    h, w = img.shape[:2]
+    for suffix, width in widths:
+        resized = cv2.resize(img, (width, round(h * width / w)), interpolation=cv2.INTER_AREA)
+        Image.fromarray(resized[..., ::-1]).save(out / f"{name}{suffix}.webp", quality=84, method=6)
+    print(name, f"{w}x{h} ->", ", ".join(f"{(out / f'{name}{s}.webp').stat().st_size // 1024} KB" for s, _ in widths))
+
+
+if sys.argv[1] == "--map":
+    out = Path(sys.argv[3])
+    out.mkdir(parents=True, exist_ok=True)
+    save(cv2.imread(sys.argv[2]), out, "india", (("", 2400), ("-sm", 1200)))
+    sys.exit()
 
 src, out = sys.argv[1], Path(sys.argv[2])
 out.mkdir(parents=True, exist_ok=True)
@@ -40,9 +59,4 @@ for name, (x0, y0, x1, y1) in BOXES.items():
     ry = np.clip(np.minimum(np.arange(h), np.arange(h)[::-1]) / (edge * h), 0, 1)
     rx = np.clip(np.minimum(np.arange(w), np.arange(w)[::-1]) / (edge * w), 0, 1)
     mask = (np.outer(ry, rx) ** 1.5)[..., None]
-    img = (crop * mask).astype(np.uint8)
-    for suffix, width in (("", 1600), ("-sm", 800)):
-        scale = width / w
-        resized = cv2.resize(img, (width, round(h * scale)), interpolation=cv2.INTER_AREA)
-        cv2.imwrite(str(out / f"{name}{suffix}.webp"), resized, [cv2.IMWRITE_WEBP_QUALITY, 86])
-    print(name, f"{w}x{h} ->", ", ".join(f"{(out / f'{name}{s}.webp').stat().st_size // 1024} KB" for s in ("", "-sm")))
+    save((crop * mask).astype(np.uint8), out, name, (("", 1600), ("-sm", 800)))

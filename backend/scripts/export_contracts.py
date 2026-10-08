@@ -113,6 +113,7 @@ CALLS = [
     ("career_alternatives", "GET", "/api/v1/careers/data-scientist/alternatives", None, {}),
     ("regions", "GET", "/api/v1/regions", None, {}),
     ("market_trends", "GET", "/api/v1/market/trends?region_code=IN-TN-CBE", None, {}),
+    ("market_map", "GET", "/api/v1/market/map", None, {}),
     ("pathways", "GET", "/api/v1/pathways", None, {}),
     ("exams", "GET", "/api/v1/exams", None, {}),
     ("scholarships", "GET", "/api/v1/scholarships", None, {}),
