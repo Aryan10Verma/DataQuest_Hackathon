@@ -226,19 +226,7 @@ export function CountUp({ value, digits = 0, duration = 1.2 }: { value: number; 
 }
 
 /* ---------- states ---------- */
-export function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`animate-pulse rounded-lg bg-white/[0.05] ${className}`} aria-hidden />;
-}
-export function PageSkeleton() {
-  return (
-    <div className="grid gap-6" aria-busy="true" aria-label="Loading">
-      <Skeleton className="h-10 w-2/3" />
-      <Skeleton className="h-40" />
-      <Skeleton className="h-24" />
-      <Skeleton className="h-24" />
-    </div>
-  );
-}
+export { PageSkeleton, Skeleton } from './skeleton';
 
 export function EmptyState({ title, body, action }: { title: string; body?: ReactNode; action?: ReactNode }) {
   return (

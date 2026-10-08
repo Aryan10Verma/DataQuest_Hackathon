@@ -1,6 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Award, Briefcase, CalendarPlus, FileText, GraduationCap, PenLine, Sparkles, Wallet, Wrench, X, type LucideIcon } from 'lucide-react';
+import { Award, BellRing, Briefcase, CalendarPlus, FileText, GraduationCap, PenLine, Sparkles, Wallet, Wrench, X, type LucideIcon } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api, apiBlob } from '@/api/client';
@@ -64,12 +64,13 @@ function PlanView({ run, studentId }: { run: AnalysisRun; studentId: string }) {
 function Timeline({ r }: { r: Roadmap }) {
   return (
     <section aria-label="Five-year roadmap" className="grid gap-4">
-      <div className="-mx-4 overflow-x-auto px-4 pb-2">
-        <ol className="grid min-w-[1000px] grid-cols-5 gap-px">
+      {/* On a phone the years run down the page along a line on the left; from tablets up, across it. */}
+      <div className="pb-2 md:-mx-4 md:overflow-x-auto md:px-4">
+        <ol className="ml-1 grid gap-10 border-l border-line pl-6 md:ml-0 md:min-w-[1000px] md:grid-cols-5 md:gap-px md:border-l-0 md:pl-0">
           {r.phases.map((p) => (
             <li key={p.year_index} className="grid content-start gap-4">
-              <div className="relative border-t border-line pt-4">
-                <span className="absolute -top-[5px] left-0 h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_10px_var(--glow)]" aria-hidden />
+              <div className="relative md:border-t md:border-line md:pt-4">
+                <span className="absolute -left-[29px] top-2.5 h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_10px_var(--glow)] md:-top-[5px] md:left-0" aria-hidden />
                 <p className="figure text-2xl">Year {p.year_index}</p>
                 <p className="pr-4 text-xs text-muted">{p.label.replace(/^Year \d+ - /, '')}</p>
                 <p className="text-xs text-muted/70">{formatDate(p.start, { month: 'short', year: 'numeric' })} to {formatDate(p.end, { month: 'short', year: 'numeric' })}</p>
@@ -155,7 +156,7 @@ function Deadlines({ studentId }: { studentId: string }) {
   };
   return (
     <Section title="Deadlines" aside={
-      <span className="flex flex-wrap gap-1">
+      <span className="flex flex-wrap gap-x-6 gap-y-1">
         <button className="btn-text min-h-0" onClick={downloadIcs}><CalendarPlus size={14} aria-hidden /> Add to calendar</button>
         <RemindDialog studentId={studentId} />
       </span>
@@ -203,7 +204,7 @@ function RemindDialog({ studentId }: { studentId: string }) {
   };
   return (
     <Dialog.Root open={open} onOpenChange={(o) => { setOpen(o); if (!o) create.reset(); }}>
-      <Dialog.Trigger className="btn-text min-h-0">Remind me</Dialog.Trigger>
+      <Dialog.Trigger className="btn-text min-h-0"><BellRing size={14} aria-hidden /> Remind me</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-void/70 backdrop-blur-sm" />
         <Dialog.Content aria-describedby={undefined} className="fixed left-1/2 top-1/2 z-50 grid w-[min(440px,calc(100vw-32px))] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-panel border border-line bg-deep p-6">

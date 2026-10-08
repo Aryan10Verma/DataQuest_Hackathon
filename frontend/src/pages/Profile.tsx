@@ -115,7 +115,7 @@ function Dots({ r }: { r: number }) {
   const n = r >= 0.8 ? 3 : r >= 0.5 ? 2 : 1;
   return (
     <Tip label={`Answer consistency ${pct(r)}`}>
-      <span className="flex gap-1" aria-label={`Consistency ${pct(r)}`}>
+      <span className="flex gap-1" role="img" aria-label={`Consistency ${pct(r)}`}>
         {[0, 1, 2].map((i) => <span key={i} className={`h-1.5 w-1.5 rounded-full ${i < n ? 'bg-accent' : 'border border-muted/60'}`} />)}
       </span>
     </Tip>

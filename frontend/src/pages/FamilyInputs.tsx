@@ -209,7 +209,7 @@ function Scale({ label, value, onChange }: { label: string; value: number; onCha
       <div className="flex justify-between gap-3"><span className="text-muted">{label}</span><span>{WORDS[Math.min(4, Math.round(value * 4))]}</span></div>
       <Slider.Root className="relative flex h-6 touch-none select-none items-center" value={[value]} min={0} max={1} step={0.05} onValueChange={([v]) => onChange(v)} aria-label={label}>
         <Slider.Track className="relative h-1 grow rounded-full bg-white/[0.08]"><Slider.Range className="absolute h-full rounded-full bg-accent" /></Slider.Track>
-        <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-void bg-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" />
+        <Slider.Thumb aria-label={label} className="block h-5 w-5 rounded-full border-2 border-void bg-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" />
       </Slider.Root>
     </div>
   );

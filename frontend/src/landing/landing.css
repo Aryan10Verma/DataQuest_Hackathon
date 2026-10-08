@@ -27,10 +27,14 @@
 .l-guides i:last-child { border-right: 1px solid rgba(236, 231, 240, 0.045); }
 
 
+/* The word sits between the top bar and the hero copy. On short screens (a 1366x768 laptop) it shrinks
+   and rises so its letters never run behind the headline: the hero's top is about 95% - 384px, and the
+   capitals fill the middle 0.8em of the line. */
 .l-word {
-  position: absolute; left: 0; right: 0; top: 46%; translate: 0 -50%; z-index: 2;
+  --wfs: min(15vw, 13rem, max(5rem, (95svh - 484px) * 1.25));
+  position: absolute; left: 0; right: 0; top: min(46%, 95% - 384px - 0.4 * var(--wfs)); translate: 0 -50%; z-index: 2;
   margin: 0; text-align: center; white-space: nowrap; pointer-events: none;
-  font: 400 min(15vw, 13rem)/1 var(--display);
+  font: 400 var(--wfs)/1 var(--display);
   letter-spacing: 0.08em; padding-left: 0.08em;
   color: var(--ink);
 }
@@ -90,7 +94,7 @@
 .l-citycard .est { margin-top: 0.6rem; font-size: 0.7rem; color: var(--muted); }
 
 .l-hero { position: absolute; left: calc(var(--gutter) + 6vw); bottom: calc(var(--lbar) + 5vh); z-index: 5; max-width: 25rem; }
-.l-hero h1 { font: 400 clamp(1.8rem, 2.3vw, 2.4rem)/1.08 var(--display); margin-bottom: 0.9rem; max-width: 15ch; }
+.l-hero h1 { font: 400 clamp(1.8rem, 2.3vw, 2.4rem)/1.08 var(--display); margin-bottom: 0.9rem; max-width: 13.25em; }
 .l-hero p { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.4rem; max-width: 23rem; }
 .l-hero .ctas { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
@@ -125,7 +129,7 @@
 
 /* After the scan */
 .l-steps { padding: 18vh var(--gutter) 10vh; display: grid; gap: 4rem; max-width: 1200px; margin: 0 auto; }
-.l-steps h2 { font: 400 clamp(2.2rem, 4.4vw, 3.6rem)/1.05 var(--serif); max-width: 16ch; }
+.l-steps h2 { font: 400 clamp(2.2rem, 4.4vw, 3.6rem)/1.05 var(--serif); max-width: 14.1em; }
 .l-steps ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; counter-reset: step; }
 .l-steps li { border-top: 1px solid var(--line); padding-top: 1.4rem; counter-increment: step; }
 .l-steps li::before { content: counter(step); display: block; font: 300 1.4rem var(--sans); color: var(--accent); margin-bottom: 1.2rem; }

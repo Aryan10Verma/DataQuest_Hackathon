@@ -51,3 +51,12 @@ def test_does_not_escape_the_site_folder(tmp_path, monkeypatch):
     r = c.get("/..%2F..%2Fetc%2Fpasswd")
     assert r.status_code == 200
     assert "<title>PRISM</title>" in r.text
+
+
+def test_cache_headers(tmp_path, monkeypatch):
+    c = _client(tmp_path, monkeypatch)
+    # Hashed build files are kept for good; other files for a day; the page itself is always re-checked.
+    assert c.get("/assets/app.js").headers["cache-control"] == "public, max-age=31536000, immutable"
+    assert c.get("/favicon.svg").headers["cache-control"] == "public, max-age=86400"
+    assert c.get("/signin").headers["cache-control"] == "no-cache"
+    assert "immutable" not in c.get("/assets/missing.js").headers.get("cache-control", "")

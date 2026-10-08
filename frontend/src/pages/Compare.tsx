@@ -117,58 +117,62 @@ function Table({ run }: { run: AnalysisRun }) {
       {cols.length === 0 ? (
         <p className="text-muted">Pick at least one career above.</p>
       ) : (
-        <div className="-mx-4 overflow-x-auto px-4">
-          <table className="w-full min-w-[720px] table-fixed border-collapse text-left">
-            <colgroup><col className="w-[30%]" />{cols.map((c) => <col key={c.career.id} />)}</colgroup>
-            <thead>
-              <tr>
-                <th className="pb-6 align-bottom text-xs font-normal text-muted">Best value marked <span className="text-accent">●</span></th>
-                {cols.map((r) => (
-                  <th key={r.career.id} scope="col" className="pb-6 pr-6 align-bottom font-normal">
-                    <span className="flex items-start justify-between gap-2">
-                      <span>
-                        <span className="text-xs text-muted">Rank {r.rank}, {sectorLabel(r.career.sector)}</span>
-                        <Link to={`/app/results/career/${r.career.id}`} className="display mt-1 block text-2xl leading-tight hover:text-accent">{r.career.name}</Link>
+        // On a phone the careers scroll sideways under the row names, which stay pinned on the left.
+        <div className="grid gap-3">
+          {cols.length > 1 && <p className="text-xs text-muted sm:hidden">Swipe the table sideways to see every career.</p>}
+          <div className="overflow-x-auto sm:-mx-4 sm:px-4">
+            <table className="w-full min-w-[540px] table-fixed border-collapse text-left sm:min-w-[720px]">
+              <colgroup><col className="w-[8.5rem] sm:w-[30%]" />{cols.map((c) => <col key={c.career.id} />)}</colgroup>
+              <thead>
+                <tr>
+                  <th className="sticky left-0 z-10 bg-void pb-6 pr-3 align-bottom text-xs font-normal text-muted">Best value marked <span className="text-accent">●</span></th>
+                  {cols.map((r) => (
+                    <th key={r.career.id} scope="col" className="pb-6 pr-4 align-bottom font-normal sm:pr-6">
+                      <span className="flex items-start justify-between gap-2">
+                        <span>
+                          <span className="text-xs text-muted">Rank {r.rank}, {sectorLabel(r.career.sector)}</span>
+                          <Link to={`/app/results/career/${r.career.id}`} className="display mt-1 block text-lg leading-tight hover:text-accent sm:text-2xl">{r.career.name}</Link>
+                        </span>
+                        <button className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted hover:text-ink" onClick={() => toggle(r.career.id)} aria-label={`Remove ${r.career.name}`}>
+                          <X size={14} />
+                        </button>
                       </span>
-                      <button className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-muted hover:text-ink" onClick={() => toggle(r.career.id)} aria-label={`Remove ${r.career.name}`}>
-                        <X size={14} />
-                      </button>
-                    </span>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            {GROUPS.map((g) => (
-              <tbody key={g.title}>
-                <tr><th colSpan={cols.length + 1} scope="colgroup" className="display border-b border-ink/25 pb-2 pt-8 text-xl font-normal">{g.title}</th></tr>
-                {g.rows.map((row) => {
-                  const winners = best(row);
-                  return (
-                    <tr key={row.label} className="border-b border-line align-middle">
-                      <th scope="row" className="py-3.5 pr-4 text-sm font-normal text-muted" title={row.help}>{row.label}</th>
-                      {cols.map((r) => {
-                        const v = row.value(r);
-                        return (
-                          <td key={r.career.id} className="py-3.5 pr-6 text-sm tabular-nums">
-                            <span className="flex items-center gap-2">
-                              {row.show(r)}
-                              {winners.has(r.career.id) && <span className="text-accent" aria-label="Best">●</span>}
-                            </span>
-                            {row.bar && v !== null && (
-                              <span className="mt-1.5 block h-1 rounded-full bg-white/[0.06]">
-                                <span className={`block h-full rounded-full ${row.label === PART.disruption.label ? 'hatch' : ''}`}
-                                  style={{ width: pct(v), background: row.label === PART.disruption.label ? undefined : row.bar }} />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              {GROUPS.map((g) => (
+                <tbody key={g.title}>
+                  <tr><th colSpan={cols.length + 1} scope="colgroup" className="display border-b border-ink/25 pb-2 pt-8 text-xl font-normal"><span className="sticky left-0 inline-block max-w-[calc(100vw-2rem)] sm:max-w-none">{g.title}</span></th></tr>
+                  {g.rows.map((row) => {
+                    const winners = best(row);
+                    return (
+                      <tr key={row.label} className="border-b border-line align-middle">
+                        <th scope="row" className="sticky left-0 z-10 bg-void py-3.5 pr-3 text-sm font-normal text-muted sm:pr-4" title={row.help}>{row.label}</th>
+                        {cols.map((r) => {
+                          const v = row.value(r);
+                          return (
+                            <td key={r.career.id} className="py-3.5 pr-4 text-sm tabular-nums sm:pr-6">
+                              <span className="flex items-center gap-2">
+                                {row.show(r)}
+                                {winners.has(r.career.id) && <span className="text-accent" aria-label="Best">●</span>}
                               </span>
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            ))}
-          </table>
+                              {row.bar && v !== null && (
+                                <span className="mt-1.5 block h-1 rounded-full bg-white/[0.06]">
+                                  <span className={`block h-full rounded-full ${row.label === PART.disruption.label ? 'hatch' : ''}`}
+                                    style={{ width: pct(v), background: row.label === PART.disruption.label ? undefined : row.bar }} />
+                                </span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              ))}
+            </table>
+          </div>
         </div>
       )}
     </div>

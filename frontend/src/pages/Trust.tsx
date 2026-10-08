@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDataStatus, useFairness, useMethodology } from '@/api/hooks';
 import { PART } from '@/components/parts';
 import { ErrorState, PageHeader, Section, Skeleton } from '@/components/ui';
-import { Logo } from '@/shell/Shell';
+import { Logo } from '@/shell/Brand';
 import { formatDate, pct } from '@/lib/format';
 
 const FRESHNESS: Record<string, string> = { fresh: 'Up to date', aging: 'Due soon', stale: 'Overdue' };

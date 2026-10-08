@@ -10,6 +10,8 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.responses import Response
+from starlette.types import Scope
 
 from app.api.compat import router as compat_router
 from app.api.v1.router import api_router
@@ -108,6 +110,18 @@ def create_app() -> FastAPI:
 
 
 _RESERVED = ("api/", "docs", "redoc", "openapi.json")
+# Built scripts and styles carry a content hash in their names, so a browser may keep them for good.
+# Images and fonts outside /assets keep their names across releases: a day, then a cheap re-check.
+_IMMUTABLE = "public, max-age=31536000, immutable"
+_DAY = "public, max-age=86400"
+
+
+class _HashedFiles(StaticFiles):
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        response = await super().get_response(path, scope)
+        if response.status_code == 200:
+            response.headers["Cache-Control"] = _IMMUTABLE
+        return response
 
 
 def _mount_frontend(app: FastAPI, configured: str | None) -> None:
@@ -124,7 +138,7 @@ def _mount_frontend(app: FastAPI, configured: str | None) -> None:
         return
     root = dist.resolve()
     if (dist / "assets").is_dir():
-        app.mount("/assets", StaticFiles(directory=dist / "assets"), name="assets")
+        app.mount("/assets", _HashedFiles(directory=dist / "assets"), name="assets")
 
     @app.get("/{path:path}", include_in_schema=False)
     async def _spa(path: str) -> FileResponse:
@@ -132,7 +146,7 @@ def _mount_frontend(app: FastAPI, configured: str | None) -> None:
             raise StarletteHTTPException(status_code=404, detail="Not found")
         candidate = (dist / path).resolve()
         if path and candidate.is_file() and candidate.is_relative_to(root):
-            return FileResponse(candidate)
+            return FileResponse(candidate, headers={"Cache-Control": _DAY})
         return FileResponse(index, headers={"Cache-Control": "no-cache"})
 
     log.info("serving website from %s", dist)

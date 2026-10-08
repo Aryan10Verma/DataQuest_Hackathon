@@ -129,7 +129,7 @@ function Control({ label, value, min, max, step, format, onChange, color }: {
         <Slider.Track className="relative h-1 grow rounded-full bg-white/[0.08]">
           <Slider.Range className="absolute h-full rounded-full" style={{ background: color ?? 'var(--accent)' }} />
         </Slider.Track>
-        <Slider.Thumb className="block h-5 w-5 rounded-full border-2 border-void bg-ink shadow-[0_0_0_1px_var(--line)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" />
+        <Slider.Thumb aria-label={label} className="block h-5 w-5 rounded-full border-2 border-void bg-ink shadow-[0_0_0_1px_var(--line)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent" />
       </Slider.Root>
     </div>
   );

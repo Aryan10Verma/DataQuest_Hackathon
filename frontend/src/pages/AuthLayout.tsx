@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { Logo } from '@/shell/Shell';
+import { Logo } from '@/shell/Brand';
 
 /** Sign-in and register: the form on the left, the scanned body in its ring on the right. */
 export function AuthLayout({ title, intro, children, footer }: { title: string; intro: ReactNode; children: ReactNode; footer: ReactNode }) {

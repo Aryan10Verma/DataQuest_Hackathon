@@ -160,8 +160,9 @@ function Month({ events, today, next }: { events: Event[]; today: string; next: 
           </div>
           <button className="grid h-11 w-11 place-items-center rounded-full border border-line text-muted hover:border-accent hover:text-ink" onClick={() => shift(1)} aria-label="Next month"><ChevronRight size={18} /></button>
         </div>
-        <div role="grid" aria-label="Days" className="grid grid-cols-7 gap-1">
-          {WEEKDAYS.map((d) => <div key={d} role="columnheader" className="pb-2 text-center text-xs text-muted">{d}</div>)}
+        {/* Each day button names its full date, so the weekday row is only for the eye. */}
+        <div role="group" aria-label="Days" className="grid grid-cols-7 gap-1">
+          {WEEKDAYS.map((d) => <div key={d} aria-hidden className="pb-2 text-center text-xs text-muted">{d}</div>)}
           {Array.from({ length: lead }, (_, i) => <div key={`lead-${i}`} />)}
           {Array.from({ length: days }, (_, i) => {
             const date = `${cursor}-${String(i + 1).padStart(2, '0')}`;
@@ -169,8 +170,8 @@ function Month({ events, today, next }: { events: Event[]; today: string; next: 
             const isToday = date === today;
             const isSel = date === selected;
             return (
-              <button key={date} role="gridcell" aria-selected={isSel} onClick={() => setSelected(date)}
-                aria-label={`${formatDate(date)}${evs.length ? `, ${evs.length} ${evs.length === 1 ? 'date' : 'dates'}` : ''}`}
+              <button key={date} aria-pressed={isSel} onClick={() => setSelected(date)}
+                aria-label={`${formatDate(date, { weekday: 'long', day: 'numeric', month: 'long' })}${evs.length ? `, ${evs.length} ${evs.length === 1 ? 'date' : 'dates'}` : ''}`}
                 className={`relative grid aspect-square min-h-[44px] place-items-center rounded-xl text-sm transition-colors ${isSel ? 'bg-accent/15 text-ink ring-1 ring-accent' : 'hover:bg-white/[0.04]'} ${isToday && !isSel ? 'text-accent' : ''}`}>
                 <span className={evs.length ? 'figure text-lg' : 'text-muted'}>{i + 1}</span>
                 {evs.length > 0 && (

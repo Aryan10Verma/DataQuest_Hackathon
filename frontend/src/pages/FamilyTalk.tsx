@@ -171,10 +171,10 @@ function Legend() {
 function Bridge({ b }: { b: BridgeCareer }) {
   const bar = (v: number, cls: string, label: string) => (
     <div className="grid grid-cols-[minmax(0,1fr)_2.8rem] items-center gap-3">
-      <div className="h-1.5 rounded-full bg-white/[0.06]" aria-label={`${label} ${pct(v)}`}>
+      <div className="h-1.5 rounded-full bg-white/[0.06]" role="img" aria-label={`${label} ${pct(v)}`}>
         <div className={`h-full rounded-full ${cls}`} style={{ width: pct(v) }} />
       </div>
-      <span className="text-right text-xs text-muted">{pct(v)}</span>
+      <span className="text-right text-xs text-muted" aria-hidden>{pct(v)}</span>
     </div>
   );
   return (

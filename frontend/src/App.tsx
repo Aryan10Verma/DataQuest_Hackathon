@@ -2,11 +2,13 @@ import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import type { Role } from '@/api/client';
 import { CursorGlow } from '@/components/CursorGlow';
+import { PageTitle } from '@/components/PageTitle';
 import { RouteCurtain } from '@/components/RouteCurtain';
 import { homeFor, useSession } from '@/auth/session';
-import { PageSkeleton } from '@/components/ui';
-import { Shell } from '@/shell/Shell';
+import { PageSkeleton } from '@/components/skeleton';
 
+// The signed-in shell (top bar, menus, tour) loads only once someone opens the app, not on the home page.
+const Shell = lazy(() => import('@/shell/Shell').then((m) => ({ default: m.Shell })));
 const Landing = lazy(() => import('@/landing/Landing'));
 const SignIn = lazy(() => import('@/pages/SignIn'));
 const Register = lazy(() => import('@/pages/Register'));
@@ -56,6 +58,7 @@ export default function App() {
   return (
     <>
       <CursorGlow />
+      <PageTitle />
       <RouteCurtain />
       <Suspense fallback={<div className="min-h-screen bg-void" />}>
         <Routes>

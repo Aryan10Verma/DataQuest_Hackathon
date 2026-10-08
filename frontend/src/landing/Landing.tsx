@@ -7,7 +7,7 @@ import { useMarketMap } from '@/api/hooks';
 import type { RegionDemand } from '@/api/types';
 import { homeFor, useSession } from '@/auth/session';
 import { sectorLabel } from '@/lib/format';
-import { Logo } from '@/shell/Shell';
+import { Logo } from '@/shell/Brand';
 import { CITIES } from '@/components/map/cities';
 import './landing.css';
 
@@ -16,7 +16,9 @@ gsap.registerPlugin(ScrollTrigger);
 /** Text split into letters for the letter-by-letter reveal. Screen readers get the plain text. */
 function Split({ text, as: Tag = 'span', className = '' }: { text: string; as?: 'h1' | 'h2' | 'h3' | 'span' | 'p'; className?: string }) {
   return (
-    <Tag className={`split ${className}`} aria-label={text}>
+    // The letters are split for animation and hidden from screen readers, which read the whole text instead.
+    <Tag className={`split ${className}`}>
+      <span className="sr-only">{text}</span>
       {text.split(' ').map((word, wi, words) => (
         <span key={wi} aria-hidden>
           <span className="w">
