@@ -1,0 +1,904 @@
+{
+  "_note": "What each Indian city is known for. 'sectors' multiplies a career's national demand for that city (1.0 = national average); these are PRISM estimates from public knowledge of each city's main industries, not counts of job postings, and every signal built from them is marked as an estimate until a live feed replaces it. 'industries' and 'languages' feed the 'Where you live' questions.",
+  "places": [
+    {
+      "region_code": "IN-TN-CHN",
+      "sectors": {
+        "computing_ai": 1.1,
+        "engineering": 1.12,
+        "aerospace_mobility": 1.2,
+        "health_life_sciences": 1.1,
+        "energy_manufacturing": 1.08,
+        "media_communication": 1.05
+      },
+      "industries": [
+        {
+          "key": "automobiles",
+          "label": "Automobiles",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "it",
+          "label": "IT services",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "healthcare",
+          "label": "Healthcare",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "electronics",
+          "label": "Electronics manufacturing",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "film",
+          "label": "Film and media",
+          "sector": "media_communication"
+        }
+      ],
+      "languages": [
+        "Tamil",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-TN-CBE",
+      "sectors": {
+        "engineering": 1.15,
+        "energy_manufacturing": 1.15,
+        "agri_environment": 1.08,
+        "design_arts": 1.05
+      },
+      "industries": [
+        {
+          "key": "pumps",
+          "label": "Pumps and motors",
+          "sector": "engineering"
+        },
+        {
+          "key": "textiles",
+          "label": "Textiles",
+          "sector": "design_arts"
+        },
+        {
+          "key": "foundries",
+          "label": "Foundries and machinery",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "it",
+          "label": "IT services",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "farming",
+          "label": "Farming",
+          "sector": "agri_environment"
+        }
+      ],
+      "languages": [
+        "Tamil",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-TN-MDU",
+      "sectors": {
+        "agri_environment": 1.15,
+        "hospitality_services": 1.1,
+        "health_life_sciences": 1.08,
+        "education_research": 1.05
+      },
+      "industries": [
+        {
+          "key": "food",
+          "label": "Farming and food processing",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "tourism",
+          "label": "Temple tourism",
+          "sector": "hospitality_services"
+        },
+        {
+          "key": "healthcare",
+          "label": "Healthcare",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "textiles",
+          "label": "Textiles",
+          "sector": "design_arts"
+        }
+      ],
+      "languages": [
+        "Tamil",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-TN-DPI",
+      "sectors": {
+        "agri_environment": 1.3,
+        "energy_manufacturing": 0.9,
+        "computing_ai": 0.75
+      },
+      "industries": [
+        {
+          "key": "farming",
+          "label": "Farming and horticulture",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "dairy",
+          "label": "Dairy",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "granite",
+          "label": "Granite quarrying",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "government",
+          "label": "Government services",
+          "sector": "law_policy"
+        }
+      ],
+      "languages": [
+        "Tamil"
+      ]
+    },
+    {
+      "region_code": "IN-KA-BLR",
+      "sectors": {
+        "computing_ai": 1.35,
+        "aerospace_mobility": 1.2,
+        "health_life_sciences": 1.1,
+        "business_finance": 1.1,
+        "design_arts": 1.08
+      },
+      "industries": [
+        {
+          "key": "software",
+          "label": "Software and AI",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "aerospace",
+          "label": "Aerospace and defence",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "biotech",
+          "label": "Biotech",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "startups",
+          "label": "Startups and finance",
+          "sector": "business_finance"
+        },
+        {
+          "key": "chips",
+          "label": "Chip and electronics design",
+          "sector": "engineering"
+        }
+      ],
+      "languages": [
+        "Kannada",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-TG-HYD",
+      "sectors": {
+        "computing_ai": 1.25,
+        "health_life_sciences": 1.25,
+        "business_finance": 1.05,
+        "aerospace_mobility": 1.08
+      },
+      "industries": [
+        {
+          "key": "it",
+          "label": "IT and AI",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "pharma",
+          "label": "Pharma and vaccines",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "defence",
+          "label": "Defence electronics",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "film",
+          "label": "Film",
+          "sector": "media_communication"
+        }
+      ],
+      "languages": [
+        "Telugu",
+        "Urdu",
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-MH-PUN",
+      "sectors": {
+        "computing_ai": 1.15,
+        "aerospace_mobility": 1.25,
+        "engineering": 1.15,
+        "education_research": 1.15
+      },
+      "industries": [
+        {
+          "key": "automobiles",
+          "label": "Automobiles",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "it",
+          "label": "IT services",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "engineering",
+          "label": "Engineering and manufacturing",
+          "sector": "engineering"
+        },
+        {
+          "key": "education",
+          "label": "Education",
+          "sector": "education_research"
+        }
+      ],
+      "languages": [
+        "Marathi",
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-MH-MUM",
+      "sectors": {
+        "business_finance": 1.35,
+        "media_communication": 1.4,
+        "law_policy": 1.15,
+        "hospitality_services": 1.15,
+        "design_arts": 1.15
+      },
+      "industries": [
+        {
+          "key": "finance",
+          "label": "Banking and finance",
+          "sector": "business_finance"
+        },
+        {
+          "key": "film",
+          "label": "Film and media",
+          "sector": "media_communication"
+        },
+        {
+          "key": "ports",
+          "label": "Shipping and ports",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "fashion",
+          "label": "Fashion and design",
+          "sector": "design_arts"
+        },
+        {
+          "key": "law",
+          "label": "Law",
+          "sector": "law_policy"
+        }
+      ],
+      "languages": [
+        "Marathi",
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-DL-NCR",
+      "sectors": {
+        "law_policy": 1.35,
+        "business_finance": 1.2,
+        "computing_ai": 1.15,
+        "media_communication": 1.15,
+        "education_research": 1.1,
+        "aerospace_mobility": 1.05
+      },
+      "industries": [
+        {
+          "key": "government",
+          "label": "Government and policy",
+          "sector": "law_policy"
+        },
+        {
+          "key": "consulting",
+          "label": "IT and consulting",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "media",
+          "label": "Media",
+          "sector": "media_communication"
+        },
+        {
+          "key": "automobiles",
+          "label": "Automobiles (Gurugram, Manesar)",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "education",
+          "label": "Education",
+          "sector": "education_research"
+        }
+      ],
+      "languages": [
+        "Hindi",
+        "English",
+        "Punjabi"
+      ]
+    },
+    {
+      "region_code": "IN-GJ-AMD",
+      "sectors": {
+        "energy_manufacturing": 1.2,
+        "health_life_sciences": 1.15,
+        "design_arts": 1.15,
+        "business_finance": 1.1
+      },
+      "industries": [
+        {
+          "key": "chemicals",
+          "label": "Chemicals",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "pharma",
+          "label": "Pharma",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "textiles",
+          "label": "Textiles",
+          "sector": "design_arts"
+        },
+        {
+          "key": "design",
+          "label": "Design",
+          "sector": "design_arts"
+        },
+        {
+          "key": "trade",
+          "label": "Trade",
+          "sector": "business_finance"
+        }
+      ],
+      "languages": [
+        "Gujarati",
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-GJ-SRT",
+      "sectors": {
+        "design_arts": 1.25,
+        "energy_manufacturing": 1.2,
+        "business_finance": 1.05,
+        "computing_ai": 0.85
+      },
+      "industries": [
+        {
+          "key": "diamonds",
+          "label": "Diamonds and jewellery",
+          "sector": "design_arts"
+        },
+        {
+          "key": "textiles",
+          "label": "Textiles",
+          "sector": "design_arts"
+        },
+        {
+          "key": "petrochem",
+          "label": "Petrochemicals",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "trade",
+          "label": "Trade",
+          "sector": "business_finance"
+        }
+      ],
+      "languages": [
+        "Gujarati",
+        "Hindi"
+      ]
+    },
+    {
+      "region_code": "IN-KL-TVM",
+      "sectors": {
+        "aerospace_mobility": 1.25,
+        "computing_ai": 1.1,
+        "health_life_sciences": 1.12,
+        "hospitality_services": 1.2,
+        "education_research": 1.1
+      },
+      "industries": [
+        {
+          "key": "space",
+          "label": "Space research",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "it",
+          "label": "IT (Technopark)",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "tourism",
+          "label": "Tourism",
+          "sector": "hospitality_services"
+        },
+        {
+          "key": "healthcare",
+          "label": "Healthcare",
+          "sector": "health_life_sciences"
+        }
+      ],
+      "languages": [
+        "Malayalam",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-WB-KOL",
+      "sectors": {
+        "business_finance": 1.1,
+        "education_research": 1.15,
+        "media_communication": 1.15,
+        "health_life_sciences": 1.05
+      },
+      "industries": [
+        {
+          "key": "finance",
+          "label": "Banking and trade",
+          "sector": "business_finance"
+        },
+        {
+          "key": "publishing",
+          "label": "Publishing and media",
+          "sector": "media_communication"
+        },
+        {
+          "key": "research",
+          "label": "Education and research",
+          "sector": "education_research"
+        },
+        {
+          "key": "engineering",
+          "label": "Engineering",
+          "sector": "engineering"
+        },
+        {
+          "key": "leather",
+          "label": "Leather and jute",
+          "sector": "energy_manufacturing"
+        }
+      ],
+      "languages": [
+        "Bengali",
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-RJ-JAI",
+      "sectors": {
+        "hospitality_services": 1.35,
+        "design_arts": 1.25,
+        "computing_ai": 0.95
+      },
+      "industries": [
+        {
+          "key": "tourism",
+          "label": "Tourism and hospitality",
+          "sector": "hospitality_services"
+        },
+        {
+          "key": "gems",
+          "label": "Gems and jewellery",
+          "sector": "design_arts"
+        },
+        {
+          "key": "crafts",
+          "label": "Handicrafts",
+          "sector": "design_arts"
+        },
+        {
+          "key": "it",
+          "label": "IT services",
+          "sector": "computing_ai"
+        }
+      ],
+      "languages": [
+        "Hindi",
+        "Rajasthani",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-UP-LKO",
+      "sectors": {
+        "law_policy": 1.2,
+        "education_research": 1.15,
+        "health_life_sciences": 1.08,
+        "hospitality_services": 1.05
+      },
+      "industries": [
+        {
+          "key": "government",
+          "label": "Government services",
+          "sector": "law_policy"
+        },
+        {
+          "key": "education",
+          "label": "Education",
+          "sector": "education_research"
+        },
+        {
+          "key": "healthcare",
+          "label": "Healthcare",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "crafts",
+          "label": "Chikankari and crafts",
+          "sector": "design_arts"
+        },
+        {
+          "key": "food",
+          "label": "Food processing",
+          "sector": "agri_environment"
+        }
+      ],
+      "languages": [
+        "Hindi",
+        "Urdu"
+      ]
+    },
+    {
+      "region_code": "IN-AP-VSK",
+      "sectors": {
+        "energy_manufacturing": 1.25,
+        "aerospace_mobility": 1.2,
+        "health_life_sciences": 1.1,
+        "agri_environment": 1.05
+      },
+      "industries": [
+        {
+          "key": "steel",
+          "label": "Steel",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "ships",
+          "label": "Shipbuilding and port",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "pharma",
+          "label": "Pharma",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "fisheries",
+          "label": "Fisheries",
+          "sector": "agri_environment"
+        }
+      ],
+      "languages": [
+        "Telugu",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-JK-SXR",
+      "sectors": {
+        "hospitality_services": 1.35,
+        "agri_environment": 1.25,
+        "design_arts": 1.2,
+        "computing_ai": 0.8
+      },
+      "industries": [
+        {
+          "key": "tourism",
+          "label": "Tourism",
+          "sector": "hospitality_services"
+        },
+        {
+          "key": "horticulture",
+          "label": "Apples and saffron",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "crafts",
+          "label": "Pashmina and carpets",
+          "sector": "design_arts"
+        },
+        {
+          "key": "government",
+          "label": "Government services",
+          "sector": "law_policy"
+        }
+      ],
+      "languages": [
+        "Kashmiri",
+        "Urdu",
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-JK-JMU",
+      "sectors": {
+        "hospitality_services": 1.2,
+        "agri_environment": 1.1,
+        "law_policy": 1.1
+      },
+      "industries": [
+        {
+          "key": "pilgrimage",
+          "label": "Pilgrimage tourism",
+          "sector": "hospitality_services"
+        },
+        {
+          "key": "basmati",
+          "label": "Basmati and farming",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "government",
+          "label": "Government services",
+          "sector": "law_policy"
+        },
+        {
+          "key": "industry",
+          "label": "Small industry",
+          "sector": "energy_manufacturing"
+        }
+      ],
+      "languages": [
+        "Dogri",
+        "Hindi",
+        "Urdu",
+        "Punjabi"
+      ]
+    },
+    {
+      "region_code": "IN-CH-CHD",
+      "sectors": {
+        "computing_ai": 1.1,
+        "law_policy": 1.15,
+        "education_research": 1.15,
+        "health_life_sciences": 1.15
+      },
+      "industries": [
+        {
+          "key": "it",
+          "label": "IT services (Mohali)",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "healthcare",
+          "label": "Healthcare",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "education",
+          "label": "Education",
+          "sector": "education_research"
+        },
+        {
+          "key": "government",
+          "label": "Government",
+          "sector": "law_policy"
+        }
+      ],
+      "languages": [
+        "Punjabi",
+        "Hindi",
+        "English"
+      ]
+    },
+    {
+      "region_code": "IN-AS-GUW",
+      "sectors": {
+        "agri_environment": 1.25,
+        "energy_manufacturing": 1.15,
+        "hospitality_services": 1.1,
+        "education_research": 1.05
+      },
+      "industries": [
+        {
+          "key": "tea",
+          "label": "Tea",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "oil",
+          "label": "Oil and gas",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "tourism",
+          "label": "Tourism",
+          "sector": "hospitality_services"
+        },
+        {
+          "key": "education",
+          "label": "Education",
+          "sector": "education_research"
+        }
+      ],
+      "languages": [
+        "Assamese",
+        "Bengali",
+        "Hindi"
+      ]
+    },
+    {
+      "region_code": "IN-BR-PAT",
+      "sectors": {
+        "law_policy": 1.2,
+        "education_research": 1.2,
+        "agri_environment": 1.15,
+        "health_life_sciences": 1.05,
+        "computing_ai": 0.8
+      },
+      "industries": [
+        {
+          "key": "government",
+          "label": "Government services",
+          "sector": "law_policy"
+        },
+        {
+          "key": "coaching",
+          "label": "Education and coaching",
+          "sector": "education_research"
+        },
+        {
+          "key": "farming",
+          "label": "Farming",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "healthcare",
+          "label": "Healthcare",
+          "sector": "health_life_sciences"
+        }
+      ],
+      "languages": [
+        "Hindi",
+        "Bhojpuri",
+        "Maithili"
+      ]
+    },
+    {
+      "region_code": "IN-MP-BPL",
+      "sectors": {
+        "law_policy": 1.15,
+        "education_research": 1.1,
+        "energy_manufacturing": 1.1,
+        "agri_environment": 1.1
+      },
+      "industries": [
+        {
+          "key": "electricals",
+          "label": "Heavy electricals",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "government",
+          "label": "Government",
+          "sector": "law_policy"
+        },
+        {
+          "key": "education",
+          "label": "Education",
+          "sector": "education_research"
+        },
+        {
+          "key": "farming",
+          "label": "Farming",
+          "sector": "agri_environment"
+        }
+      ],
+      "languages": [
+        "Hindi"
+      ]
+    },
+    {
+      "region_code": "IN-MH-NAG",
+      "sectors": {
+        "aerospace_mobility": 1.2,
+        "energy_manufacturing": 1.1,
+        "agri_environment": 1.15
+      },
+      "industries": [
+        {
+          "key": "logistics",
+          "label": "Logistics and aviation (MIHAN)",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "power",
+          "label": "Power and mining",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "oranges",
+          "label": "Oranges and farming",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "it",
+          "label": "IT services",
+          "sector": "computing_ai"
+        }
+      ],
+      "languages": [
+        "Marathi",
+        "Hindi"
+      ]
+    },
+    {
+      "region_code": "IN-AN-IXZ",
+      "sectors": {
+        "hospitality_services": 1.35,
+        "agri_environment": 1.05,
+        "law_policy": 1.15,
+        "computing_ai": 0.7
+      },
+      "industries": [
+        {
+          "key": "tourism",
+          "label": "Tourism",
+          "sector": "hospitality_services"
+        },
+        {
+          "key": "fisheries",
+          "label": "Fisheries",
+          "sector": "agri_environment"
+        },
+        {
+          "key": "government",
+          "label": "Government and defence",
+          "sector": "law_policy"
+        },
+        {
+          "key": "shipping",
+          "label": "Shipping",
+          "sector": "aerospace_mobility"
+        }
+      ],
+      "languages": [
+        "Hindi",
+        "Bengali",
+        "Tamil",
+        "English"
+      ]
+    }
+  ]
+}

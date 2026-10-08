@@ -11,7 +11,7 @@
       "Admission is competitive: about 39% chance with current scores (estimate).",
       "Other strong options: Computational Biologist, Data Scientist.",
       "Student and parents mostly agree on career direction. Careers both sides accept: Biomedical Engineer, Doctor (MBBS).",
-      "The first place held in 59% of 64 tests where the weights were changed.",
+      "The first place held in 62% of 64 tests where the weights were changed.",
       "Scholarships to check: Private foundation UG merit-cum-means scholarship (illustrative)."
     ],
     "source": "template",
@@ -41,7 +41,7 @@
       ],
       "version": "seed-2026-09-30",
       "stability": {
-        "stab": 59,
+        "stab": 62,
         "n": 64
       }
     },

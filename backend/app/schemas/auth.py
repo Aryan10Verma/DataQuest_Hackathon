@@ -14,6 +14,10 @@ class RegisterRequest(Contract):
         default=None, description="Required for students (minor consent check)"
     )
     preferred_language: str = Field(default="en", max_length=8)
+    region_code: str | None = Field(
+        default=None, max_length=20, description="City they live in (GET /places)"
+    )
+    pincode: str | None = Field(default=None, pattern=r"^\d{6}$")
     website: str | None = Field(
         default=None,
         max_length=200,
@@ -49,6 +53,8 @@ class UserOut(Contract):
     is_minor: bool
     consent_status: str = Field(description="not_required | pending | granted | revoked")
     family_id: str | None = None
+    region_code: str | None = None
+    pincode: str | None = None
     created_at: datetime
 
 

@@ -29,9 +29,13 @@ class User(IdMixin, TimestampMixin, SoftDeleteMixin, Base):
     role: Mapped[str] = mapped_column(String(10))
     date_of_birth: Mapped[date | None] = mapped_column(Date, default=None)
     preferred_language: Mapped[str] = mapped_column(String(8), default="en")
-    phone: Mapped[str | None] = mapped_column(
-        EncryptedString(200), default=None
-    )  # reminders, opt-in; encrypted
+    # For reminders, opt-in only; encrypted at rest.
+    phone: Mapped[str | None] = mapped_column(EncryptedString(200), default=None)
+    # Where they live: a city PRISM covers (regions.code) and, optionally, a pincode for local problems.
+    region_code: Mapped[str | None] = mapped_column(String(20), default=None)
+    pincode: Mapped[str | None] = mapped_column(String(6), default=None)
+    # Students' answers to the "Where you live" questions (schemas.places.PlaceAnswersOut).
+    place: Mapped[dict | None] = mapped_column(JSONType, default=None)
     failed_logins: Mapped[int] = mapped_column(Integer, default=0)
     locked_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), default=None)
 

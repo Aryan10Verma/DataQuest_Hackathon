@@ -88,6 +88,8 @@ class SeedBundle:
     local: list[dict]
     loans: list[dict]
     edges: list[tuple[str, str, float, float, str]] = field(default_factory=list)
+    # Sector strengths per city (places.json); missing file or city = national average everywhere.
+    strengths: dict[str, dict[str, float]] = field(default_factory=dict)
 
 
 def read_bundle(directory: Path = SEED_DIR) -> SeedBundle:
@@ -102,6 +104,8 @@ def read_bundle(directory: Path = SEED_DIR) -> SeedBundle:
         local=_read("local_opportunities.json", "local_opportunities", directory),
         loans=_read("loan_schemes.json", "loan_schemes", directory),
     )
+    if (directory / "places.json").is_file():
+        b.strengths = {p["region_code"]: p["sectors"] for p in _read("places.json", "places", directory)}
     skills = {c["slug"]: {s["skill"] for s in c["skills"]} for c in b.careers}
     sector = {c["slug"]: c["sector"] for c in b.careers}
     for a in b.careers:
@@ -118,6 +122,15 @@ def read_bundle(directory: Path = SEED_DIR) -> SeedBundle:
                 scored.append((a["slug"], o["slug"], round(j, 3), diff, "Shares " + ", ".join(common[:3])))
         b.edges += sorted(scored, key=lambda e: (-e[2], e[1]))[:4]
     return b
+
+
+def signal_numbers(b: SeedBundle, c: dict, r: dict) -> tuple[float, float]:
+    """A career's (demand index, job velocity) in one city, used for both the audit and the database:
+    national demand x city type x what the city is known for (places.json). A strong sector has more
+    openings and grows a little faster."""
+    f = REGION_FACTOR[r["type"]] if (r["type"] != "international" or c["sector"] in GLOBAL_SECTORS) else 0.6
+    k = b.strengths.get(r["code"], {}).get(c["sector"], 1.0)
+    return round(min(1.0, c["demand"] * f * k), 4), round(c["velocity"] + 0.2 * (k - 1), 4)
 
 
 def _prov(d: dict | None) -> Provenance:
@@ -137,18 +150,14 @@ def validate(b: SeedBundle, today: date) -> quality.AuditReport:
     cat = quality.Catalog()
     for c in b.careers:
         for r in b.regions:
-            f = (
-                REGION_FACTOR[r["type"]]
-                if (r["type"] != "international" or c["sector"] in GLOBAL_SECTORS)
-                else 0.6
-            )
+            demand, velocity = signal_numbers(b, c, r)
             cat.market_signals.append(
                 MarketSignal(
                     career=ref[c["slug"]],
                     region_code=r["code"],
                     period="2026-Q3",
-                    demand_index=round(min(1.0, c["demand"] * f), 4),
-                    job_velocity=c["velocity"],
+                    demand_index=demand,
+                    job_velocity=velocity,
                     disruption_risk=c["automation_risk"],
                     trend="rising" if c["velocity"] > 0.08 else "stable",
                     provenance=_prov(None),
@@ -383,18 +392,14 @@ def load(
     est = _provcols(None)
     for c in bundle.careers:
         for r in bundle.regions:
-            f = (
-                REGION_FACTOR[r["type"]]
-                if (r["type"] != "international" or c["sector"] in GLOBAL_SECTORS)
-                else 0.6
-            )
+            demand, velocity = signal_numbers(bundle, c, r)
             db.add(
                 cm.MarketSignal(
                     career_id=careers[c["slug"]].id,
                     region_id=regions[r["code"]].id,
                     period="2026-Q3",
-                    demand_index=round(min(1.0, c["demand"] * f), 4),
-                    job_velocity=c["velocity"],
+                    demand_index=demand,
+                    job_velocity=velocity,
                     disruption_risk=c["automation_risk"],
                     dataset_version_id=vid,
                     **est,

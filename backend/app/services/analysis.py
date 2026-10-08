@@ -148,6 +148,7 @@ def run_analysis(
         for cid in p.career_ids:
             by_career.setdefault(cid, []).append(p)
     rweights = market.region_weights(student, family, cat.regions)
+    local_pull = dict(student.local_interest)
     prediction = predict_domain_fit(student.vector)
     ml_scores = prediction["scores"] if prediction["source"] == "ml" else None
     mean_rel = sum(student.reliability.get(d, 0.0) for d in student.vector) / max(1, len(student.vector))
@@ -174,7 +175,13 @@ def run_analysis(
             assessed.append((finance.assess(p, family, student, elig, bands, cfg, today, gate_p), p, elig))
         assessed.sort(key=lambda t: (-t[0].reachability, -t[0].roi.roi_norm, t[0].total_cost))
         primary, p_primary, _ = assessed[0]
-        mkt = market.blend(c.id, cat.signals, rweights, c.automation_risk, today)
+        # A student who likes an industry near home: local openings in that sector weigh up to double.
+        boost = local_pull.get(c.sector, 0.0)
+        home = student.region_code
+        market_weights = (
+            {**rweights, home: rweights[home] * (1 + boost)} if boost and home in rweights else rweights
+        )
+        mkt = market.blend(c.id, cat.signals, market_weights, c.automation_risk, today)
         accept = conflict_engine.acceptance(c, family, careers)
         raw = {
             ScoreComponent.FIT: f.fit,

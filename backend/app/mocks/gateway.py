@@ -77,6 +77,7 @@ from app.schemas.family import (
     ParentPreferencesOut,
     RankedPreference,
 )
+from app.schemas.places import LocationIn, Place, PlaceAnswers, PlaceAnswersOut
 from app.schemas.profiles import StudentProfileIn, StudentProfileOut
 from app.schemas.reports import (
     Roadmap,
@@ -92,6 +93,7 @@ from app.schemas.system import (
     Methodology,
 )
 from app.services import market_map
+from app.services import places as places_svc
 from app.services.analysis import apply_overrides, hide_family_money, roadmap_for, swot_for
 from app.services.principal import Principal
 
@@ -110,6 +112,11 @@ def _paginate(items: list, page: int, page_size: int) -> Page:
 
 class MockGateway(MockEngagementMixin):
     mock = True
+    # The fixture student lives in Coimbatore. Location changes and "Where you live" answers are kept in
+    # memory for the life of the process (MOCK_MODE never writes anything).
+    HOME = "IN-TN-CBE"
+    _homes: dict[str, str] = {}  # noqa: RUF012 - one shared mock world per process
+    _places: dict[str, PlaceAnswersOut] = {}  # noqa: RUF012
 
     # ------------------------------------------------------------ auth
     def _user(self, role: Role) -> UserOut:
@@ -154,6 +161,36 @@ class MockGateway(MockEngagementMixin):
 
     def logout(self, refresh_token: str | None) -> None:
         return None
+
+    # ------------------------------------------------------------ where people live
+    def list_places(self) -> list[Place]:
+        return places_svc.places(b.regions())
+
+    def set_location(self, p: Principal, body: LocationIn) -> UserOut:
+        if not any(r.code == body.region_code and r.country == "India" for r in b.regions()):
+            raise AppError(
+                ErrorCode.VALIDATION_ERROR, "Choose a city from the list", {"region_code": body.region_code}
+            )
+        if self._homes.get(p.user_id, self.HOME) != body.region_code:
+            self._places.pop(p.user_id, None)  # local industries differ by city
+        self._homes[p.user_id] = body.region_code
+        return self.me(p).model_copy(update={"region_code": body.region_code, "pincode": body.pincode})
+
+    def get_place(self, p: Principal) -> PlaceAnswersOut | None:
+        if p.role is not Role.STUDENT:
+            raise AppError(ErrorCode.FORBIDDEN, "Only students answer the Where you live questions")
+        return self._places.get(p.user_id)
+
+    def put_place(self, p: Principal, body: PlaceAnswers) -> PlaceAnswersOut:
+        if p.role is not Role.STUDENT:
+            raise AppError(ErrorCode.FORBIDDEN, "Only students answer the Where you live questions")
+        home = self._homes.get(p.user_id, self.HOME)
+        problem = places_svc.check_answers(body, home)
+        if problem:
+            raise AppError(ErrorCode.VALIDATION_ERROR, problem)
+        out = PlaceAnswersOut(**body.model_dump(), region_code=home)
+        self._places[p.user_id] = out
+        return out
 
     def me(self, p: Principal) -> UserOut:
         return self._user(p.role)

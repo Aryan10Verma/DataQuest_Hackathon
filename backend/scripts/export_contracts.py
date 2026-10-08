@@ -114,6 +114,7 @@ CALLS = [
     ("regions", "GET", "/api/v1/regions", None, {}),
     ("market_trends", "GET", "/api/v1/market/trends?region_code=IN-TN-CBE", None, {}),
     ("market_map", "GET", "/api/v1/market/map", None, {}),
+    ("places", "GET", "/api/v1/places", None, {}),
     ("pathways", "GET", "/api/v1/pathways", None, {}),
     ("exams", "GET", "/api/v1/exams", None, {}),
     ("scholarships", "GET", "/api/v1/scholarships", None, {}),

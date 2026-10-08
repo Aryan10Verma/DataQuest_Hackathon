@@ -16,6 +16,7 @@
       "student.preferred_regions",
       "student.recent_score_pct",
       "student.quality_flags",
+      "student.local_interest",
       "family.family_id",
       "family.annual_income",
       "family.income_growth",

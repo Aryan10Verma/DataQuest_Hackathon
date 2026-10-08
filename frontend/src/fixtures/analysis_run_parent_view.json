@@ -12,7 +12,7 @@
       "engine_version": "prism-engine/1.0.0",
       "scoring_config_version": "weights-2026.10-v3",
       "vector_spec_version": "vec-1",
-      "input_hash": "sha256:dbdc31303b75829717dc6fb77dd167f7a5c883575dab37d2ad44b6134f48db14",
+      "input_hash": "sha256:0b704aa7999e6a2c05f510c5d94bf3ad5bc612d25c179025ffffbaecb05a6e78",
       "data_as_of": "2026-09-30",
       "dataset_version": "seed-2026-09-30",
       "latest_dataset_version": "seed-2026-09-30",
@@ -1825,8 +1825,8 @@
     "sensitivity": {
       "perturbation": 0.2,
       "scenarios": 64,
-      "robustness_score": 0.6813,
-      "top1_stability": 0.5938,
+      "robustness_score": 0.675,
+      "top1_stability": 0.625,
       "rank_ranges": [
         {
           "career_id": "25e5be98-408e-5217-9336-fa983dc96be0",
@@ -1853,7 +1853,7 @@
           "career_id": "732c38b8-2b7e-5846-9aef-6b68ef9a8c00",
           "career_name": "Biomedical Engineer",
           "base_rank": 4,
-          "min_rank": 2,
+          "min_rank": 1,
           "max_rank": 4
         },
         {

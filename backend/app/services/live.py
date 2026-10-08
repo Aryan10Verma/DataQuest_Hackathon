@@ -102,10 +102,12 @@ from app.schemas.family import (
     ParentPreferencesOut,
     RankedPreference,
 )
+from app.schemas.places import LocationIn, Place, PlaceAnswers, PlaceAnswersOut
 from app.schemas.profiles import StudentProfileIn, StudentProfileOut
 from app.schemas.reports import Roadmap, SwotReport
 from app.schemas.system import DataStatus, Methodology
 from app.services import market_map
+from app.services import places as places_svc
 from app.services.analysis import apply_overrides, hide_family_money, roadmap_for, run_analysis, swot_for
 from app.services.catalog_db import invalidate, load_catalog, region_for_pincode
 from app.services.engagement_live import EngagementMixin
@@ -260,8 +262,22 @@ class LiveGateway(EngagementMixin):
             is_minor=u.role == "student" and (_age(u.date_of_birth) or 18) < 18,
             consent_status=self._consent_status(u),
             family_id=link.family_id if link else None,
+            region_code=u.region_code,
+            pincode=u.pincode,
             created_at=u.created_at,
         )
+
+    def _home(self, region_code: str | None, pincode: str | None) -> str | None:
+        """A city PRISM covers: the one chosen, else the one the pincode belongs to."""
+        regions = self._catalog().regions
+        if region_code:
+            r = regions.get(region_code)
+            if r is None or r.country != "India":
+                raise AppError(
+                    ErrorCode.VALIDATION_ERROR, "Choose a city from the list", {"region_code": region_code}
+                )
+            return region_code
+        return region_for_pincode(self.db, pincode) if pincode else None
 
     def _tokens(self, u: im.User, family: str | None = None) -> TokenPair:
         access, ttl = create_access_token(u.id, u.role)
@@ -313,6 +329,8 @@ class LiveGateway(EngagementMixin):
             role=req.role.value,
             date_of_birth=req.date_of_birth,
             preferred_language=req.preferred_language,
+            region_code=self._home(req.region_code, req.pincode),
+            pincode=req.pincode,
         )
         self.db.add(u)
         self.db.flush()
@@ -377,6 +395,46 @@ class LiveGateway(EngagementMixin):
 
     def me(self, p: Principal) -> UserOut:
         return self._user_out(self._user(p.user_id))
+
+    # ------------------------------------------------------------ where people live
+    def list_places(self) -> list[Place]:
+        return places_svc.places(self._catalog().regions.values())
+
+    def set_location(self, p: Principal, body: LocationIn) -> UserOut:
+        u = self._user(p.user_id)
+        u.region_code = self._home(body.region_code, None)
+        u.pincode = body.pincode
+        prof = self.db.scalar(select(sm.StudentProfile).where(sm.StudentProfile.user_id == u.id))
+        if prof is not None:
+            r = self._catalog().regions[u.region_code]
+            prof.region_code, prof.city, prof.state = r.code, r.name, r.state or prof.state
+            if body.pincode:
+                prof.pincode = body.pincode
+        if u.place and u.place.get("region_code") != u.region_code:
+            u.place = None  # local industries differ by city: ask again
+        self._audit(u.id, "user.location", "user", u.id, {"region_code": u.region_code})
+        return self._user_out(u)
+
+    def get_place(self, p: Principal) -> PlaceAnswersOut | None:
+        if p.role is not Role.STUDENT:
+            raise AppError(ErrorCode.FORBIDDEN, "Only students answer the Where you live questions")
+        u = self._user(p.user_id)
+        return PlaceAnswersOut(**u.place) if u.place else None
+
+    def put_place(self, p: Principal, body: PlaceAnswers) -> PlaceAnswersOut:
+        if p.role is not Role.STUDENT:
+            raise AppError(ErrorCode.FORBIDDEN, "Only students answer the Where you live questions")
+        u = self._user(p.user_id)
+        problem = places_svc.check_answers(body, u.region_code)
+        if problem:
+            raise AppError(ErrorCode.VALIDATION_ERROR, problem)
+        out = PlaceAnswersOut(**body.model_dump(), region_code=u.region_code)
+        u.place = out.model_dump()
+        prof = self.db.scalar(select(sm.StudentProfile).where(sm.StudentProfile.user_id == u.id))
+        if prof is not None and body.languages:
+            prof.languages = body.languages
+        self._audit(u.id, "student.place", "user", u.id)
+        return out
 
     # ------------------------------------------------------------ profiles
     def _profile_out(self, row: sm.StudentProfile) -> StudentProfileOut:
@@ -885,6 +943,18 @@ class LiveGateway(EngagementMixin):
             }
         )
         prof = self.db.scalar(select(sm.StudentProfile).where(sm.StudentProfile.user_id == sid))
+        u = self._user(sid)
+        home = (prof.region_code if prof else None) or u.region_code
+        # "Where you live" answers are the newest word on moving; without them, the profile's values stand.
+        moved = (
+            places_svc.engine_inputs(
+                PlaceAnswers(**{k: v for k, v in u.place.items() if k != "region_code"}),
+                home,
+                self._catalog().regions.values(),
+            )
+            if u.place
+            else {}
+        )
         flags = tuple(
             sorted(
                 {
@@ -903,13 +973,16 @@ class LiveGateway(EngagementMixin):
             imputed=tuple(vec.imputed),
             completeness=vec.completeness,
             grade=prof.grade if prof else 12,
-            region_code=prof.region_code if prof else None,
-            state=prof.state if prof else None,
-            willing_to_relocate=prof.willing_to_relocate if prof else 0.5,
-            willing_abroad=prof.willing_abroad if prof else 0.2,
-            preferred_regions=tuple(prof.preferred_regions) if prof else (),
+            region_code=home,
+            state=(prof.state if prof else None)
+            or getattr(self._catalog().regions.get(home or ""), "state", None),
+            willing_to_relocate=moved.get("willing_to_relocate", prof.willing_to_relocate if prof else 0.5),
+            willing_abroad=moved.get("willing_abroad", prof.willing_abroad if prof else 0.2),
+            preferred_regions=moved.get("preferred_regions")
+            or (tuple(prof.preferred_regions) if prof else ()),
             recent_score_pct=prof.recent_score_pct if prof else None,
             quality_flags=flags,
+            local_interest=moved.get("local_interest", ()),
         )
 
     def _family_input(self, sid: str) -> tuple[FamilyInput, str | None, list[str]]:
@@ -1092,6 +1165,7 @@ class LiveGateway(EngagementMixin):
         s = dict(row.input_snapshot["student"])
         for k in ("imputed", "preferred_regions", "quality_flags"):
             s[k] = tuple(s[k])
+        s["local_interest"] = tuple(tuple(x) for x in s.get("local_interest", ()))  # absent in older runs
         f = dict(row.input_snapshot["family"])
         f["preferences"] = tuple(Preference(**x) for x in f["preferences"])
         f["preferred_regions"] = tuple(f["preferred_regions"])

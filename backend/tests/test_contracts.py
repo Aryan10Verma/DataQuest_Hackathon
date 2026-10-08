@@ -232,3 +232,21 @@ def test_exam_sessions_are_ordered():
     for e in w.EXAMS:
         sessions = b.exam(e[0]).sessions
         assert sessions and [s.session_no for s in sessions] == sorted(s.session_no for s in sessions)
+
+
+def test_places_and_where_you_live_in_mock_mode(client):
+    places = client.get("/api/v1/places").json()["data"]
+    assert any(p["region"]["code"] == "IN-TN-CBE" and p["industries"] for p in places)
+    loc = client.put("/api/v1/auth/me/location", json={"region_code": "IN-TN-CBE"})
+    assert loc.status_code == 200 and loc.json()["data"]["region_code"] == "IN-TN-CBE"
+    body = {
+        "industries": {"pumps": 4},
+        "move_scope": "state",
+        "languages": ["Tamil"],
+        "home_commitment": "some",
+    }
+    saved = client.put("/api/v1/students/me/place", json=body)
+    assert (
+        saved.status_code == 200
+        and client.get("/api/v1/students/me/place").json()["data"]["move_scope"] == "state"
+    )

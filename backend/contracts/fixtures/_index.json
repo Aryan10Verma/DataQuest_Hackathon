@@ -501,6 +501,14 @@
     "request": null
   },
   {
+    "name": "places",
+    "method": "GET",
+    "path": "/api/v1/places",
+    "status": 200,
+    "headers": {},
+    "request": null
+  },
+  {
     "name": "pathways",
     "method": "GET",
     "path": "/api/v1/pathways",

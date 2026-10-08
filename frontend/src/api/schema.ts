@@ -92,6 +92,68 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/places": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Places
+         * @description Indian cities PRISM covers, with the industries and languages each is known for. Public.
+         */
+        get: operations["places_api_v1_places_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/me/location": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Location
+         * @description Where you live. Changing city clears the local-industry answers, which differ by city.
+         */
+        put: operations["set_location_api_v1_auth_me_location_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/students/me/place": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Place */
+        get: operations["get_place_api_v1_students_me_place_get"];
+        /**
+         * Put Place
+         * @description The "Where you live" questions: local industries, how far you'd move, languages, home commitments.
+         *     They change how much job demand at home and elsewhere counts in your results.
+         */
+        put: operations["put_place_api_v1_students_me_place_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/students/me/profile": {
         parameters: {
             query?: never;
@@ -2273,6 +2335,14 @@ export interface components {
             error?: components["schemas"]["ErrorBody"] | null;
             meta: components["schemas"]["Meta"];
         };
+        /** Envelope[PlaceAnswersOut] */
+        Envelope_PlaceAnswersOut_: {
+            /** Success */
+            success: boolean;
+            data?: components["schemas"]["PlaceAnswersOut"] | null;
+            error?: components["schemas"]["ErrorBody"] | null;
+            meta: components["schemas"]["Meta"];
+        };
         /** Envelope[RefreshResult] */
         Envelope_RefreshResult_: {
             /** Success */
@@ -2351,6 +2421,14 @@ export interface components {
             success: boolean;
             /** Data */
             data?: components["schemas"]["FamilyFinanceOut"] | components["schemas"]["FamilyFinanceSummary"] | null;
+            error?: components["schemas"]["ErrorBody"] | null;
+            meta: components["schemas"]["Meta"];
+        };
+        /** Envelope[Union[PlaceAnswersOut, NoneType]] */
+        Envelope_Union_PlaceAnswersOut__NoneType__: {
+            /** Success */
+            success: boolean;
+            data?: components["schemas"]["PlaceAnswersOut"] | null;
             error?: components["schemas"]["ErrorBody"] | null;
             meta: components["schemas"]["Meta"];
         };
@@ -2452,6 +2530,15 @@ export interface components {
             success: boolean;
             /** Data */
             data?: components["schemas"]["OutcomeOut"][] | null;
+            error?: components["schemas"]["ErrorBody"] | null;
+            meta: components["schemas"]["Meta"];
+        };
+        /** Envelope[list[Place]] */
+        Envelope_list_Place__: {
+            /** Success */
+            success: boolean;
+            /** Data */
+            data?: components["schemas"]["Place"][] | null;
             error?: components["schemas"]["ErrorBody"] | null;
             meta: components["schemas"]["Meta"];
         };
@@ -2977,6 +3064,18 @@ export interface components {
          * @enum {string}
          */
         IncomeBand: "below_3l" | "3l_6l" | "6l_10l" | "10l_20l" | "20l_50l" | "above_50l";
+        /** Industry */
+        Industry: {
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /**
+             * Sector
+             * @description The career sector this industry hires into
+             */
+            sector: string;
+        };
         /** Institution */
         Institution: {
             /** Id */
@@ -3157,6 +3256,16 @@ export interface components {
              */
             starter_project: string;
             provenance: components["schemas"]["Provenance"];
+        };
+        /** LocationIn */
+        LocationIn: {
+            /** Region Code */
+            region_code: string;
+            /**
+             * Pincode
+             * @description Optional: unlocks local problems
+             */
+            pincode?: string | null;
         };
         /** LoginRequest */
         LoginRequest: {
@@ -3611,6 +3720,73 @@ export interface components {
             seats?: number | null;
             provenance: components["schemas"]["Provenance"];
         };
+        /** Place */
+        Place: {
+            region: components["schemas"]["Region"];
+            /**
+             * Industries
+             * @description What the city is known for, for the local questions
+             */
+            industries: components["schemas"]["Industry"][];
+            /** Languages */
+            languages: string[];
+        };
+        /** PlaceAnswers */
+        PlaceAnswers: {
+            /**
+             * Industries
+             * @description Interest in each local industry, 1 (none) to 5 (a lot)
+             */
+            industries?: {
+                [key: string]: number;
+            };
+            /**
+             * Move Scope
+             * @description How far they would move for study or work
+             * @enum {string}
+             */
+            move_scope: "home" | "state" | "india" | "abroad";
+            /**
+             * Languages
+             * @description Languages they can work in
+             */
+            languages?: string[];
+            /**
+             * Home Commitment
+             * @description Does family need them nearby (farm, business, care)?
+             * @enum {string}
+             */
+            home_commitment: "none" | "some" | "strong";
+        };
+        /** PlaceAnswersOut */
+        PlaceAnswersOut: {
+            /**
+             * Industries
+             * @description Interest in each local industry, 1 (none) to 5 (a lot)
+             */
+            industries?: {
+                [key: string]: number;
+            };
+            /**
+             * Move Scope
+             * @description How far they would move for study or work
+             * @enum {string}
+             */
+            move_scope: "home" | "state" | "india" | "abroad";
+            /**
+             * Languages
+             * @description Languages they can work in
+             */
+            languages?: string[];
+            /**
+             * Home Commitment
+             * @description Does family need them nearby (farm, business, care)?
+             * @enum {string}
+             */
+            home_commitment: "none" | "some" | "strong";
+            /** Region Code */
+            region_code: string;
+        };
         /**
          * PrestigeStability
          * @enum {string}
@@ -3903,6 +4079,13 @@ export interface components {
              * @default en
              */
             preferred_language: string;
+            /**
+             * Region Code
+             * @description City they live in (GET /places)
+             */
+            region_code?: string | null;
+            /** Pincode */
+            pincode?: string | null;
             /**
              * Website
              * @description Leave empty: a field hidden from people that only bots fill in
@@ -4621,6 +4804,10 @@ export interface components {
             consent_status: string;
             /** Family Id */
             family_id?: string | null;
+            /** Region Code */
+            region_code?: string | null;
+            /** Pincode */
+            pincode?: string | null;
             /**
              * Created At
              * Format: date-time
@@ -4865,6 +5052,136 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Envelope_UserOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    places_api_v1_places_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_list_Place__"];
+                };
+            };
+        };
+    };
+    set_location_api_v1_auth_me_location_put: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Bearer <access_token> */
+                authorization?: string | null;
+                /** @description MOCK_MODE only: impersonate a role to test role-specific views */
+                "x-mock-role"?: components["schemas"]["Role"] | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LocationIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_UserOut_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_place_api_v1_students_me_place_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Bearer <access_token> */
+                authorization?: string | null;
+                /** @description MOCK_MODE only: impersonate a role to test role-specific views */
+                "x-mock-role"?: components["schemas"]["Role"] | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_Union_PlaceAnswersOut__NoneType__"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    put_place_api_v1_students_me_place_put: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Bearer <access_token> */
+                authorization?: string | null;
+                /** @description MOCK_MODE only: impersonate a role to test role-specific views */
+                "x-mock-role"?: components["schemas"]["Role"] | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlaceAnswers"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Envelope_PlaceAnswersOut_"];
                 };
             };
             /** @description Validation Error */

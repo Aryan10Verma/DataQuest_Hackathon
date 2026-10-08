@@ -43,6 +43,9 @@ class StudentInput:
     preferred_regions: tuple[str, ...] = ()
     recent_score_pct: float | None = None
     quality_flags: tuple[str, ...] = ()
+    # Interest in the industries around home, per sector (0..1), from the "Where you live" questions.
+    # Careers in those sectors count local job demand more (see analysis.run_analysis).
+    local_interest: tuple[tuple[str, float], ...] = ()
 
 
 @dataclass(frozen=True)

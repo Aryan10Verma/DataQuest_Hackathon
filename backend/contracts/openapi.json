@@ -348,6 +348,255 @@
         }
       }
     },
+    "/api/v1/places": {
+      "get": {
+        "tags": [
+          "places"
+        ],
+        "summary": "Places",
+        "description": "Indian cities PRISM covers, with the industries and languages each is known for. Public.",
+        "operationId": "places_api_v1_places_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_list_Place__"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me/location": {
+      "put": {
+        "tags": [
+          "places"
+        ],
+        "summary": "Set Location",
+        "description": "Where you live. Changing city clears the local-industry answers, which differ by city.",
+        "operationId": "set_location_api_v1_auth_me_location_put",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bearer <access_token>",
+              "title": "Authorization"
+            },
+            "description": "Bearer <access_token>"
+          },
+          {
+            "name": "x-mock-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Role"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "MOCK_MODE only: impersonate a role to test role-specific views",
+              "title": "X-Mock-Role"
+            },
+            "description": "MOCK_MODE only: impersonate a role to test role-specific views"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_UserOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/students/me/place": {
+      "get": {
+        "tags": [
+          "places"
+        ],
+        "summary": "Get Place",
+        "operationId": "get_place_api_v1_students_me_place_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bearer <access_token>",
+              "title": "Authorization"
+            },
+            "description": "Bearer <access_token>"
+          },
+          {
+            "name": "x-mock-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Role"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "MOCK_MODE only: impersonate a role to test role-specific views",
+              "title": "X-Mock-Role"
+            },
+            "description": "MOCK_MODE only: impersonate a role to test role-specific views"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_Union_PlaceAnswersOut__NoneType__"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "places"
+        ],
+        "summary": "Put Place",
+        "description": "The \"Where you live\" questions: local industries, how far you'd move, languages, home commitments.\nThey change how much job demand at home and elsewhere counts in your results.",
+        "operationId": "put_place_api_v1_students_me_place_put",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bearer <access_token>",
+              "title": "Authorization"
+            },
+            "description": "Bearer <access_token>"
+          },
+          {
+            "name": "x-mock-role",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Role"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "MOCK_MODE only: impersonate a role to test role-specific views",
+              "title": "X-Mock-Role"
+            },
+            "description": "MOCK_MODE only: impersonate a role to test role-specific views"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaceAnswers"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Envelope_PlaceAnswersOut_"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/students/me/profile": {
       "get": {
         "tags": [
@@ -8036,6 +8285,43 @@
         ],
         "title": "Envelope[ParentPreferencesOut]"
       },
+      "Envelope_PlaceAnswersOut_": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlaceAnswersOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ErrorBody"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "meta"
+        ],
+        "title": "Envelope[PlaceAnswersOut]"
+      },
       "Envelope_RefreshResult_": {
         "properties": {
           "success": {
@@ -8409,6 +8695,43 @@
           "meta"
         ],
         "title": "Envelope[Union[FamilyFinanceOut, FamilyFinanceSummary]]"
+      },
+      "Envelope_Union_PlaceAnswersOut__NoneType__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlaceAnswersOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ErrorBody"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "meta"
+        ],
+        "title": "Envelope[Union[PlaceAnswersOut, NoneType]]"
       },
       "Envelope_UserOut_": {
         "properties": {
@@ -8850,6 +9173,47 @@
           "meta"
         ],
         "title": "Envelope[list[OutcomeOut]]"
+      },
+      "Envelope_list_Place__": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Place"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ErrorBody"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "meta"
+        ],
+        "title": "Envelope[list[Place]]"
       },
       "Envelope_list_Question__": {
         "properties": {
@@ -10180,6 +10544,31 @@
         ],
         "title": "IncomeBand"
       },
+      "Industry": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "sector": {
+            "type": "string",
+            "title": "Sector",
+            "description": "The career sector this industry hires into"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "sector"
+        ],
+        "title": "Industry"
+      },
       "Institution": {
         "properties": {
           "id": {
@@ -10644,6 +11033,37 @@
           "provenance"
         ],
         "title": "LocalOpportunity"
+      },
+      "LocationIn": {
+        "properties": {
+          "region_code": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Region Code",
+            "examples": [
+              "IN-TN-CBE"
+            ]
+          },
+          "pincode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^\\d{6}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pincode",
+            "description": "Optional: unlocks local problems"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "region_code"
+        ],
+        "title": "LocationIn"
       },
       "LoginRequest": {
         "properties": {
@@ -11907,6 +12327,141 @@
         ],
         "title": "Pathway"
       },
+      "Place": {
+        "properties": {
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "industries": {
+            "items": {
+              "$ref": "#/components/schemas/Industry"
+            },
+            "type": "array",
+            "title": "Industries",
+            "description": "What the city is known for, for the local questions"
+          },
+          "languages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Languages"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "region",
+          "industries",
+          "languages"
+        ],
+        "title": "Place"
+      },
+      "PlaceAnswers": {
+        "properties": {
+          "industries": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "maxProperties": 8,
+            "title": "Industries",
+            "description": "Interest in each local industry, 1 (none) to 5 (a lot)"
+          },
+          "move_scope": {
+            "type": "string",
+            "enum": [
+              "home",
+              "state",
+              "india",
+              "abroad"
+            ],
+            "title": "Move Scope",
+            "description": "How far they would move for study or work"
+          },
+          "languages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Languages",
+            "description": "Languages they can work in"
+          },
+          "home_commitment": {
+            "type": "string",
+            "enum": [
+              "none",
+              "some",
+              "strong"
+            ],
+            "title": "Home Commitment",
+            "description": "Does family need them nearby (farm, business, care)?"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "move_scope",
+          "home_commitment"
+        ],
+        "title": "PlaceAnswers"
+      },
+      "PlaceAnswersOut": {
+        "properties": {
+          "industries": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object",
+            "maxProperties": 8,
+            "title": "Industries",
+            "description": "Interest in each local industry, 1 (none) to 5 (a lot)"
+          },
+          "move_scope": {
+            "type": "string",
+            "enum": [
+              "home",
+              "state",
+              "india",
+              "abroad"
+            ],
+            "title": "Move Scope",
+            "description": "How far they would move for study or work"
+          },
+          "languages": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 10,
+            "title": "Languages",
+            "description": "Languages they can work in"
+          },
+          "home_commitment": {
+            "type": "string",
+            "enum": [
+              "none",
+              "some",
+              "strong"
+            ],
+            "title": "Home Commitment",
+            "description": "Does family need them nearby (farm, business, care)?"
+          },
+          "region_code": {
+            "type": "string",
+            "title": "Region Code"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "move_scope",
+          "home_commitment",
+          "region_code"
+        ],
+        "title": "PlaceAnswersOut"
+      },
       "PrestigeStability": {
         "type": "string",
         "enum": [
@@ -12562,6 +13117,31 @@
             "maxLength": 8,
             "title": "Preferred Language",
             "default": "en"
+          },
+          "region_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region Code",
+            "description": "City they live in (GET /places)"
+          },
+          "pincode": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^\\d{6}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pincode"
           },
           "website": {
             "anyOf": [
@@ -14345,6 +14925,28 @@
               }
             ],
             "title": "Family Id"
+          },
+          "region_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region Code"
+          },
+          "pincode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pincode"
           },
           "created_at": {
             "type": "string",

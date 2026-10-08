@@ -1,0 +1,172 @@
+{
+  "success": true,
+  "data": [
+    {
+      "region": {
+        "code": "IN-KA-BLR",
+        "name": "Bengaluru",
+        "state": "Karnataka",
+        "country": "India",
+        "type": "metro",
+        "cost_of_living_index": 1.0
+      },
+      "industries": [
+        {
+          "key": "software",
+          "label": "Software and AI",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "aerospace",
+          "label": "Aerospace and defence",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "biotech",
+          "label": "Biotech",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "startups",
+          "label": "Startups and finance",
+          "sector": "business_finance"
+        },
+        {
+          "key": "chips",
+          "label": "Chip and electronics design",
+          "sector": "engineering"
+        }
+      ],
+      "languages": [
+        "Kannada",
+        "English"
+      ]
+    },
+    {
+      "region": {
+        "code": "IN-TN-CHN",
+        "name": "Chennai",
+        "state": "Tamil Nadu",
+        "country": "India",
+        "type": "metro",
+        "cost_of_living_index": 0.88
+      },
+      "industries": [
+        {
+          "key": "automobiles",
+          "label": "Automobiles",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "it",
+          "label": "IT services",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "healthcare",
+          "label": "Healthcare",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "electronics",
+          "label": "Electronics manufacturing",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "film",
+          "label": "Film and media",
+          "sector": "media_communication"
+        }
+      ],
+      "languages": [
+        "Tamil",
+        "English"
+      ]
+    },
+    {
+      "region": {
+        "code": "IN-TN-CBE",
+        "name": "Coimbatore",
+        "state": "Tamil Nadu",
+        "country": "India",
+        "type": "tier2",
+        "cost_of_living_index": 0.72
+      },
+      "industries": [
+        {
+          "key": "pumps",
+          "label": "Pumps and motors",
+          "sector": "engineering"
+        },
+        {
+          "key": "textiles",
+          "label": "Textiles",
+          "sector": "design_arts"
+        },
+        {
+          "key": "foundries",
+          "label": "Foundries and machinery",
+          "sector": "energy_manufacturing"
+        },
+        {
+          "key": "it",
+          "label": "IT services",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "farming",
+          "label": "Farming",
+          "sector": "agri_environment"
+        }
+      ],
+      "languages": [
+        "Tamil",
+        "English"
+      ]
+    },
+    {
+      "region": {
+        "code": "IN-TG-HYD",
+        "name": "Hyderabad",
+        "state": "Telangana",
+        "country": "India",
+        "type": "metro",
+        "cost_of_living_index": 0.9
+      },
+      "industries": [
+        {
+          "key": "it",
+          "label": "IT and AI",
+          "sector": "computing_ai"
+        },
+        {
+          "key": "pharma",
+          "label": "Pharma and vaccines",
+          "sector": "health_life_sciences"
+        },
+        {
+          "key": "defence",
+          "label": "Defence electronics",
+          "sector": "aerospace_mobility"
+        },
+        {
+          "key": "film",
+          "label": "Film",
+          "sector": "media_communication"
+        }
+      ],
+      "languages": [
+        "Telugu",
+        "Urdu",
+        "Hindi",
+        "English"
+      ]
+    }
+  ],
+  "error": null,
+  "meta": {
+    "request_id": "00000000000000000000000000000000",
+    "version": "v1/0.1.0",
+    "mock": true
+  }
+}

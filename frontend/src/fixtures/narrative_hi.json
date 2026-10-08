@@ -11,7 +11,7 @@
       "दाख़िला कठिन है: मौजूदा अंकों से लगभग 39% संभावना (अनुमान)।",
       "अन्य अच्छे विकल्प: Computational Biologist, Data Scientist।",
       "करियर की दिशा पर छात्र और माता-पिता: हल्का मतभेद। दोनों को स्वीकार्य करियर: Biomedical Engineer, Doctor (MBBS)।",
-      "वज़न बदलकर किए गए 64 परीक्षणों में से 59% में पहला स्थान नहीं बदला।",
+      "वज़न बदलकर किए गए 64 परीक्षणों में से 62% में पहला स्थान नहीं बदला।",
       "देखने लायक छात्रवृत्तियाँ: Private foundation UG merit-cum-means scholarship (illustrative)।"
     ],
     "source": "template",
@@ -41,7 +41,7 @@
       ],
       "version": "seed-2026-09-30",
       "stability": {
-        "stab": 59,
+        "stab": 62,
         "n": 64
       }
     },
