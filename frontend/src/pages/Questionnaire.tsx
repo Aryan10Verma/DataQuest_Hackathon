@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCreateRun, useInstruments, useTraits } from '@/api/hooks';
+import { useCreateRun, useInstruments, usePlaceAnswers, useTraits } from '@/api/hooks';
 import { useSession, useStudentContext } from '@/auth/session';
 import { ErrorState, PageHeader, PageSkeleton } from '@/components/ui';
 import { loadDraft, ORDER, PLAIN_NAME } from './questionnaireStore';
@@ -11,6 +11,7 @@ export default function Questionnaire() {
   const instruments = useInstruments();
   const traits = useTraits(ctx.studentId);
   const create = useCreateRun();
+  const place = usePlaceAnswers();
   const navigate = useNavigate();
 
   if (instruments.isLoading) return <PageSkeleton />;
@@ -25,7 +26,7 @@ export default function Questionnaire() {
     <div className="mx-auto max-w-[920px]">
       <PageHeader
         title="Questionnaire"
-        intro={`Five short sections, about ${total} minutes in all. There are no right or wrong answers, except in aptitude. Your answers are saved as you go, so you can stop and come back.`}
+        intro={`Five short sections, about ${total} minutes in all, and two minutes about where you live. There are no right or wrong answers, except in aptitude. Your answers are saved as you go, so you can stop and come back.`}
       />
       {allDone && (
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4 note">
@@ -64,6 +65,19 @@ export default function Questionnaire() {
             </li>
           );
         })}
+        <li className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-x-4 gap-y-3 border-b border-line py-6 sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:items-center">
+          <span className={`figure grid h-9 w-9 place-items-center rounded-full border text-base ${place.data ? 'border-accent text-accent' : 'border-line text-muted'}`}>
+            {place.data ? <Check size={16} aria-label="Done" /> : list.length + 1}
+          </span>
+          <div className="grid gap-1">
+            <h2 className="display text-xl">Where you live</h2>
+            <p className="max-w-measure text-sm text-muted">The work around your city, how far you would move, the languages you work in, and whether family needs you nearby.</p>
+            <p className="text-xs text-muted">4 questions, about 2 minutes. {place.data ? 'Done' : 'Not started'}.</p>
+          </div>
+          <Link to="/app/questionnaire/place" className={`col-start-2 justify-self-start sm:col-start-3 ${place.data ? 'btn-quiet' : 'btn-primary'}`}>
+            {place.data ? 'Change' : 'Start'}
+          </Link>
+        </li>
       </ol>
       <p className="mt-6 text-xs text-muted">We never ask about gender, caste, religion or community. If you are under 18, a parent approves before your answers are used.</p>
     </div>

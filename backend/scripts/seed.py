@@ -183,14 +183,21 @@ def main() -> int:
 
     migrate()
     with get_sessionmaker()() as db:
-        if db.scalar(select(cm.DatasetVersion).where(cm.DatasetVersion.is_active.is_(True))) is None:
-            res = loader.load(db, today(), label="seed-2026-09-30")
+        active = db.scalar(select(cm.DatasetVersion).where(cm.DatasetVersion.is_active.is_(True)))
+        # Load the catalogue on first run, and again whenever the seed files changed since (an update
+        # brought new cities or careers). The old version stays in the database for past runs.
+        if active is None or active.content_hash != loader.content_hash():
+            res = loader.load(
+                db, today(), label="seed-2026-09-30" if active is None else f"seed-update-{today()}"
+            )
             if res["status"] != "completed":
                 print("Catalog failed quality gates:\n  " + "\n  ".join(res["errors"]))
                 return 1
-            print(f"Catalog loaded: {res['counts']} ({len(res['warnings'])} warnings)")
+            print(
+                f"Catalog {'loaded' if active is None else 'updated'}: {res['counts']} ({len(res['warnings'])} warnings)"
+            )
         else:
-            print("Catalog already loaded (use POST /api/v1/admin/data/refresh to load a new version)")
+            print("Catalog already up to date")
         if args.demo:
             n = seed_demo(db, reset=args.reset)
             print(

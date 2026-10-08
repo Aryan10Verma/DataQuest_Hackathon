@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTraits } from '@/api/hooks';
 import type { TraitScore } from '@/api/types';
 import { useSession, useStudentContext } from '@/auth/session';
+import { WhereYouLive } from '@/components/map/WhereYouLive';
 import { EmptyState, ErrorState, PageHeader, PageSkeleton, Section, Tip } from '@/components/ui';
 import { pct } from '@/lib/format';
 
@@ -47,6 +48,9 @@ export default function Profile() {
       ) : (
         <View traits={traits.data.traits} code={traits.data.top_riasec_code} completeness={traits.data.completeness} />
       )}
+      <Section title="Where you live" className="mt-16" aside={<span className="text-xs text-muted">{isParent ? 'Your family’s city' : 'Your city'}</span>}>
+        <WhereYouLive />
+      </Section>
     </div>
   );
 }

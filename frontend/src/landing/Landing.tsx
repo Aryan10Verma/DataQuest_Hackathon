@@ -8,7 +8,7 @@ import type { RegionDemand } from '@/api/types';
 import { homeFor, useSession } from '@/auth/session';
 import { sectorLabel } from '@/lib/format';
 import { Logo } from '@/shell/Shell';
-import { CITIES } from './cities';
+import { CITIES } from '@/components/map/cities';
 import './landing.css';
 
 gsap.registerPlugin(ScrollTrigger);

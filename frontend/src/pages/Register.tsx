@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { LocationPicker, type Location } from '@/components/map/LocationPicker';
 import { Link, useNavigate } from 'react-router-dom';
 import type { Role } from '@/api/client';
 import { homeFor, useSession } from '@/auth/session';
@@ -18,6 +19,7 @@ export default function Register() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [where, setWhere] = useState<Location>({ region_code: null, pincode: '' });
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,6 +41,8 @@ export default function Register() {
         date_of_birth: role === 'student' ? String(f.get('date_of_birth')) : null,
         preferred_language: lang,
         website: String(f.get('website') ?? '') || null,
+        region_code: where.region_code,
+        pincode: where.pincode.length === 6 ? where.pincode : null,
       });
       navigate(user.role === 'student' ? '/app/questionnaire' : homeFor(user.role), { replace: true });
     } catch (err) {
@@ -98,6 +102,11 @@ export default function Register() {
             {fieldError('date_of_birth') ?? <span className="text-xs">If you are under 18, a parent approves your account before we use your answers.</span>}
           </label>
         )}
+        <fieldset className="grid gap-3 border-t border-line pt-5">
+          <legend className="mb-1 text-sm text-muted">Where do you live?</legend>
+          <p className="-mt-1 text-xs text-muted">Jobs, colleges and exams start from your city. You can change it later.</p>
+          <LocationPicker value={where} onChange={setWhere} idPrefix="reg" stacked />
+        </fieldset>
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         <button className="btn-primary mt-1 justify-self-start" disabled={busy}>{busy ? 'Creating account…' : 'Create account'}</button>
       </form>

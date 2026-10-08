@@ -17,6 +17,7 @@ const FamilyInputs = lazy(() => import('@/pages/FamilyInputs'));
 const WhatIf = lazy(() => import('@/pages/WhatIf'));
 const Trust = lazy(() => import('@/pages/Trust'));
 const Questionnaire = lazy(() => import('@/pages/Questionnaire'));
+const PlaceQuestions = lazy(() => import('@/pages/PlaceQuestions'));
 const Player = lazy(() => import('@/pages/Player'));
 const Profile = lazy(() => import('@/pages/Profile'));
 const Plan = lazy(() => import('@/pages/Plan'));
@@ -72,6 +73,7 @@ export default function App() {
             <Route path="family/inputs" element={<RequireAuth roles={['parent']}><FamilyInputs /></RequireAuth>} />
             <Route path="what-if" element={<RequireAuth roles={FAMILY}><WhatIf /></RequireAuth>} />
             <Route path="questionnaire" element={<RequireAuth roles={['student']}><Questionnaire /></RequireAuth>} />
+            <Route path="questionnaire/place" element={<RequireAuth roles={['student']}><PlaceQuestions /></RequireAuth>} />
             <Route path="profile" element={<RequireAuth roles={FAMILY}><Profile /></RequireAuth>} />
             <Route path="plan" element={<RequireAuth roles={FAMILY}><Plan /></RequireAuth>} />
             <Route path="loans" element={<Loans />} />

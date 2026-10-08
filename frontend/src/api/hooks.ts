@@ -128,6 +128,29 @@ export const useAlternatives = (idOrSlug?: string) =>
 /** Job demand by city, for the India map. Public: works signed out too. */
 export const useMarketMap = () =>
   useQuery({ queryKey: ['market-map'], queryFn: () => api<T.RegionDemand[]>('/api/v1/market/map', { anonymous: true }), staleTime: 10 * 60_000 });
+/** Indian cities PRISM covers, with their industries and languages. Public. */
+export const usePlaces = () =>
+  useQuery({ queryKey: ['places'], queryFn: () => api<T.Place[]>('/api/v1/places', { anonymous: true }), staleTime: Infinity });
+export const usePlaceAnswers = (on = true) =>
+  useQuery({ queryKey: ['place-answers'], queryFn: () => api<T.PlaceAnswersOut | null>('/api/v1/students/me/place'), enabled: on });
+export function useSavePlace() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: T.PlaceAnswers) => api<T.PlaceAnswersOut>('/api/v1/students/me/place', { method: 'PUT', body }),
+    onSuccess: (d) => qc.setQueryData(['place-answers'], d),
+  });
+}
+export function useSetLocation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: T.LocationIn) => api<T.UserOut>('/api/v1/auth/me/location', { method: 'PUT', body }),
+    onSuccess: () => {
+      // A new city changes the local questions and the student profile's city.
+      qc.invalidateQueries({ queryKey: ['place-answers'] });
+      qc.invalidateQueries({ queryKey: ['student-profile'] });
+    },
+  });
+}
 export const useRegions = () => useQuery({ queryKey: ['regions'], queryFn: () => api<T.Region[]>('/api/v1/regions'), staleTime: Infinity });
 export const useMarketTrends = (regionCode?: string, sector?: string) =>
   useQuery({

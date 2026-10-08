@@ -2,8 +2,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as Tabs from '@radix-ui/react-tabs';
 import { motion } from 'framer-motion';
 import { Lightbulb, X } from 'lucide-react';
-import { useState, type FormEvent } from 'react';
-import { useCareer, useCareers, useLocalOpportunities, useMarketTrends, useMentors, useRegions, useStudentProfile } from '@/api/hooks';
+import { useMemo, useState, type FormEvent } from 'react';
+import { useCareer, useCareers, useLocalOpportunities, useMarketMap, useMarketTrends, useMentors, useRegions, useStudentProfile } from '@/api/hooks';
+import { IndiaMap } from '@/components/map/IndiaMap';
 import type { MarketSignal } from '@/api/types';
 import { useSession } from '@/auth/session';
 import { EmptyState, ErrorState, PageHeader, ProvenanceBadge, Section, Skeleton } from '@/components/ui';
@@ -21,7 +22,7 @@ export default function Explore() {
   const { user } = useSession();
   const profile = useStudentProfile(user?.role === 'student');
   const pincode = profile.data?.pincode;
-  const region = profile.data?.region_code ?? undefined;
+  const region = profile.data?.region_code ?? user?.region_code ?? undefined;
   return (
     <div className="mx-auto max-w-[1100px]">
       <PageHeader title="Explore" intro="Browse every career in the catalogue, see where jobs are growing, and find real problems to work on near you." />
@@ -126,43 +127,54 @@ function CareerModal({ slug, onClose }: { slug: string | null; onClose: () => vo
 
 function Market({ initialRegion }: { initialRegion?: string }) {
   const regions = useRegions();
+  const map = useMarketMap();
+  const demand = useMemo(() => new Map((map.data ?? []).map((r) => [r.region.code, r])), [map.data]);
   const [region, setRegion] = useState<string | undefined>(initialRegion);
   const m = useMarketTrends(region);
   const sectors = Object.entries((m.data?.sector_summary ?? {}) as Record<string, number>).sort((a, b) => b[1] - a[1]);
   return (
-    <div className="grid gap-10">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <label className="field min-w-[260px]">Region
-          <select className="input" value={region ?? ''} onChange={(e) => setRegion(e.target.value || undefined)}>
-            <option value="">All of India</option>
-            {regions.data?.map((r) => <option key={r.code} value={r.code}>{r.name}{r.state ? `, ${r.state}` : ''}</option>)}
-          </select>
-        </label>
-        {m.data && (
-          <p className="text-sm text-muted">
-            {m.data.is_live ? 'Includes live job postings' : 'Snapshot'} for {m.data.period}, {m.data.region.name}. Not real-time.
-          </p>
+    <div className="grid gap-10 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:items-start">
+      {/* Not sticky: a sticky box is its own layer, and the map's screen blend needs the page behind it. */}
+      <div className="grid gap-4">
+        <IndiaMap selected={region} onSelect={setRegion} demand={demand} label="Show jobs in" className="mx-auto w-full max-w-[20rem]" />
+        <p className="text-center text-xs text-muted">Tap a city. Bigger, brighter points have more openings.</p>
+      </div>
+      <div className="grid min-w-0 gap-10">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <label className="field min-w-[260px]">City
+            <select className="input" value={region ?? ''} onChange={(e) => setRegion(e.target.value || undefined)}>
+              <option value="">Choose a city</option>
+              {regions.data?.map((r) => <option key={r.code} value={r.code}>{r.name}{r.state ? `, ${r.state}` : ''}</option>)}
+            </select>
+          </label>
+          {m.data && (
+            <p className="text-sm text-muted">
+              {m.data.is_live ? 'Includes live job postings' : 'Estimates'} for {m.data.period}, {m.data.region.name}. Not real-time.
+            </p>
+          )}
+        </div>
+        {!region ? (
+          <EmptyState title="Choose a city" body="Pick a city on the map or from the list to see which fields are hiring there." />
+        ) : m.isLoading ? <Skeleton className="h-72" /> : m.isError ? <ErrorState error={m.error} retry={() => m.refetch()} /> : m.data && (
+          <>
+            <Section title={`Demand by field in ${m.data.region.name}`} aside={<span className="text-xs text-muted">0 to 100</span>}>
+              <ul className="grid gap-3">
+                {sectors.map(([k, v]) => (
+                  <li key={k} className="grid grid-cols-[minmax(0,14rem)_minmax(0,1fr)_2.5rem] items-center gap-3 text-sm">
+                    <span>{sectorLabel(k)}</span>
+                    <span className="h-1.5 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-claret" style={{ width: pct(v) }} /></span>
+                    <span className="text-right tabular-nums text-muted">{Math.round(v * 100)}</span>
+                  </li>
+                ))}
+              </ul>
+            </Section>
+            <div className="grid gap-10 md:grid-cols-2">
+              <Signals title="Growing fastest" items={m.data.top_rising} />
+              <Signals title="Most exposed to automation" items={m.data.most_disrupted} risk />
+            </div>
+          </>
         )}
       </div>
-      {m.isLoading ? <Skeleton className="h-72" /> : m.isError ? <ErrorState error={m.error} retry={() => m.refetch()} /> : m.data && (
-        <>
-          <Section title="Demand by field" aside={<span className="text-xs text-muted">0 to 100</span>}>
-            <ul className="grid gap-3">
-              {sectors.map(([k, v]) => (
-                <li key={k} className="grid grid-cols-[minmax(0,14rem)_minmax(0,1fr)_2.5rem] items-center gap-3 text-sm">
-                  <span>{sectorLabel(k)}</span>
-                  <span className="h-1.5 rounded-full bg-white/[0.06]"><span className="block h-full rounded-full bg-accent" style={{ width: pct(v) }} /></span>
-                  <span className="text-right tabular-nums text-muted">{Math.round(v * 100)}</span>
-                </li>
-              ))}
-            </ul>
-          </Section>
-          <div className="grid gap-10 md:grid-cols-2">
-            <Signals title="Growing fastest" items={m.data.top_rising} />
-            <Signals title="Most exposed to automation" items={m.data.most_disrupted} risk />
-          </div>
-        </>
-      )}
     </div>
   );
 }
