@@ -1,7 +1,7 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMarketMap } from '@/api/hooks';
 import type { RegionDemand } from '@/api/types';
@@ -98,6 +98,12 @@ const STORY: { key: string; rail: string; where: string; title: string; facts: [
 ];
 
 const src = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+const pic = (name: string, small: number, large: number, sizes: string) => ({
+  src: src(`${name}.webp`),
+  srcSet: `${src(`${name}-sm.webp`)} ${small}w, ${src(`${name}.webp`)} ${large}w`,
+  sizes,
+});
+const BRAIN_SIZES = '(max-width: 760px) 92vw, 62vh'; // index.html preloads the top view with the same sizes
 const pct = (v: number) => `${Math.round(v * 100)}%`;
 
 export default function Landing() {
@@ -110,6 +116,13 @@ export default function Landing() {
   const navigate = useNavigate();
   const market = useMarketMap();
   const demand = useMemo(() => new Map((market.data ?? []).map((r) => [r.region.code, r])), [market.data]);
+  // The first brain gets the connection to itself: the other views, the close-up and the map only
+  // start downloading once it has arrived (or after 4 s, whatever happens).
+  const [rest, setRest] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setRest(true), 4000);
+    return () => window.clearTimeout(t);
+  }, []);
 
   useLayoutEffect(() => {
     const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -219,8 +232,12 @@ export default function Landing() {
 
       // The one page-load moment: the brain comes into focus and the word appears.
       if (!RM) {
+        // The brain fades in once its picture is ready, so it never pops in after the fade has played.
+        const top = q('.l-brain.is-top')[0] as HTMLImageElement;
+        gsap.set(top, { opacity: 0, scale: 0.9 });
+        const reveal = () => gsap.to(top, { opacity: 1, scale: 1, duration: 1.4, ease: 'power3.out' });
+        top.decode().then(reveal, reveal);
         gsap.timeline({ defaults: { ease: 'power3.out' } })
-          .fromTo('.l-brain.is-top', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 1.4 }, 0.15)
           .fromTo(chars(q('.l-word')[0]), HIDDEN, { ...SHOWN, duration: 0.8, stagger: 0.05 }, 0.3)
           .fromTo('.l-hero, .l-bar', { opacity: 0 }, { opacity: 1, duration: 0.9, stagger: 0.1 }, 0.9);
         gsap.to('.l-float', { y: -12, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
@@ -282,13 +299,13 @@ export default function Landing() {
 
           <div className="l-brains" aria-hidden>
             <div className="l-float">
-              {BRAINS.map((b) => (
+              {BRAINS.map((b, i) => (
                 <img
                   key={b}
                   className={`l-brain is-${b}`}
-                  src={src(`brain/${b}.webp`)}
-                  srcSet={`${src(`brain/${b}-sm.webp`)} 800w, ${src(`brain/${b}.webp`)} 1600w`}
-                  sizes="(max-width: 760px) 92vw, 62vh"
+                  {...(i === 0 || rest ? pic(`brain/${b}`, 800, 1600, BRAIN_SIZES) : {})}
+                  onLoad={i === 0 ? () => setRest(true) : undefined}
+                  onError={i === 0 ? () => setRest(true) : undefined}
                   alt=""
                   decoding="async"
                 />
@@ -296,14 +313,14 @@ export default function Landing() {
             </div>
           </div>
           <div className="l-neural" aria-hidden>
-            <img src={src('brain/neural.webp')} srcSet={`${src('brain/neural-sm.webp')} 1200w, ${src('brain/neural.webp')} 2400w`} sizes="(max-width: 760px) 140vw, min(110vh, 120vw)" alt="" decoding="async" />
+            <img {...(rest ? pic('brain/neural', 1200, 2400, '(max-width: 760px) 140vw, min(110vh, 120vw)') : {})} alt="" decoding="async" />
           </div>
 
           {/* The map image is screen-blended like the brain; the points and the card sit in a twin layer
               on top that isn't blended, so text and the card's glass stay crisp. Both move together. */}
           <div className="l-map" aria-hidden>
             <div className="l-map-inner">
-              <img src={src('map/india.webp')} srcSet={`${src('map/india-sm.webp')} 1200w, ${src('map/india.webp')} 2400w`} sizes="(max-width: 760px) 90vw, 70vh" alt="" decoding="async" />
+              <img {...(rest ? pic('map/india', 1200, 2400, '(max-width: 760px) 90vw, 70vh') : {})} alt="" decoding="async" />
             </div>
           </div>
           <div className="l-map l-map-ui" role="group" aria-label="Job demand by city across India">

@@ -7,6 +7,9 @@
     <title>PRISM – See every path</title>
     <meta name="description" content="Career guidance that weighs your interests, your family's budget and real job demand, and shows its working." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- The home page's first picture, fetched alongside the scripts rather than after them. The
+         srcset and sizes match the <img> in src/landing/Landing.tsx, so the browser reuses it. -->
+    <link rel="preload" as="image" href="/brain/top.webp" imagesrcset="/brain/top-sm.webp 800w, /brain/top.webp 1600w" imagesizes="(max-width: 760px) 92vw, 62vh" fetchpriority="high" />
     <!-- Link previews (WhatsApp, LinkedIn, X). Crawlers don't run scripts, so these stay static. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="PRISM" />
