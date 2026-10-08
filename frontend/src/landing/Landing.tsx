@@ -161,11 +161,9 @@ export default function Landing() {
             tl.to(copies[i - 1], { autoAlpha: 0, y: RM ? 0 : -40, duration: 0.5, ease: 'power2.in' }, t);
             if (i < 5) {
               fly(tl, brains[i - 1], brains[i], t + 0.15);
-              if (!RM) tl.fromTo('.l-ring', { scale: 1 }, { scale: 1.12, duration: 0.45, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t + 0.15);
             } else if (i === 5) {
               // Into the brain: the back view rushes past and the neural network opens up.
               fly(tl, brains[4], '.l-neural', t + 0.15, 3.2);
-              tl.to('.l-ring', { scale: RM ? 1 : 2.4, autoAlpha: 0, duration: 0.8, ease: 'power2.in' }, t + 0.15);
             } else {
               // And back out: the network shrinks to a point and India opens around it.
               if (RM) {
@@ -217,11 +215,9 @@ export default function Landing() {
         };
       });
 
-      // The one page-load moment: the ring draws, the brain comes into focus, the word appears.
+      // The one page-load moment: the brain comes into focus and the word appears.
       if (!RM) {
-        const circ = 2 * Math.PI * 88;
         gsap.timeline({ defaults: { ease: 'power3.out' } })
-          .fromTo('.l-ring circle', { strokeDasharray: circ, strokeDashoffset: circ }, { strokeDashoffset: 0, duration: 1.6, ease: 'power3.inOut' }, 0)
           .fromTo('.l-brain.is-top', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 1.4 }, 0.15)
           .fromTo(chars(q('.l-word')[0]), HIDDEN, { ...SHOWN, duration: 0.8, stagger: 0.05 }, 0.3)
           .fromTo('.l-hero, .l-bar', { opacity: 0 }, { opacity: 1, duration: 0.9, stagger: 0.1 }, 0.9);
@@ -283,8 +279,6 @@ export default function Landing() {
           <Split text="PRISM" as="p" className="l-word" />
 
           <div className="l-brains" aria-hidden>
-            {/* The ring lives in the brain's layer, so it always circles the brain as it moves. */}
-            <svg className="l-ring" viewBox="0 0 200 200"><circle cx="100" cy="100" r="88" /></svg>
             <div className="l-float">
               {BRAINS.map((b) => (
                 <img

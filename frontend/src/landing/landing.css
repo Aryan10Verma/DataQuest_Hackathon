@@ -26,9 +26,6 @@
 .l-guides i { border-left: 1px solid rgba(236, 231, 240, 0.045); }
 .l-guides i:last-child { border-right: 1px solid rgba(236, 231, 240, 0.045); }
 
-.l-ring { position: absolute; left: 50%; top: calc(50% + 1.5vh); width: min(70vh, 80vw); aspect-ratio: 1; translate: -50% -50%; overflow: visible; pointer-events: none; }
-.l-ring circle { fill: none; stroke: #f3ecdd; stroke-width: 1.6;
-  filter: drop-shadow(0 0 2px rgba(238, 243, 255, 0.9)) drop-shadow(0 0 12px rgba(91, 127, 230, 0.45)) drop-shadow(0 0 36px rgba(91, 127, 230, 0.22)); }
 
 .l-word {
   position: absolute; left: 0; right: 0; top: 46%; translate: 0 -50%; z-index: 2;
@@ -147,7 +144,6 @@
   .l-neural img { width: 140vw; }
   .l-citycard { display: none; }
   .l-city .name { font-size: 9px; }
-  .l-ring { top: calc(50% - 7vh); width: min(52vh, 92vw); }
   .l-word { top: 30%; font-size: 17vw; letter-spacing: 0.04em; padding-left: 0.04em; }
   .l-hero { left: 0; right: 0; bottom: var(--lbar); max-width: none; padding: 3.5rem var(--gutter) 3vh;
     background: linear-gradient(to top, var(--void) 62%, rgba(11, 13, 26, 0.75) 82%, transparent); }
