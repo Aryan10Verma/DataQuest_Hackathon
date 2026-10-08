@@ -74,6 +74,7 @@ from app.schemas.catalog import (
     MarketTrends,
     Pathway,
     Region,
+    RegionDemand,
     ScholarshipMatch,
 )
 from app.schemas.common import Page, Role
@@ -104,6 +105,7 @@ from app.schemas.family import (
 from app.schemas.profiles import StudentProfileIn, StudentProfileOut
 from app.schemas.reports import Roadmap, SwotReport
 from app.schemas.system import DataStatus, Methodology
+from app.services import market_map
 from app.services.analysis import apply_overrides, hide_family_money, roadmap_for, run_analysis, swot_for
 from app.services.catalog_db import invalidate, load_catalog, region_for_pincode
 from app.services.engagement_live import EngagementMixin
@@ -1252,6 +1254,10 @@ class LiveGateway(EngagementMixin):
             signals=signals,
             is_live=adzuna_adapter().enabled,
         )
+
+    def market_map(self) -> list[RegionDemand]:
+        cat = self._catalog()
+        return market_map.summarize(cat.regions.values(), cat.signals)
 
     def list_pathways(
         self, career_id: str | None, max_annual_cost: int | None, page: int, page_size: int

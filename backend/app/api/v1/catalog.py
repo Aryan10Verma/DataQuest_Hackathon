@@ -11,6 +11,7 @@ from app.schemas.catalog import (
     MarketTrends,
     Pathway,
     Region,
+    RegionDemand,
     ScholarshipMatch,
 )
 from app.schemas.common import Page
@@ -50,6 +51,12 @@ def market_trends(
     region_code: str = Query(..., examples=["IN-TN-CBE"]), sector: str | None = None, gw=Gateway
 ):
     return ok(gw.market_trends(region_code, sector), mock=gw.mock)
+
+
+@router.get("/market/map", response_model=Envelope[list[RegionDemand]])
+def market_map(gw=Gateway):
+    """Job demand by city across India, for the map. Public: no personal data, only market signals."""
+    return ok(gw.market_map(), mock=gw.mock)
 
 
 @router.get("/pathways", response_model=Envelope[Page[Pathway]])

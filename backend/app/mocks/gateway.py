@@ -49,6 +49,7 @@ from app.schemas.catalog import (
     MarketTrends,
     Pathway,
     Region,
+    RegionDemand,
     ScholarshipMatch,
 )
 from app.schemas.common import Page, Role
@@ -90,6 +91,7 @@ from app.schemas.system import (
     Formula,
     Methodology,
 )
+from app.services import market_map
 from app.services.analysis import apply_overrides, hide_family_money, roadmap_for, swot_for
 from app.services.principal import Principal
 
@@ -491,6 +493,14 @@ class MockGateway(MockEngagementMixin):
             signals=signals,
             is_live=False,
         )
+
+    def market_map(self) -> list[RegionDemand]:
+        signals = [
+            b.market_signal(c[0], r.code, b.REGION_DEMAND_FACTOR.get(r.type.value, 0.8))
+            for r in b.regions()
+            for c in w.CAREERS
+        ]
+        return market_map.summarize(b.regions(), signals)
 
     def list_pathways(
         self, career_id: str | None, max_annual_cost: int | None, page: int, page_size: int

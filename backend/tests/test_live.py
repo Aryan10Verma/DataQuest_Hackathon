@@ -424,3 +424,10 @@ def test_offline_market_csv_creates_new_dataset_version(live, tmp_path):
     assert old["reproducibility"]["is_outdated"] is True
     status = live.get("/api/v1/system/data-status").json()["data"]
     assert status is not None
+
+
+def test_market_map_live_is_public_and_covers_seeded_cities(live):
+    rows = live.get("/api/v1/market/map").json()["data"]
+    codes = {x["region"]["code"] for x in rows}
+    assert {"IN-TN-CHN", "IN-KA-BLR", "IN-DL-NCR"} <= codes
+    assert "DE" not in codes  # India only

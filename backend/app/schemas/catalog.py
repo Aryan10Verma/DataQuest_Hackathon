@@ -83,6 +83,19 @@ class MarketTrends(Contract):
     is_live: bool = Field(description="false = seeded snapshot, not a live feed")
 
 
+class RegionDemand(Contract):
+    """One city on the job-demand map: market signals for every tracked career, summarised."""
+
+    region: Region
+    demand_index: Unit = Field(description="Mean demand across the careers tracked here")
+    job_velocity: float = Field(description="Mean year-on-year change in postings, e.g. 0.12 = +12 %")
+    top_sectors: list[str] = Field(description="Up to three sectors with the highest mean demand")
+    rising: list[CareerRef] = Field(description="Up to three careers whose postings grow fastest here")
+    careers_tracked: int = Field(ge=0)
+    is_estimate: bool = Field(description="true if any signal behind these numbers is an estimate")
+    period: str
+
+
 class Institution(Contract):
     id: str
     name: str
