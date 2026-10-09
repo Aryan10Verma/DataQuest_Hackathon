@@ -48,9 +48,20 @@ The whole product (website and Python engine) runs as one Docker container. The 
    Sign in with one of the demo accounts from **Run it** above.
 
 What the free plan means: the server sleeps after 15 minutes without visitors, so the first visit after
-that takes 30 to 60 seconds. Each restart builds a fresh database with the catalogue and the five demo
+that takes 30 to 60 seconds. `.github/workflows/keep-warm.yml` pings it every 5 minutes so it stays
+awake (one service running all month fits Render's 750 free hours; delete the file to stop). Each restart builds a fresh database with the catalogue and the five demo
 families, so accounts made by visitors don't last. The hosted site runs with `APP_ENV=demo`: HTTPS only,
 secure cookies, rate limits, security headers and encryption are on; the `/demo` reset tools are off.
+
+**Faster: the website on Vercel.** Vercel serves the website from servers near each visitor and never
+sleeps, so pages open at once; it forwards every `/api/...` request to Render, so to the browser it is
+all one site and sign-in works unchanged. `frontend/vercel.json` holds the settings.
+
+1. Sign up at [vercel.com](https://vercel.com) with your GitHub account (free).
+2. **Add New > Project**, import this repository, and set **Root Directory** to `frontend`. Leave the
+   other settings as they are, then **Deploy**.
+3. Open the address it shows, e.g. `https://prismav.vercel.app`. If your Render address is not
+   `prismav.onrender.com`, change it in `frontend/vercel.json` first.
 
 **Keep using prismav.xo.je (InfinityFree).** InfinityFree only runs PHP, so it can't run PRISM, but it
 can forward visitors: in `deploy/infinityfree/`, replace `YOUR-APP.onrender.com` with your Render

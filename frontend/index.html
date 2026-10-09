@@ -10,13 +10,14 @@
     <!-- The home page's first picture, fetched alongside the scripts rather than after them. The
          srcset and sizes match the <img> in src/landing/Landing.tsx, so the browser reuses it. -->
     <link rel="preload" as="image" href="/brain/top.webp" imagesrcset="/brain/top-sm.webp 800w, /brain/top.webp 1600w" imagesizes="(max-width: 760px) 92vw, 62vh" fetchpriority="high" />
-    <!-- Link previews (WhatsApp, LinkedIn, X). Crawlers don't run scripts, so these stay static. -->
+    <!-- Link previews (WhatsApp, LinkedIn, X). Crawlers don't run scripts, so these are filled in at build
+         time: VITE_SITE_URL is the site's public address (see vite.config.ts). -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="PRISM" />
-    <meta property="og:url" content="https://prismav.onrender.com/" />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
     <meta property="og:title" content="PRISM – See every path. Choose yours together." />
     <meta property="og:description" content="Career guidance that weighs your interests, your family's budget and real job demand, and shows its working." />
-    <meta property="og:image" content="https://prismav.onrender.com/og.jpg" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="The PRISM logo and a glowing brain beside the line: See every path. Choose yours together." />
