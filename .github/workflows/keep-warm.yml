@@ -21,3 +21,9 @@ jobs:
           # A sleeping service can take up to a minute to answer, so allow 90 seconds and retry twice.
           curl --silent --show-error --fail --max-time 90 --retry 2 --retry-delay 10 \
             https://prismav.onrender.com/api/v1/system/health
+      - name: Check the website on Vercel still reaches it
+        run: |
+          # The same check through Vercel's /api forwarding (frontend/vercel.json). If this fails while the
+          # step above passes, the forwarding is broken and GitHub emails the repository owner.
+          curl --silent --show-error --fail --max-time 90 --retry 2 --retry-delay 10 \
+            https://dataquesthackathon-frontend.vercel.app/api/v1/system/health

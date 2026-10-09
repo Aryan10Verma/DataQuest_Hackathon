@@ -60,12 +60,12 @@ all one site and sign-in works unchanged. `frontend/vercel.json` holds the setti
 1. Sign up at [vercel.com](https://vercel.com) with your GitHub account (free).
 2. **Add New > Project**, import this repository, and set **Root Directory** to `frontend`. Leave the
    other settings as they are, then **Deploy**.
-3. Open the address it shows, e.g. `https://prismav.vercel.app`. If your Render address is not
+3. Open the address it shows; this project's is `https://dataquesthackathon-frontend.vercel.app`. If your Render address is not
    `prismav.onrender.com`, change it in `frontend/vercel.json` first.
 
 **Keep using prismav.xo.je (InfinityFree).** InfinityFree only runs PHP, so it can't run PRISM, but it
-can forward visitors: in `deploy/infinityfree/`, replace `YOUR-APP.onrender.com` with your Render
-address in both files, then upload `.htaccess` and `index.html` to `htdocs/` with the InfinityFree File
+can forward visitors: `deploy/infinityfree/` points at the Vercel address (change it in both files if
+yours differs), then upload `.htaccess` and `index.html` to `htdocs/` with the InfinityFree File
 Manager (delete the files already there first).
 
 ## What's here

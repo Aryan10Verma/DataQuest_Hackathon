@@ -384,7 +384,7 @@ export default function Landing() {
           <div className="l-bar">
             <div className="l-stat"><strong>74</strong><span>Questions</span></div>
             <div className="l-stat"><strong>25</strong><span>Minutes</span></div>
-            <div className="l-stat"><strong>{market.data?.length || 16}</strong><span>Cities</span></div>
+            <div className="l-stat"><strong>{market.data?.length || CITIES.length}</strong><span>Cities</span></div>
             <ul className="l-instruments" aria-label="What PRISM weighs">
               {INSTRUMENTS.map((name, i) => (
                 <li key={name} className={lit.includes(i) ? 'is-on' : ''}>{name}</li>
